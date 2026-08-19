@@ -16,6 +16,7 @@ import 'package:imrpo/core/services/home_date_filter.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/core/widgets/app_toast.dart';
 import 'package:imrpo/core/widgets/tab_centered_scroll.dart';
 import 'package:imrpo/core/widgets/transaction_tab_loading_skeleton.dart';
 import 'package:imrpo/core/widgets/tab_refresh_overlay.dart';
@@ -173,7 +174,7 @@ class _ExpensesTabState extends State<ExpensesTab>
             icon: const Icon(Icons.add_rounded, color: Colors.white),
             label: Text(
               l10n.addExpense,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
               ),
@@ -645,7 +646,7 @@ class _ExpensesTabState extends State<ExpensesTab>
                                     Expanded(
                                       child: Text(
                                         l10n.recentExpenses,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                           color: AppColors.textColor,
@@ -832,7 +833,7 @@ class _ExpensesTabState extends State<ExpensesTab>
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: AppColors.textMuted.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -840,7 +841,7 @@ class _ExpensesTabState extends State<ExpensesTab>
               const SizedBox(height: 16),
               Text(
                 l10n.expenseFabMenuTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textColor,
@@ -914,8 +915,7 @@ class _ExpensesTabState extends State<ExpensesTab>
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => BlocProvider.value(
@@ -969,8 +969,7 @@ class _ExpensesTabState extends State<ExpensesTab>
 
     final action = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) => Padding(
@@ -984,7 +983,7 @@ class _ExpensesTabState extends State<ExpensesTab>
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.textMuted.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -992,7 +991,7 @@ class _ExpensesTabState extends State<ExpensesTab>
             const SizedBox(height: 20),
             Text(
               l10n.expenseCategoryRemoveTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textColor,
@@ -1083,8 +1082,7 @@ class _ExpensesTabState extends State<ExpensesTab>
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) => AnimatedPadding(
@@ -1108,13 +1106,7 @@ class _ExpensesTabState extends State<ExpensesTab>
       _ => null,
     };
     if (message != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      AppToast.success(context, message);
     }
   }
 }
@@ -1230,7 +1222,7 @@ class _CategoryBreakdown extends StatelessWidget {
       children: [
         Text(
           l10n.expenseByCategory,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: AppColors.textColor,
@@ -1291,7 +1283,7 @@ class _CategoryBreakdown extends StatelessWidget {
                     ),
                     Text(
                       Money.format(entry.value),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: _expenseColor,
@@ -1402,7 +1394,7 @@ class _SummaryCard extends StatelessWidget {
                 ),
                 child: Text(
                   periodLabel,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -1421,7 +1413,7 @@ class _SummaryCard extends StatelessWidget {
               ),
               child: Text(
                 categoryLabel!,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -1440,7 +1432,7 @@ class _SummaryCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             Money.format(total),
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 36,
               fontWeight: FontWeight.bold,
@@ -1531,7 +1523,7 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               l10n.noExpensesTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textColor,

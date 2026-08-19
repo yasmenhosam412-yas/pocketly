@@ -14,8 +14,7 @@ Future<void> showHomeDateFilterSheet(BuildContext context) async {
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (sheetContext) {
@@ -47,7 +46,7 @@ Future<void> showHomeDateFilterSheet(BuildContext context) async {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
+                      color: AppColors.textMuted.withValues(alpha: 0.35),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -55,7 +54,7 @@ Future<void> showHomeDateFilterSheet(BuildContext context) async {
                 const SizedBox(height: 20),
                 Text(
                   l10n.homeDateFilterTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textColor,

@@ -6,14 +6,10 @@ import 'package:imrpo/core/services/association_context.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/session/user_session.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
-import 'package:imrpo/features/association_invites/data/association_invite_datasource.dart';
-import 'package:imrpo/features/association_invites/domain/entities/association_invite_item.dart';
-import 'package:imrpo/features/association_invites/presentation/pages/invite_members_screen.dart';
-import 'package:imrpo/features/associations/presentation/pages/association_hub_screen.dart';
 import 'package:imrpo/features/associations/domain/entities/association_item.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
-/// Header chip to switch the active association (ledger).
+/// Header chip to switch the active ledger.
 class AssociationSelector extends StatelessWidget {
   const AssociationSelector({
     super.key,
@@ -57,7 +53,7 @@ class AssociationSelector extends StatelessWidget {
 
         return _HeaderActionChip(
           lightStyle: lightStyle,
-          icon: Icons.groups_rounded,
+          icon: Icons.menu_book_rounded,
           label: label,
           trailingIcon: Icons.expand_more_rounded,
           isHighlighted: active != null && !active.isPersonal,
@@ -80,8 +76,7 @@ class AssociationSelector extends StatelessWidget {
     final choice = await showModalBottomSheet<_AssociationSheetResult>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) => _AssociationPickerSheet(
@@ -148,13 +143,6 @@ class AssociationSelector extends StatelessWidget {
           behavior: SnackBarBehavior.floating,
         ),
       );
-      if (context.mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const AssociationHubScreen(),
-          ),
-        );
-      }
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -295,7 +283,7 @@ class _AssociationSheetResult {
   });
 }
 
-class _AssociationPickerSheet extends StatefulWidget {
+class _AssociationPickerSheet extends StatelessWidget {
   final AssociationContext associationContext;
   final AppLocalizations l10n;
 
@@ -305,100 +293,9 @@ class _AssociationPickerSheet extends StatefulWidget {
   });
 
   @override
-  State<_AssociationPickerSheet> createState() => _AssociationPickerSheetState();
-}
-
-class _AssociationPickerSheetState extends State<_AssociationPickerSheet> {
-  final _inviteDs = AssociationInviteDatasource(getIt<SupabaseClient>());
-  List<AssociationInviteItem> _pendingInvites = [];
-  bool _loadingInvites = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadInvites();
-  }
-
-  Future<void> _loadInvites() async {
-    try {
-      final list = await _inviteDs.listMyPendingInvites();
-      if (!mounted) return;
-      setState(() {
-        _pendingInvites = list;
-        _loadingInvites = false;
-      });
-    } catch (_) {
-      if (!mounted) return;
-      setState(() => _loadingInvites = false);
-    }
-  }
-
-  Future<void> _respondInvite(AssociationInviteItem invite, bool accept) async {
-    final l10n = widget.l10n;
-    try {
-      await _inviteDs.respondInvite(inviteId: invite.inviteId, accept: accept);
-      if (!mounted) return;
-      await widget.associationContext.load();
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            accept
-                ? l10n.associationInviteAcceptedSnack
-                : l10n.associationInviteRejectedSnack,
-          ),
-        ),
-      );
-      await _loadInvites();
-      if (accept && mounted) {
-        await widget.associationContext.selectAssociation(invite.associationId);
-        if (mounted) {
-          UserSession.reloadForAssociationSwitch(context);
-        }
-      }
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(localizeApiError(l10n, e.toString())),
-          backgroundColor: AppColors.error,
-        ),
-      );
-    }
-  }
-
-  void _openAssociationHub() {
-    Navigator.pop(context);
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const AssociationHubScreen(),
-      ),
-    );
-  }
-
-  void _openInviteMembers(AssociationItem item) {
-    final name = widget.associationContext.displayName(
-      item,
-      personalFallback: widget.l10n.associationPersonal,
-    );
-    Navigator.pop(context);
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => InviteMembersScreen(
-          associationId: item.id,
-          associationName: name,
-        ),
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final l10n = widget.l10n;
-    final activeId = widget.associationContext.activeAssociationId;
-    final items = widget.associationContext.items;
-    final activeItem = widget.associationContext.activeItem;
-
+    final activeId = associationContext.activeAssociationId;
+    final items = associationContext.items;
     final maxSheetHeight = MediaQuery.sizeOf(context).height * 0.85;
 
     return SafeArea(
@@ -415,7 +312,7 @@ class _AssociationPickerSheetState extends State<_AssociationPickerSheet> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: AppColors.textMuted.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -423,7 +320,7 @@ class _AssociationPickerSheetState extends State<_AssociationPickerSheet> {
               const SizedBox(height: 16),
               Text(
                 l10n.associationPickerTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textColor,
@@ -437,213 +334,124 @@ class _AssociationPickerSheetState extends State<_AssociationPickerSheet> {
                   color: AppColors.textColor.withValues(alpha: 0.6),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 16),
               Flexible(
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-            if (_loadingInvites)
-              const Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: Center(
-                  child: SizedBox(
-                    width: 22,
-                    height: 22,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                ),
-              )
-            else if (_pendingInvites.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              Text(
-                l10n.associationInvitePendingTitle,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 15,
-                ),
-              ),
-              const SizedBox(height: 8),
-              ..._pendingInvites.map((invite) {
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 8),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          invite.associationName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w700,
-                            fontSize: 15,
+                      ...items.map((item) {
+                        final selected = item.id == activeId;
+                        final label = associationContext.displayName(
+                          item,
+                          personalFallback: l10n.associationPersonal,
+                        );
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(
+                            item.isPersonal
+                                ? Icons.person_outline_rounded
+                                : Icons.menu_book_outlined,
+                            color: selected
+                                ? AppColors.primary
+                                : AppColors.textColor,
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          invite.inviterUsername,
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 13,
+                          title: Text(
+                            label,
+                            style: TextStyle(
+                              fontWeight: selected
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: () =>
-                                    _respondInvite(invite, false),
-                                child: Text(l10n.associationInviteReject),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: FilledButton(
-                                onPressed: () =>
-                                    _respondInvite(invite, true),
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: AppColors.primary,
-                                ),
-                                child: Text(l10n.associationInviteAccept),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }),
-            ],
-            const SizedBox(height: 16),
-            ...items.map((item) {
-              final selected = item.id == activeId;
-              final label = widget.associationContext.displayName(
-                item,
-                personalFallback: l10n.associationPersonal,
-              );
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(
-                  item.isPersonal
-                      ? Icons.person_outline_rounded
-                      : Icons.groups_rounded,
-                  color: selected ? AppColors.primary : AppColors.textColor,
-                ),
-                title: Text(
-                  label,
-                  style: TextStyle(
-                    fontWeight:
-                        selected ? FontWeight.w700 : FontWeight.w500,
-                  ),
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (!item.isPersonal)
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete_outline_rounded,
-                          color: AppColors.errorColor,
-                          size: 22,
-                        ),
-                        tooltip: l10n.associationDeleteAction,
-                        onPressed: () async {
-                          final confirmed = await showDialog<bool>(
-                            context: context,
-                            builder: (dialogContext) => AlertDialog(
-                              title: Text(l10n.associationDeleteConfirmTitle),
-                              content: Text(
-                                l10n.associationDeleteConfirmMessage(label),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(dialogContext, false),
-                                  child: Text(l10n.cancel),
-                                ),
-                                FilledButton(
-                                  style: FilledButton.styleFrom(
-                                    backgroundColor: AppColors.error,
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (!item.isPersonal)
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: AppColors.errorColor,
+                                    size: 22,
                                   ),
-                                  onPressed: () =>
-                                      Navigator.pop(dialogContext, true),
-                                  child: Text(l10n.associationDeleteAction),
+                                  tooltip: l10n.associationDeleteAction,
+                                  onPressed: () async {
+                                    final confirmed = await showDialog<bool>(
+                                      context: context,
+                                      builder: (dialogContext) => AlertDialog(
+                                        title: Text(
+                                          l10n.associationDeleteConfirmTitle,
+                                        ),
+                                        content: Text(
+                                          l10n.associationDeleteConfirmMessage(
+                                            label,
+                                          ),
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                              dialogContext,
+                                              false,
+                                            ),
+                                            child: Text(l10n.cancel),
+                                          ),
+                                          FilledButton(
+                                            style: FilledButton.styleFrom(
+                                              backgroundColor: AppColors.error,
+                                            ),
+                                            onPressed: () => Navigator.pop(
+                                              dialogContext,
+                                              true,
+                                            ),
+                                            child: Text(
+                                              l10n.associationDeleteAction,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                    if (confirmed == true && context.mounted) {
+                                      Navigator.pop(
+                                        context,
+                                        _AssociationSheetResult(
+                                          deleteId: item.id,
+                                        ),
+                                      );
+                                    }
+                                  },
                                 ),
-                              ],
-                            ),
-                          );
-                          if (confirmed == true && context.mounted) {
-                            Navigator.pop(
-                              context,
-                              _AssociationSheetResult(deleteId: item.id),
-                            );
-                          }
-                        },
+                              if (selected)
+                                const Icon(
+                                  Icons.check_circle_rounded,
+                                  color: AppColors.primary,
+                                ),
+                            ],
+                          ),
+                          onTap: () => Navigator.pop(
+                            context,
+                            _AssociationSheetResult(selectedId: item.id),
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: 8),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(
+                          Icons.add_circle_outline_rounded,
+                          color: AppColors.primary,
+                        ),
+                        title: Text(
+                          l10n.associationCreateAction,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        onTap: () => Navigator.pop(
+                          context,
+                          const _AssociationSheetResult(createRequested: true),
+                        ),
                       ),
-                    if (selected)
-                      const Icon(
-                        Icons.check_circle_rounded,
-                        color: AppColors.primary,
-                      ),
-                  ],
-                ),
-                onTap: () => Navigator.pop(
-                  context,
-                  _AssociationSheetResult(selectedId: item.id),
-                ),
-              );
-            }),
-            const SizedBox(height: 8),
-            if (activeItem != null && !activeItem.isPersonal) ...[
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(
-                  Icons.groups_3_outlined,
-                  color: AppColors.primary,
-                ),
-                title: Text(
-                  l10n.associationHubTitle,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
-                onTap: _openAssociationHub,
-              ),
-              ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: const Icon(
-                  Icons.person_add_alt_1_rounded,
-                  color: AppColors.primary,
-                ),
-                title: Text(
-                  l10n.associationInviteMembersAction,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
-                  ),
-                ),
-                onTap: () => _openInviteMembers(activeItem),
-              ),
-            ],
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.add_circle_outline_rounded,
-                  color: AppColors.primary),
-              title: Text(
-                l10n.associationCreateAction,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
-                ),
-              ),
-              onTap: () => Navigator.pop(
-                context,
-                const _AssociationSheetResult(createRequested: true),
-              ),
-            ),
                     ],
                   ),
                 ),

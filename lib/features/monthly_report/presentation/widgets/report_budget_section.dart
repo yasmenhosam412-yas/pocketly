@@ -51,7 +51,7 @@ class ReportBudgetSection extends StatelessWidget {
         children: [
           Text(
             l10n.monthlyReportBudgetTitle,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: AppColors.textColor,
@@ -84,7 +84,7 @@ class ReportBudgetSection extends StatelessWidget {
               ),
               Text(
                 '${Money.format(totalSpent)} / ${Money.format(totalLimit)}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: AppColors.expense,
@@ -126,7 +126,7 @@ class _BudgetRow extends StatelessWidget {
               Expanded(
                 child: Text(
                   label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textColor,
@@ -135,7 +135,7 @@ class _BudgetRow extends StatelessWidget {
               ),
               Text(
                 Money.format(row.spent),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color: AppColors.expense,
@@ -164,7 +164,7 @@ class _BudgetRow extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               l10n.budgetOverBy(Money.format(row.spent - row.limit)),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: AppColors.errorColor,

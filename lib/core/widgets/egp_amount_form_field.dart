@@ -35,7 +35,7 @@ class EgpAmountFormField extends StatelessWidget {
       children: [
         Text(
           labelText,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
@@ -56,7 +56,7 @@ class EgpAmountFormField extends StatelessWidget {
               ),
               child: Text(
                 currencyLabel,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 15,
                   color: AppColors.primary,
@@ -75,7 +75,7 @@ class EgpAmountFormField extends StatelessWidget {
                   FilteringTextInputFormatter.allow(RegExp(r'[\d.,]')),
                 ],
                 validator: validator,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
@@ -91,15 +91,15 @@ class EgpAmountFormField extends StatelessWidget {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.border),
+                    borderSide: BorderSide(color: AppColors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.border),
+                    borderSide: BorderSide(color: AppColors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(
+                    borderSide: BorderSide(
                       color: AppColors.primary,
                       width: 1.5,
                     ),

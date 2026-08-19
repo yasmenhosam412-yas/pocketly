@@ -137,12 +137,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textColor),
+          icon: Icon(Icons.arrow_back_rounded, color: AppColors.textColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           l10n.calculatorTitle,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textColor,
             fontWeight: FontWeight.bold,
           ),
@@ -172,7 +172,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       alignment: Alignment.centerRight,
                       child: Text(
                         _display,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 52,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textColor,

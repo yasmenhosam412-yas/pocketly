@@ -5,6 +5,7 @@ import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/core/widgets/app_toast.dart';
 import 'package:imrpo/core/widgets/currency_amount_field.dart';
 import 'package:imrpo/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
@@ -116,7 +117,7 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.textMuted.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -124,7 +125,7 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
             const SizedBox(height: 20),
             Text(
               _isEditing ? l10n.planEditGoal : l10n.planAddPlan,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textColor,
@@ -215,7 +216,7 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
                   vertical: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
@@ -272,7 +273,7 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
                 onPressed: _submit,
                 child: Text(
                   _isEditing ? l10n.updateGoal : l10n.savePlan,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
@@ -295,11 +296,9 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
               primary: _planColor,
               onPrimary: Colors.white,
-              surface: Colors.white,
-              onSurface: AppColors.textColor,
             ),
           ),
           child: child!,
@@ -404,13 +403,7 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.errorColor,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    AppToast.error(context, message);
   }
 
   String _formatDate(BuildContext context, DateTime date) {

@@ -82,7 +82,7 @@ class PlansTabLoadingSkeleton extends StatelessWidget {
                   Expanded(
                     child: Text(
                       l10n.plansSavingsGoalsSection,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textColor,
@@ -92,9 +92,9 @@ class PlansTabLoadingSkeleton extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.card,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(color: AppColors.border),
                     ),
                     child: const Text(
                       '0',
@@ -159,8 +159,8 @@ class _PlansDashboardMock extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       Money.format(0),
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: AppColors.card,
                         fontSize: 34,
                         fontWeight: FontWeight.bold,
                         letterSpacing: -0.8,
@@ -200,10 +200,10 @@ class _PlansDashboardMock extends StatelessWidget {
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Text(
+                        Text(
                           '35%',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: AppColors.card,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -244,8 +244,8 @@ class _PlansDashboardMock extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.plansGoalsCompletedSummary(0, 0),
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: AppColors.card,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
@@ -319,7 +319,7 @@ class _PlanListRowMock extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: AppColors.stroke.withValues(alpha: 0.1),
@@ -339,7 +339,7 @@ class _PlanListRowMock extends StatelessWidget {
           children: [
             Container(
               width: 5,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: accent,
                 borderRadius: BorderRadius.horizontal(
                   left: Radius.circular(18),
@@ -352,7 +352,7 @@ class _PlanListRowMock extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Plan title',
                       style: TextStyle(
                         fontSize: 17,
@@ -414,7 +414,7 @@ class _PlanListRowMock extends StatelessWidget {
                             children: [
                               Text(
                                 Money.format(0),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w800,
                                   color: AppColors.textColor,
@@ -519,7 +519,7 @@ class BalanceTabLoadingSkeleton extends StatelessWidget {
                 children: [
                   Text(
                     l10n.balanceRecentActivity,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textColor,
@@ -601,9 +601,9 @@ class _BalanceNetCardMock extends StatelessWidget {
                   color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.account_balance_wallet_rounded,
-                  color: Colors.white,
+                  color: AppColors.card,
                   size: 24,
                 ),
               ),
@@ -616,8 +616,8 @@ class _BalanceNetCardMock extends StatelessWidget {
                 ),
                 child: Text(
                   periodLabel,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppColors.card,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
@@ -636,8 +636,8 @@ class _BalanceNetCardMock extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             Money.format(0),
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: AppColors.card,
               fontSize: 36,
               fontWeight: FontWeight.bold,
               letterSpacing: -0.5,
@@ -751,7 +751,7 @@ class _BalanceActivityRowMock extends StatelessWidget {
               children: [
                 Text(
                   isIncome ? 'Income source' : 'Expense category',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textColor,

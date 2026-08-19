@@ -4,6 +4,7 @@ import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/core/widgets/app_toast.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/core/widgets/currency_amount_field.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
@@ -123,7 +124,7 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
+                      color: AppColors.textMuted.withValues(alpha: 0.35),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -131,7 +132,7 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
                 const SizedBox(height: 20),
                 Text(
                   l10n.updateSavedTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
@@ -140,7 +141,7 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
                 const SizedBox(height: 8),
                 Text(
                   localizeDemoTitle(l10n, plan.title),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     color: AppColors.textSecondary,
                   ),
@@ -159,14 +160,14 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
                     children: [
                       Text(
                         l10n.targetWithAmount(Money.format(plan.targetAmount)),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: AppColors.textPrimary,
                         ),
                       ),
                       Text(
                         '${(plan.progress * 100).round()}%',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: _planColor,
                         ),
@@ -214,7 +215,7 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
                           )
                         : Text(
                             l10n.saveAmountButton,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                               color: Colors.white,
@@ -279,12 +280,6 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.errorColor,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    AppToast.error(context, message);
   }
 }

@@ -61,7 +61,7 @@
   "dailyDigestSubtitle": "ملخص مسائي لمصروفات أمس وصافي الشهر لحد دلوقتي",
   "dailyDigestTimeLabel": "وقت الملخص",
   "dailyDigestNotificationTitle": "فلوسك امبارح",
-  "dailyDigestNotificationEmpty": "مفيش معاملات اتسجلت امبارح. افتح imrpo وسجّل مصروفات النهاردة.",
+  "dailyDigestNotificationEmpty": "مفيش معاملات اتسجلت امبارح. افتح Pocketly وسجّل مصروفات النهاردة.",
   "dailyDigestYesterdayExpenses": "{count, plural, one{مصروف واحد ({amount})} other{{count} مصروفات ({amount})}}",
   "@dailyDigestYesterdayExpenses": {
     "placeholders": {
@@ -145,8 +145,8 @@
   "associationPickerTitle": "اختار الدفتر",
   "associationPickerSubtitle": "كل دفتر له دخل ومصاريف وميزانيات وخطط لوحده.",
   "associationCreateTitle": "دفتر جديد",
-  "associationCreateAction": "اعمل",
-  "associationNameHint": "زي: جمعية العيلة، صندوق النادي",
+  "associationCreateAction": "إضافة دفتر",
+  "associationNameHint": "مثال: شغل، بيت، ادخار",
   "associationNameRequired": "اكتب اسم للدفتر",
   "associationCreated": "اتعمل \"{name}\"",
   "@associationCreated": {
@@ -329,6 +329,10 @@
   "accountSettingsTitle": "إعدادات الحساب",
   "changeUsername": "غيّر اسم المستخدم",
   "settingsLanguage": "اللغة",
+  "settingsTheme": "المظهر",
+  "themeLight": "فاتح",
+  "themeDark": "داكن",
+  "themeSystem": "حسب الجهاز",
   "settingsCalculator": "الآلة الحاسبة",
   "calculatorTitle": "الآلة الحاسبة",
   "languageEnglish": "إنجليزي",
@@ -430,6 +434,21 @@
   "paymentPresetInstaPay": "إنستاباي",
   "incomeBySource": "حسب المصدر",
   "balanceRemainingBySource": "الباقي حسب المصدر",
+  "balanceWalletTitle": "الباقي في كل مصدر",
+  "balanceWalletSubtitle": "الرصيد الابتدائي + الدخل − المصاريف من كل مصدر في الفترة دي.",
+  "balanceWalletFilterAll": "الكل",
+  "balanceWalletInitial": "ابتدائي",
+  "balanceWalletUnassignedHint": "مصاريف مش مربوطة بمصدر محدد.",
+  "balanceOpenWallet": "محفظتي",
+  "balanceWalletDialogTitle": "محفظتي",
+  "balanceWalletDialogPeriod": "للفترة: {period}",
+  "@balanceWalletDialogPeriod": {
+    "placeholders": {
+      "period": {}
+    }
+  },
+  "balanceWalletDialogTotal": "إجمالي المحفظة",
+  "balanceWalletDialogEmpty": "حدّدي الرصيد الابتدائي لكل مصدر عشان تشوفي المحفظة هنا.",
   "paymentMethodAddChip": "+ طريقة دفع",
   "paymentMethodAddCancel": "إلغاء",
   "paymentMethodNewLabel": "اسم الطريقة الجديدة",
@@ -652,6 +671,19 @@
   "saveAmountButton": "احفظ المبلغ",
   "errorEnterValidSavedAmount": "اكتب مبلغ موفّر صح",
   "balanceNetBalance": "صافي الرصيد",
+  "balanceInitialBalanceTitle": "الرصيد الابتدائي",
+  "balanceInitialBalanceHint": "المبلغ اللي كان معاك لما بدأت تستخدم التطبيق.",
+  "balanceInitialBalanceAddSource": "ضيف مصدر تاني",
+  "balanceInitialBalanceBySource": "حسب المصدر",
+  "balanceInitialBalanceIncludes": "يشمل رصيد ابتدائي {amount}",
+  "@balanceInitialBalanceIncludes": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "balanceInitialBalanceSaved": "اتحدّث الرصيد الابتدائي",
+  "balanceEditInitialBalance": "عدّل الرصيد الابتدائي",
+  "settingsInitialBalance": "الرصيد الابتدائي",
   "balanceSavedThisMonth": "وفّرت {percent}% الشهر ده",
   "@balanceSavedThisMonth": {
     "placeholders": {

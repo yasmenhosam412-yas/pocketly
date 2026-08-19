@@ -16,11 +16,13 @@ import 'package:imrpo/core/services/auto_sms_import_service.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/receipt_storage_service.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
+import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/expense_shortcuts_store.dart';
 import 'package:imrpo/core/services/smart_import_draft_store.dart';
 import 'package:imrpo/core/services/shared_text_import_store.dart';
 import 'package:imrpo/core/services/payment_methods_store.dart';
 import 'package:imrpo/core/services/locale_preferences.dart';
+import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/services/association_invite_disclaimer_prefs.dart';
 import 'package:imrpo/core/services/onboarding_preferences.dart';
 import 'package:imrpo/core/services/sms_bulk_import_service.dart';
@@ -107,6 +109,8 @@ void setupServiceLocator() {
 
   getIt.registerLazySingleton<LocalePreferences>(() => LocalePreferences());
 
+  getIt.registerLazySingleton<ThemePreferences>(() => ThemePreferences());
+
   getIt.registerLazySingleton<OnboardingPreferences>(
     () => OnboardingPreferences(),
   );
@@ -123,6 +127,10 @@ void setupServiceLocator() {
 
   getIt.registerLazySingleton<OfflineTransactionStore>(
     () => OfflineTransactionStore(),
+  );
+
+  getIt.registerLazySingleton<InitialBalanceStore>(
+    () => InitialBalanceStore(),
   );
 
   getIt.registerLazySingleton<OfflineTransactionSyncService>(

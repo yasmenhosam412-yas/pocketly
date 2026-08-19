@@ -107,6 +107,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 obscure: _obscurePassword,
                 icon: Icons.lock_outline_rounded,
                 suffixIcon: CustomFormField.visibilityToggle(
+                  context: context,
                   obscure: _obscurePassword,
                   onToggle: () =>
                       setState(() => _obscurePassword = !_obscurePassword),
@@ -120,6 +121,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 obscure: _obscureConfirmPassword,
                 icon: Icons.lock_outline_rounded,
                 suffixIcon: CustomFormField.visibilityToggle(
+                  context: context,
                   obscure: _obscureConfirmPassword,
                   onToggle: () => setState(
                     () => _obscureConfirmPassword = !_obscureConfirmPassword,

@@ -40,7 +40,7 @@ class PlanListTile extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.only(bottom: 14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.card,
             borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: plan.isCompleted
@@ -84,7 +84,7 @@ class PlanListTile extends StatelessWidget {
                                 children: [
                                   Text(
                                     localizeDemoTitle(l10n, plan.title),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 17,
                                       fontWeight: FontWeight.w700,
                                       color: AppColors.textColor,
@@ -159,7 +159,7 @@ class PlanListTile extends StatelessWidget {
                                 children: [
                                   Text(
                                     Money.format(plan.savedAmount),
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
                                       color: AppColors.textColor,

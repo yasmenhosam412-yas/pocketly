@@ -73,7 +73,7 @@ class _CurrencyAmountFieldState extends State<CurrencyAmountField> {
       children: [
         Text(
           widget.label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
             color: AppColors.textPrimary,
@@ -99,7 +99,7 @@ class _CurrencyAmountFieldState extends State<CurrencyAmountField> {
               child: TextFormField(
                 controller: widget.controller,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: AppColors.textPrimary,
@@ -114,11 +114,11 @@ class _CurrencyAmountFieldState extends State<CurrencyAmountField> {
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.border),
+                    borderSide: BorderSide(color: AppColors.border),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
-                    borderSide: const BorderSide(color: AppColors.border),
+                    borderSide: BorderSide(color: AppColors.border),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -212,7 +212,7 @@ class _CurrencySelector extends StatelessWidget {
               value: currency.code,
               child: Text(
                 localizeCurrencyLabel(l10n, currency.code),
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 15,
                 ),

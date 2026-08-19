@@ -93,6 +93,7 @@ class _SetNewPasswodScreenState extends State<SetNewPasswodScreen> {
                   icon: Icons.lock_outline_rounded,
                   obscure: _obscurePassword,
                   suffixIcon: CustomFormField.visibilityToggle(
+                    context: context,
                     obscure: _obscurePassword,
                     onToggle: () =>
                         setState(() => _obscurePassword = !_obscurePassword),
@@ -106,6 +107,7 @@ class _SetNewPasswodScreenState extends State<SetNewPasswodScreen> {
                   icon: Icons.lock_outline_rounded,
                   obscure: _obscureConfirmPassword,
                   suffixIcon: CustomFormField.visibilityToggle(
+                    context: context,
                     obscure: _obscureConfirmPassword,
                     onToggle: () => setState(
                       () => _obscureConfirmPassword = !_obscureConfirmPassword,

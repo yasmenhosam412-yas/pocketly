@@ -155,7 +155,6 @@ class _ZakatScreenState extends State<ZakatScreen> {
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
-            color: Colors.black,
           ),
         ),
       ),
@@ -186,7 +185,7 @@ class _ZakatScreenState extends State<ZakatScreen> {
           const SizedBox(height: 6),
           Text(
             l10n.zakatPricesHint,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               color: AppColors.textSecondary,
               height: 1.4,
@@ -268,7 +267,7 @@ class _ZakatScreenState extends State<ZakatScreen> {
               ZakatResult.goldNisabGrams.toInt(),
               ZakatResult.silverNisabGrams.toInt(),
             ),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               color: AppColors.textSecondary,
               height: 1.4,
@@ -298,7 +297,7 @@ class _SectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 17,
         fontWeight: FontWeight.w700,
         color: AppColors.textPrimary,
@@ -329,7 +328,7 @@ class _InfoCard extends StatelessWidget {
           Expanded(
             child: Text(
               text,
-              style: const TextStyle(fontSize: 13, height: 1.45),
+              style: TextStyle(fontSize: 13, height: 1.45),
             ),
           ),
         ],
@@ -360,7 +359,7 @@ class _AmountField extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
@@ -376,7 +375,7 @@ class _AmountField extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hint,
               filled: true,
-              fillColor: Colors.white,
+              fillColor: AppColors.card,
               suffixText: suffix,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -412,7 +411,7 @@ class _WeightField extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
@@ -428,7 +427,7 @@ class _WeightField extends StatelessWidget {
             decoration: InputDecoration(
               hintText: hint,
               filled: true,
-              fillColor: Colors.white,
+              fillColor: AppColors.card,
               suffixText: 'g',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -440,7 +439,7 @@ class _WeightField extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               valueHint!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12,
                 color: AppColors.textSecondary,
               ),
@@ -501,10 +500,10 @@ class _ResultCard extends StatelessWidget {
                 ? Money.formatEgp(result.nisabThreshold)
                 : '—',
           ),
-          const Divider(color: Colors.white24, height: 24),
+          Divider(color: Colors.white24, height: 24),
           Text(
             meets ? l10n.zakatMeetsNisab : l10n.zakatBelowNisab,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 13,
               fontWeight: FontWeight.w500,
@@ -513,7 +512,7 @@ class _ResultCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             Money.formatEgp(result.zakatDue),
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 32,
               fontWeight: FontWeight.bold,
@@ -564,7 +563,7 @@ class _ResultRow extends StatelessWidget {
           ),
           Text(
             value,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,
               fontSize: 14,

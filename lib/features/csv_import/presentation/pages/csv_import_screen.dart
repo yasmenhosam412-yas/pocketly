@@ -42,7 +42,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
       appBar: AppBar(
         title: Text(
           l10n.csvImportTitle,
-          style: TextStyle(color: Colors.black, fontSize: 18),
+          style: TextStyle(color: AppColors.textColor, fontSize: 18),
         ),
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -65,7 +65,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
                 if (_error != null) ...[
                   Text(
                     _error!,
-                    style: const TextStyle(color: AppColors.errorColor),
+                    style: TextStyle(color: AppColors.errorColor),
                   ),
                   const SizedBox(height: 12),
                 ],
@@ -105,7 +105,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
           const SizedBox(height: 16),
           Text(
             l10n.csvImportFileSelected(_fileName!),
-            style: const TextStyle(fontWeight: FontWeight.w600),
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
         ],
       ],
@@ -149,7 +149,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
         const SizedBox(height: 20),
         Text(
           l10n.csvImportMapColumns,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
         const SizedBox(height: 12),
         ...List.generate(_headers.length, (index) {
@@ -161,7 +161,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
                   flex: 2,
                   child: Text(
                     _headers[index],
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -238,7 +238,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
             expenseCount,
             incomeCount,
           ),
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: TextStyle(fontWeight: FontWeight.w600),
         ),
         const SizedBox(height: 12),
         ..._preview

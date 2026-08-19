@@ -167,7 +167,7 @@ class _AddExpenseShortcutSheetState extends State<AddExpenseShortcutSheet> {
                       width: 40,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
+                        color: AppColors.textMuted.withValues(alpha: 0.35),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -175,7 +175,7 @@ class _AddExpenseShortcutSheetState extends State<AddExpenseShortcutSheet> {
                   const SizedBox(height: 20),
                   Text(
                     isEdit ? l10n.expenseShortcutEditTitle : l10n.expenseShortcutAddTitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: AppColors.textColor,
@@ -291,7 +291,7 @@ class _AddExpenseShortcutSheetState extends State<AddExpenseShortcutSheet> {
                             )
                           : Text(
                               l10n.expenseShortcutSave,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,

@@ -1,4 +1,4 @@
-package com.example.imrpo
+package com.yasmen.pocketly
 
 import android.content.Intent
 import io.flutter.embedding.android.FlutterFragmentActivity

@@ -73,12 +73,12 @@ class AppDecorations {
       );
 
   static BoxDecoration outlined({
-    Color fill = AppColors.card,
+    Color? fill,
     Color? border,
     double radius = buttonRadius,
   }) =>
       BoxDecoration(
-        color: fill,
+        color: fill ?? AppColors.card,
         borderRadius: BorderRadius.circular(radius),
         border: Border.all(
           color: border ?? AppColors.stroke.withValues(alpha: 0.14),

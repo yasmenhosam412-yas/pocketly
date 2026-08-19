@@ -101,7 +101,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
               primary: AppColors.primary,
             ),
           ),
@@ -196,7 +196,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
           children: [
             Text(
               _isEditing ? l10n.billRemindersEdit : l10n.billRemindersAdd,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
@@ -233,7 +233,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
             const SizedBox(height: 16),
             Text(
               l10n.billRemindersDayOfMonth,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
@@ -262,7 +262,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
                           child: Text(
                             _referenceMonthLabel(context),
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontSize: 15,
                             ),
@@ -279,14 +279,14 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
                       children: [
                         Text(
                           l10n.billRemindersDayOfMonthValue(_dayOfMonth),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 16,
                           ),
                         ),
                         Text(
                           ' / $_maxDayInReferenceMonth',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             color: AppColors.textSecondary,
                           ),
@@ -307,7 +307,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
                     if (_usesLastDayInSomeMonths)
                       Text(
                         l10n.billRemindersDayOfMonthShortMonthHint,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           color: AppColors.textSecondary,
                           height: 1.35,
@@ -320,7 +320,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
             const SizedBox(height: 12),
             Text(
               l10n.billRemindersTimeLabel,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
@@ -348,14 +348,14 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
                       Expanded(
                         child: Text(
                           _formatReminderTime(context),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontSize: 16,
                             color: AppColors.textPrimary,
                           ),
                         ),
                       ),
-                      const Icon(
+                      Icon(
                         Icons.chevron_right_rounded,
                         color: AppColors.textSecondary,
                       ),
@@ -367,7 +367,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
             const SizedBox(height: 12),
             Text(
               l10n.billRemindersRemindBefore,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textPrimary,
@@ -398,7 +398,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
               ),
               child: Text(
                 _isEditing ? l10n.save : l10n.billRemindersAdd,
-                style: const TextStyle(fontWeight: FontWeight.w700),
+                style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
           ],

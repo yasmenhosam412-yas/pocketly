@@ -82,12 +82,12 @@ class _GlobalSearchScreenState extends State<GlobalSearchScreen> {
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textColor),
+          icon: Icon(Icons.arrow_back_rounded, color: AppColors.textColor),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
           l10n.globalSearchTitle,
-          style: const TextStyle(
+          style: TextStyle(
             color: AppColors.textColor,
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -102,7 +102,7 @@ class _GlobalSearchScreenState extends State<GlobalSearchScreen> {
               controller: _queryController,
               focusNode: _focusNode,
               onChanged: (_) => setState(() {}),
-              style: const TextStyle(color: AppColors.textColor),
+              style: TextStyle(color: AppColors.textColor),
               decoration: InputDecoration(
                 hintText: l10n.globalSearchHint,
                 prefixIcon: const Icon(Icons.search_rounded),
@@ -116,7 +116,7 @@ class _GlobalSearchScreenState extends State<GlobalSearchScreen> {
                         },
                       ),
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: AppColors.card,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(16),
                   borderSide: BorderSide.none,
@@ -271,8 +271,7 @@ class _FilterChip extends StatelessWidget {
         fontWeight: FontWeight.w600,
         fontSize: 13,
       ),
-      backgroundColor: Colors.white,
-      side: BorderSide.none,
+side: BorderSide.none,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     );
   }
@@ -334,7 +333,7 @@ class _SearchResultTile extends StatelessWidget {
                   children: [
                     Text(
                       showTitle ? title : categoryLabel,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textColor,

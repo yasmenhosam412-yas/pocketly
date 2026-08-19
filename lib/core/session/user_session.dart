@@ -15,6 +15,7 @@ import 'package:imrpo/features/home/presentation/bloc/home_bloc.dart';
 import 'package:imrpo/core/services/bill_reminder_notification_service.dart';
 import 'package:imrpo/core/services/daily_digest_notification_service.dart';
 import 'package:imrpo/core/services/notification_inbox_store.dart';
+import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/offline_transaction_store.dart';
 import 'package:imrpo/core/services/offline_transaction_sync_service.dart';
 import 'package:imrpo/features/bill_reminders/data/bill_reminder_store.dart';
@@ -34,6 +35,7 @@ class UserSession {
     DailyDigestNotificationService.instance.cancel();
     getIt<NotificationInboxStore>().clear();
     getIt<OfflineTransactionStore>().clearForUser();
+    getIt<InitialBalanceStore>().clearForUser();
     final userId = SupabaseAuthHelper.userId;
     if (userId != null) {
       getIt<BillReminderStore>().clear(userId);
@@ -65,13 +67,6 @@ class UserSession {
             force: true,
           ),
         );
-    context.read<BalanceTabBloc>().add(
-          LoadBalanceEvent(
-            reference: dateFilter.date,
-            filterByDay: dateFilter.isDayMode,
-            includeAllDates: dateFilter.isAllMode,
-          ),
-        );
     context.read<PlansTabBloc>().add(const LoadPlansEvent(force: true));
   }
 
@@ -95,27 +90,12 @@ class UserSession {
             month: budgetPeriod.month,
           ),
         );
-    context.read<BalanceTabBloc>().add(
-          LoadBalanceEvent(
-            reference: dateFilter.date,
-            filterByDay: dateFilter.isDayMode,
-            includeAllDates: dateFilter.isAllMode,
-          ),
-        );
     context.read<PlansTabBloc>().add(const LoadPlansEvent());
   }
 
   static void _loadOfflineLedgers(BuildContext context) {
     context.read<IncomesTabBloc>().add(const LoadIncomesEvent(force: true));
     context.read<ExpensesTabBloc>().add(const LoadExpensesEvent(force: true));
-    final dateFilter = getIt<HomeDateFilter>();
-    context.read<BalanceTabBloc>().add(
-          LoadBalanceEvent(
-            reference: dateFilter.date,
-            filterByDay: dateFilter.isDayMode,
-            includeAllDates: dateFilter.isAllMode,
-          ),
-        );
   }
 
   /// Flushes queued transactions then reloads tabs when back online.
@@ -132,14 +112,6 @@ class UserSession {
     if (!SupabaseAuthHelper.isSignedIn) return;
     context.read<IncomesTabBloc>().add(const LoadIncomesEvent(force: true));
     context.read<ExpensesTabBloc>().add(const LoadExpensesEvent(force: true));
-    final dateFilter = getIt<HomeDateFilter>();
-    context.read<BalanceTabBloc>().add(
-          LoadBalanceEvent(
-            reference: dateFilter.date,
-            filterByDay: dateFilter.isDayMode,
-            includeAllDates: dateFilter.isAllMode,
-          ),
-        );
   }
 
   /// Reloads all tabs after the display currency changes.
@@ -154,13 +126,6 @@ class UserSession {
             year: budgetPeriod.year,
             month: budgetPeriod.month,
             force: true,
-          ),
-        );
-    context.read<BalanceTabBloc>().add(
-          LoadBalanceEvent(
-            reference: dateFilter.date,
-            filterByDay: dateFilter.isDayMode,
-            includeAllDates: dateFilter.isAllMode,
           ),
         );
     context.read<PlansTabBloc>().add(const LoadPlansEvent(force: true));

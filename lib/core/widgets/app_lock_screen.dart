@@ -113,7 +113,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
               const SizedBox(height: 24),
               Text(
                 l10n.appLockTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textColor,
@@ -139,7 +139,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
                 const SizedBox(height: 12),
                 Text(
                   l10n.appLockWrongPin,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppColors.errorColor,
@@ -300,7 +300,7 @@ class _KeyButton extends StatelessWidget {
               child: label != null
                   ? Text(
                       label!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textColor,

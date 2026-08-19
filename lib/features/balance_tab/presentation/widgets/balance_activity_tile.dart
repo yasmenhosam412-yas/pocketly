@@ -62,7 +62,7 @@ class BalanceActivityTile extends StatelessWidget {
               children: [
                 Text(
                   categoryLabel,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textColor,

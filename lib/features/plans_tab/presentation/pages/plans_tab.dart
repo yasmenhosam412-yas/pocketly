@@ -56,7 +56,7 @@ class _PlansTabState extends State<PlansTab> with AutomaticKeepAliveClientMixin 
             icon: const Icon(Icons.add_rounded, color: Colors.white),
             label: Text(
               l10n.planNewFab,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.2,
@@ -225,7 +225,7 @@ class _PlansTabState extends State<PlansTab> with AutomaticKeepAliveClientMixin 
                         Expanded(
                           child: Text(
                             l10n.plansSavingsGoalsSection,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: AppColors.textColor,
@@ -238,13 +238,13 @@ class _PlansTabState extends State<PlansTab> with AutomaticKeepAliveClientMixin 
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: AppColors.card,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.grey.shade200),
+                            border: Border.all(color: AppColors.border),
                           ),
                           child: Text(
                             '${sorted.length}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
                               color: AppColors.plans,
@@ -303,8 +303,7 @@ class _PlansTabState extends State<PlansTab> with AutomaticKeepAliveClientMixin 
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) => AnimatedPadding(
@@ -377,7 +376,7 @@ class _DashboardCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       Money.format(totalSaved),
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 34,
                         fontWeight: FontWeight.bold,
@@ -420,7 +419,7 @@ class _DashboardCard extends StatelessWidget {
                       children: [
                         Text(
                           '$progressPercent%',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -462,7 +461,7 @@ class _DashboardCard extends StatelessWidget {
                 Expanded(
                   child: Text(
                     l10n.plansGoalsCompletedSummary(completedCount, planCount),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
@@ -510,7 +509,7 @@ class _MiniStatCard extends StatelessWidget {
         border: Border.all(color: AppColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: AppColors.stroke.withValues(alpha: 0.08),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -580,7 +579,7 @@ class _EmptyState extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               l10n.plansEmptyTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textColor,
@@ -612,7 +611,7 @@ class _EmptyState extends StatelessWidget {
                 icon: const Icon(Icons.add_rounded, color: Colors.white),
                 label: Text(
                   l10n.plansCreateGoalButton,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
                     fontSize: 16,

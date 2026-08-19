@@ -166,7 +166,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dailyDigestNotificationTitle => 'فلوسك امبارح';
 
   @override
-  String get dailyDigestNotificationEmpty => 'مفيش معاملات اتسجلت امبارح. افتح imrpo وسجّل مصروفات النهاردة.';
+  String get dailyDigestNotificationEmpty => 'مفيش معاملات اتسجلت امبارح. افتح Pocketly وسجّل مصروفات النهاردة.';
 
   @override
   String dailyDigestYesterdayExpenses(int count, String amount) {
@@ -301,10 +301,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get associationCreateTitle => 'دفتر جديد';
 
   @override
-  String get associationCreateAction => 'اعمل';
+  String get associationCreateAction => 'إضافة دفتر';
 
   @override
-  String get associationNameHint => 'زي: جمعية العيلة، صندوق النادي';
+  String get associationNameHint => 'مثال: شغل، بيت، ادخار';
 
   @override
   String get associationNameRequired => 'اكتب اسم للدفتر';
@@ -691,6 +691,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsLanguage => 'اللغة';
 
   @override
+  String get settingsTheme => 'المظهر';
+
+  @override
+  String get themeLight => 'فاتح';
+
+  @override
+  String get themeDark => 'داكن';
+
+  @override
+  String get themeSystem => 'حسب الجهاز';
+
+  @override
   String get settingsCalculator => 'الآلة الحاسبة';
 
   @override
@@ -966,6 +978,38 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get balanceRemainingBySource => 'الباقي حسب المصدر';
+
+  @override
+  String get balanceWalletTitle => 'الباقي في كل مصدر';
+
+  @override
+  String get balanceWalletSubtitle => 'الرصيد الابتدائي + الدخل − المصاريف من كل مصدر في الفترة دي.';
+
+  @override
+  String get balanceWalletFilterAll => 'الكل';
+
+  @override
+  String get balanceWalletInitial => 'ابتدائي';
+
+  @override
+  String get balanceWalletUnassignedHint => 'مصاريف مش مربوطة بمصدر محدد.';
+
+  @override
+  String get balanceOpenWallet => 'محفظتي';
+
+  @override
+  String get balanceWalletDialogTitle => 'محفظتي';
+
+  @override
+  String balanceWalletDialogPeriod(Object period) {
+    return 'للفترة: $period';
+  }
+
+  @override
+  String get balanceWalletDialogTotal => 'إجمالي المحفظة';
+
+  @override
+  String get balanceWalletDialogEmpty => 'حدّدي الرصيد الابتدائي لكل مصدر عشان تشوفي المحفظة هنا.';
 
   @override
   String get paymentMethodAddChip => '+ طريقة دفع';
@@ -1415,6 +1459,32 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get balanceNetBalance => 'صافي الرصيد';
+
+  @override
+  String get balanceInitialBalanceTitle => 'الرصيد الابتدائي';
+
+  @override
+  String get balanceInitialBalanceHint => 'المبلغ اللي كان معاك لما بدأت تستخدم التطبيق.';
+
+  @override
+  String get balanceInitialBalanceAddSource => 'ضيف مصدر تاني';
+
+  @override
+  String get balanceInitialBalanceBySource => 'حسب المصدر';
+
+  @override
+  String balanceInitialBalanceIncludes(Object amount) {
+    return 'يشمل رصيد ابتدائي $amount';
+  }
+
+  @override
+  String get balanceInitialBalanceSaved => 'اتحدّث الرصيد الابتدائي';
+
+  @override
+  String get balanceEditInitialBalance => 'عدّل الرصيد الابتدائي';
+
+  @override
+  String get settingsInitialBalance => 'الرصيد الابتدائي';
 
   @override
   String balanceSavedThisMonth(int percent) {

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Privacy Policy for the Pocketly personal finance app.">
+  <title>Pocketly — Privacy Policy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #f28c74;
+      --primary-dark: #e07862;
+      --scaffold: #f7f3ef;
+      --card: #ffffff;
+      --text: #3a322e;
+      --muted: #6b625c;
+      --border: #e8ded6;
+      --income: #7eb87a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Quicksand, "Segoe UI", Tahoma, sans-serif;
+      background: var(--scaffold);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .hero {
+      background: linear-gradient(160deg, #f28c74 0%, #f6a060 100%);
+      color: #fff;
+      padding: 2.4rem 1.25rem 2rem;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      font-size: 0.85rem;
+      opacity: 0.92;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0.35rem 0 0.5rem;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .updated {
+      margin: 0;
+      opacity: 0.92;
+      font-size: 0.95rem;
+    }
+
+    .langs {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1.1rem;
+    }
+
+    .langs button {
+      font-family: inherit;
+      font-weight: 700;
+      border: 0;
+      border-radius: 999px;
+      padding: 0.45rem 0.95rem;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.22);
+      color: #fff;
+    }
+
+    .langs button[aria-pressed="true"] {
+      background: #fff;
+      color: var(--primary-dark);
+    }
+
+    main {
+      padding: 1.5rem 1.25rem 3.5rem;
+    }
+
+    article {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem 1.35rem;
+    }
+
+    h2 {
+      font-size: 1.15rem;
+      margin: 1.6rem 0 0.45rem;
+      color: var(--primary-dark);
+    }
+
+    h2:first-child { margin-top: 0; }
+
+    p, li { color: var(--muted); }
+
+    ul { padding-inline-start: 1.2rem; }
+
+    a { color: var(--primary-dark); }
+
+    .note {
+      background: #fff0ec;
+      border: 1px solid #f9c8bc;
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      color: var(--text);
+      margin: 1rem 0;
+    }
+
+    footer {
+      margin-top: 1.4rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    [hidden] { display: none !important; }
+
+    html[dir="rtl"] h1,
+    html[dir="rtl"] h2,
+    html[dir="rtl"] p,
+    html[dir="rtl"] li {
+      font-family: Quicksand, "Segoe UI", Tahoma, "Noto Naskh Arabic", sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="brand">Pocketly</div>
+      <h1 id="page-title">Privacy Policy</h1>
+      <p class="updated" id="page-updated">Last updated: 18 August 2026</p>
+      <div class="langs">
+        <button type="button" id="btn-en" aria-pressed="true">English</button>
+        <button type="button" id="btn-ar" aria-pressed="false">العربية</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <article id="en" lang="en">
+      <h2>1. Who we are</h2>
+      <p>
+        Pocketly (<strong>com.yasmen.pocketly</strong>) is a personal finance app for tracking
+        income, expenses, savings plans, budgets, bill reminders, and shared ledgers.
+        This policy explains what information we collect, why we collect it, and the choices you have.
+      </p>
+
+      <h2>2. Information we collect</h2>
+      <p>Depending on how you use Pocketly, we may process:</p>
+      <ul>
+        <li><strong>Account data:</strong> email address, username, and password (stored by our authentication provider; we do not see your raw password).</li>
+        <li><strong>Financial records you enter:</strong> incomes, expenses, categories, payment methods, amounts, notes, plans, budgets, and starting balances.</li>
+        <li><strong>Receipt images:</strong> photos you take or pick from your gallery, if you attach a receipt to an expense. These are uploaded to our storage.</li>
+        <li><strong>Imported transactions:</strong> amounts and details you confirm after importing from SMS, shared text, or a CSV file.</li>
+        <li><strong>Shared ledger data:</strong> if you join or create a group ledger, members of that ledger can see the transactions and related records in that ledger.</li>
+        <li><strong>App preferences stored on your device:</strong> language, theme, notification settings, SMS-import settings, and app-lock options.</li>
+      </ul>
+
+      <div class="note">
+        Pocketly does not sell your data and does not show third-party ads.
+      </div>
+
+      <h2>3. SMS access (optional)</h2>
+      <p>
+        If you enable SMS import, Pocketly may read SMS messages on your device to find
+        bank or wallet notifications and suggest transactions. This happens only after you grant
+        SMS permission.
+      </p>
+      <ul>
+        <li>We scan messages to extract likely financial amounts, merchants, and dates.</li>
+        <li>Only transactions you import (or auto-import, if you turn that on) are saved to your account.</li>
+        <li>We do not use SMS to send messages, and we do not sell SMS content.</li>
+        <li>You can deny or revoke SMS permission in Android settings. The rest of the app still works.</li>
+      </ul>
+
+      <h2>4. Camera, photos, and shared text</h2>
+      <ul>
+        <li><strong>Camera / photos:</strong> used only to attach invoice or receipt images to expenses.</li>
+        <li><strong>Share to Pocketly:</strong> if you share plain text into the app, we parse it so you can add a transaction.</li>
+        <li><strong>CSV import:</strong> files you pick stay under your control; we store the transactions you confirm.</li>
+      </ul>
+
+      <h2>5. App lock and biometrics</h2>
+      <p>
+        App lock (PIN and optional fingerprint / Face ID) stays on your device.
+        Your PIN is stored as a salted hash in secure storage. Biometric data never leaves the device
+        and is handled by the operating system.
+      </p>
+
+      <h2>6. Notifications</h2>
+      <p>
+        With your permission, Pocketly can send local reminders (for example bill due dates and a daily digest).
+        These alerts are scheduled on your device. A notification inbox copy may also be stored with your account
+        so you can review it in the app.
+      </p>
+
+      <h2>7. How we use information</h2>
+      <ul>
+        <li>Create and secure your account, including password reset by email.</li>
+        <li>Show your balances, charts, plans, budgets, and reminders.</li>
+        <li>Sync your data across devices when you are signed in.</li>
+        <li>Support optional imports (SMS, shared text, CSV) and receipt attachments.</li>
+        <li>Check for app updates from the official store listing.</li>
+        <li>Operate shared ledgers that you choose to join.</li>
+      </ul>
+
+      <h2>8. Where data is stored</h2>
+      <p>
+        Signed-in account and financial data are stored with <strong>Supabase</strong>
+        (authentication, database, and file storage). Some preferences and offline queues stay on your device
+        until they can sync. Communication with our backend uses HTTPS.
+      </p>
+      <p>
+        The app may load the Quicksand font from Google Fonts. Opening “Update” in an upgrade prompt
+        sends you to Google Play or the App Store.
+      </p>
+
+      <h2>9. Sharing</h2>
+      <p>We share information only when needed to run the app:</p>
+      <ul>
+        <li><strong>Supabase:</strong> hosts accounts, financial records, and receipt files under our project.</li>
+        <li><strong>Other ledger members:</strong> only data in a shared ledger you joined.</li>
+        <li><strong>Legal requests:</strong> if required by applicable law.</li>
+      </ul>
+      <p>We do not sell personal information.</p>
+
+      <h2>10. Retention and deletion</h2>
+      <p>
+        We keep your account data while your account is active. You can delete your account in the app
+        (<em>Settings → Delete account</em>). That permanently removes your profile, incomes, expenses,
+        plans, and related records we store for you, as far as our systems allow.
+        Copies in a shared ledger may remain visible to other members of that ledger.
+      </p>
+
+      <h2>11. Children</h2>
+      <p>Pocketly is not directed at children under 13, and we do not knowingly collect data from them.</p>
+
+      <h2>12. Your choices</h2>
+      <ul>
+        <li>Edit profile details such as your username.</li>
+        <li>Turn SMS import, auto-import, camera, photos, and notifications on or off.</li>
+        <li>Delete individual transactions, receipts, or your whole account.</li>
+        <li>Request access or correction by contacting us as described below.</li>
+      </ul>
+
+      <h2>13. Changes</h2>
+      <p>
+        We may update this policy. The “Last updated” date at the top will change when we do.
+        Continued use of Pocketly after an update means you accept the revised policy.
+      </p>
+
+      <h2>14. Contact</h2>
+      <p>
+        For privacy questions, use the developer contact details on the
+        <strong>Pocketly</strong> Google Play listing (package ID <strong>com.yasmen.pocketly</strong>),
+        or delete your data from the in-app account deletion option.
+      </p>
+    </article>
+
+    <article id="ar" lang="ar" hidden>
+      <h2>1. من نحن</h2>
+      <p>
+        بوكيتلي (<strong>com.yasmen.pocketly</strong>) تطبيق لإدارة المال الشخصي: الدخل والمصروفات
+        وخطط الادخار والميزانيات وتذكير الفواتير والدفاتر المشتركة.
+        توضح هذه السياسة البيانات التي نجمعها وسبب جمعها والخيارات المتاحة لك.
+      </p>
+
+      <h2>2. البيانات التي نجمعها</h2>
+      <p>حسب طريقة استخدامك للتطبيق قد نعالج:</p>
+      <ul>
+        <li><strong>بيانات الحساب:</strong> البريد الإلكتروني واسم المستخدم وكلمة المرور (تُحفظ لدى مزوّد تسجيل الدخول؛ لا نطّلع على كلمة المرور بصيغتها الأصلية).</li>
+        <li><strong>السجلات المالية التي تدخلها:</strong> الدخل والمصروفات والفئات ووسائل الدفع والمبالغ والملاحظات والخطط والميزانيات والرصيد الابتدائي.</li>
+        <li><strong>صور الإيصالات:</strong> الصور التي تلتقطها أو تختارها من المعرض عند إرفاق إيصال بمصروف. تُرفع إلى مساحة التخزين الخاصة بنا.</li>
+        <li><strong>المعاملات المستوردة:</strong> المبالغ والتفاصيل التي تؤكدها بعد الاستيراد من الرسائل أو النص المشارك أو ملف CSV.</li>
+        <li><strong>بيانات الدفتر المشترك:</strong> إذا أنشأت دفترًا جماعيًا أو انضممت إليه، يمكن لأعضاء ذلك الدفتر رؤية معاملاته.</li>
+        <li><strong>تفضيلات على جهازك:</strong> اللغة والمظهر وإعدادات الإشعارات واستيراد الرسائل وقفل التطبيق.</li>
+      </ul>
+
+      <div class="note">
+        بوكيتلي لا يبيع بياناتك ولا يعرض إعلانات من أطراف ثالثة.
+      </div>
+
+      <h2>3. الوصول إلى الرسائل القصيرة (اختياري)</h2>
+      <p>
+        إذا فعّلت استيراد الرسائل، قد يقرأ بوكيتلي رسائل SMS على جهازك للبحث عن إشعارات البنوك
+        أو المحافظ واقتراح معاملات. يتم ذلك فقط بعد منح إذن الرسائل.
+      </p>
+      <ul>
+        <li>نمسح الرسائل لاستخراج المبالغ والمتاجر والتواريخ المحتملة.</li>
+        <li>لا تُحفظ في حسابك إلا المعاملات التي تستوردها (أو الاستيراد التلقائي إذا فعّلته).</li>
+        <li>لا نستخدم الإذن لإرسال رسائل، ولا نبيع محتوى SMS.</li>
+        <li>يمكنك رفض الإذن أو إلغاؤه من إعدادات أندرويد. بقية التطبيق تعمل بدونه.</li>
+      </ul>
+
+      <h2>4. الكاميرا والصور والنص المشارك</h2>
+      <ul>
+        <li><strong>الكاميرا / الصور:</strong> لإرفاق صور الفواتير أو الإيصالات بالمصروفات فقط.</li>
+        <li><strong>المشاركة إلى بوكيتلي:</strong> إذا شاركت نصًا مع التطبيق، نحلله لتسهيل إضافة معاملة.</li>
+        <li><strong>استيراد CSV:</strong> الملفات التي تختارها تبقى تحت سيطرتك؛ نحفظ المعاملات التي تؤكدها.</li>
+      </ul>
+
+      <h2>5. قفل التطبيق والقياسات الحيوية</h2>
+      <p>
+        قفل التطبيق (رمز PIN وبصمة / Face ID اختياريًا) يبقى على جهازك.
+        يُحفظ الرمز كقيمة مشفّرة (hash) في تخزين آمن. البيانات الحيوية لا تغادر الجهاز وتعالجها نظام التشغيل.
+      </p>
+
+      <h2>6. الإشعارات</h2>
+      <p>
+        بموافقتك يمكن لبوكيتلي إرسال تذكيرات محلية (مثل مواعيد الفواتير وملخص يومي).
+        تُجدول هذه التنبيهات على جهازك، وقد تُحفظ نسخة في صندوق الإشعارات داخل حسابك لمراجعتها في التطبيق.
+      </p>
+
+      <h2>7. كيف نستخدم البيانات</h2>
+      <ul>
+        <li>إنشاء حسابك وتأمينه، بما في ذلك إعادة تعيين كلمة المرور بالبريد.</li>
+        <li>عرض الأرصدة والرسوم البيانية والخطط والميزانيات والتذكيرات.</li>
+        <li>مزامنة بياناتك بين الأجهزة عند تسجيل الدخول.</li>
+        <li>دعم الاستيراد الاختياري (الرسائل والنص وCSV) وإرفاق الإيصالات.</li>
+        <li>التحقق من تحديثات التطبيق عبر صفحة المتجر الرسمية.</li>
+        <li>تشغيل الدفاتر المشتركة التي تختار الانضمام إليها.</li>
+      </ul>
+
+      <h2>8. أين تُحفظ البيانات</h2>
+      <p>
+        بيانات الحساب والسجلات المالية للمستخدم المسجّل تُحفظ لدى <strong>Supabase</strong>
+        (تسجيل الدخول وقاعدة البيانات وملفات الإيصالات). بعض التفضيلات وقائمة الانتظار دون اتصال تبقى على جهازك
+        إلى أن تتم المزامنة. الاتصال بالخادم يتم عبر HTTPS.
+      </p>
+      <p>
+        قد يحمّل التطبيق خط Quicksand من Google Fonts. زر التحديث في تنبيه الترقية يفتح متجر Google Play أو App Store.
+      </p>
+
+      <h2>9. المشاركة</h2>
+      <p>نشارك المعلومات فقط بقدر ما يلزم لتشغيل التطبيق:</p>
+      <ul>
+        <li><strong>Supabase:</strong> يستضيف الحسابات والسجلات المالية وملفات الإيصالات ضمن مشروعنا.</li>
+        <li><strong>أعضاء الدفتر المشترك:</strong> فقط بيانات الدفتر الذي انضممت إليه.</li>
+        <li><strong>الطلبات القانونية:</strong> إذا فرض القانون المعمول به ذلك.</li>
+      </ul>
+      <p>لا نبيع المعلومات الشخصية.</p>
+
+      <h2>10. الاحتفاظ والحذف</h2>
+      <p>
+        نحتفظ ببيانات حسابك طالما الحساب نشط. يمكنك حذف الحساب من التطبيق
+        (<em>الإعدادات ← امسح الحساب</em>). يؤدي ذلك إلى حذف ملفك الشخصي والدخل والمصروفات
+        والخطط والسجلات المرتبطة التي نخزنها لك، في حدود أنظمتنا.
+        قد تبقى نسخ في دفتر مشترك ظاهرة لأعضاء ذلك الدفتر.
+      </p>
+
+      <h2>11. الأطفال</h2>
+      <p>بوكيتلي غير موجّه لمن هم دون 13 عامًا، ولا نجمع بياناتهم عن علم.</p>
+
+      <h2>12. خياراتك</h2>
+      <ul>
+        <li>تعديل بيانات الملف مثل اسم المستخدم.</li>
+        <li>تفعيل أو إيقاف استيراد الرسائل والكاميرا والصور والإشعارات.</li>
+        <li>حذف معاملات أو إيصالات منفردة، أو حذف الحساب بالكامل.</li>
+        <li>طلب الاطلاع أو التصحيح عبر التواصل الموضح أدناه.</li>
+      </ul>
+
+      <h2>13. التغييرات</h2>
+      <p>
+        قد نحدّث هذه السياسة. يتغيّر تاريخ «آخر تحديث» أعلاه عند ذلك.
+        استمرار استخدام بوكيتلي بعد التحديث يعني قبول السياسة المعدّلة.
+      </p>
+
+      <h2>14. التواصل</h2>
+      <p>
+        لأسئلة الخصوصية استخدم بيانات المطوّر في صفحة
+        <strong>Pocketly</strong> على Google Play (معرّف الحزمة <strong>com.yasmen.pocketly</strong>)،
+        أو احذف بياناتك من خيار حذف الحساب داخل التطبيق.
+      </p>
+    </article>
+
+    <footer>© 2026 Pocketly</footer>
+  </main>
+
+  <script>
+    const en = document.getElementById("en");
+    const ar = document.getElementById("ar");
+    const btnEn = document.getElementById("btn-en");
+    const btnAr = document.getElementById("btn-ar");
+    const title = document.getElementById("page-title");
+    const updated = document.getElementById("page-updated");
+
+    function setLang(lang) {
+      const isAr = lang === "ar";
+      document.documentElement.lang = lang;
+      document.documentElement.dir = isAr ? "rtl" : "ltr";
+      en.hidden = isAr;
+      ar.hidden = !isAr;
+      btnEn.setAttribute("aria-pressed", String(!isAr));
+      btnAr.setAttribute("aria-pressed", String(isAr));
+      title.textContent = isAr ? "سياسة الخصوصية" : "Privacy Policy";
+      updated.textContent = isAr
+        ? "آخر تحديث: 18 أغسطس 2026"
+        : "Last updated: 18 August 2026";
+    }
+
+    btnEn.addEventListener("click", () => setLang("en"));
+    btnAr.addEventListener("click", () => setLang("ar"));
+  </script>
+</body>
+</html>

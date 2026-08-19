@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/features/auth/presentation/theme/auth_header_theme.dart';
 
 /// Shared auth shell: gradient header + elevated form card (matches home header).
 class AuthScreenLayout extends StatelessWidget {
@@ -23,10 +24,11 @@ class AuthScreenLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.appPalette;
     final topPadding = MediaQuery.paddingOf(context).top;
 
     return Scaffold(
-      backgroundColor: AppColors.scaffold,
+      backgroundColor: palette.scaffold,
       body: SafeArea(
         bottom: false,
         child: Column(
@@ -48,8 +50,24 @@ class AuthScreenLayout extends StatelessWidget {
                       Expanded(
                         child: Container(
                           width: double.infinity,
-                          decoration: AppDecorations.card().copyWith(
+                          decoration: BoxDecoration(
+                            color: palette.card,
                             borderRadius: BorderRadius.circular(24),
+                            border: Border.all(
+                              color: palette.border.withValues(
+                                alpha: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? 0.65
+                                    : 0.35,
+                              ),
+                              width: AppDecorations.outlineWidth,
+                            ),
+                            boxShadow: AppDecorations.flatShadow(
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.black
+                                  : AppColors.stroke,
+                            ),
                           ),
                           child: SingleChildScrollView(
                             padding: const EdgeInsets.fromLTRB(22, 28, 22, 24),
@@ -62,9 +80,13 @@ class AuthScreenLayout extends StatelessWidget {
                       if (footer != null) ...[
                         const SizedBox(height: 12),
                         footer!,
-                        SizedBox(height: MediaQuery.paddingOf(context).bottom + 8),
+                        SizedBox(
+                          height: MediaQuery.paddingOf(context).bottom + 8,
+                        ),
                       ] else
-                        SizedBox(height: MediaQuery.paddingOf(context).bottom + 8),
+                        SizedBox(
+                          height: MediaQuery.paddingOf(context).bottom + 8,
+                        ),
                     ],
                   ),
                 ),
@@ -94,11 +116,33 @@ class _AuthGradientHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final header = AuthHeaderTheme.resolve(context);
+
     return Container(
       width: double.infinity,
-      decoration: AppDecorations.gradientHeader(
-        start: AppColors.primary,
-        end: AppColors.secondary,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: header.gradientColors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(28),
+          bottomRight: Radius.circular(28),
+        ),
+        border: Border(
+          bottom: BorderSide(
+            color: header.glassBorder.withValues(alpha: 0.5),
+            width: AppDecorations.outlineWidth,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: header.shadow,
+            offset: const Offset(0, 4),
+            blurRadius: 0,
+          ),
+        ],
       ),
       child: Padding(
         padding: EdgeInsets.fromLTRB(20, topPadding + 8, 20, 44),
@@ -109,9 +153,9 @@ class _AuthGradientHeader extends StatelessWidget {
               IconButton(
                 onPressed: onBack,
                 icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-                color: Colors.white,
+                color: header.foreground,
                 style: IconButton.styleFrom(
-                  backgroundColor: Colors.white.withValues(alpha: 0.16),
+                  backgroundColor: header.glassFill,
                   padding: const EdgeInsets.all(10),
                 ),
               )
@@ -125,15 +169,15 @@ class _AuthGradientHeader extends StatelessWidget {
                   height: 64,
                   width: 64,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
+                    color: header.iconGlassFill,
                     borderRadius: BorderRadius.circular(18),
                     border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.35),
+                      color: header.glassBorder,
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.stroke.withValues(alpha: 0.12),
+                        color: header.shadow,
                         offset: const Offset(0, 3),
                         blurRadius: 0,
                       ),
@@ -145,8 +189,11 @@ class _AuthGradientHeader extends StatelessWidget {
                     child: Image.asset(
                       'assets/wallet.png',
                       fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) =>
-                          Icon(icon, color: Colors.white, size: 28),
+                      errorBuilder: (context, error, stackTrace) => Icon(
+                        icon,
+                        color: header.foreground,
+                        size: 28,
+                      ),
                     ),
                   ),
                 ),
@@ -157,8 +204,8 @@ class _AuthGradientHeader extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: header.foreground,
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
                           letterSpacing: -0.4,
@@ -169,7 +216,7 @@ class _AuthGradientHeader extends StatelessWidget {
                       Text(
                         subtitle,
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.88),
+                          color: header.foregroundMuted,
                           fontSize: 15,
                           height: 1.45,
                         ),

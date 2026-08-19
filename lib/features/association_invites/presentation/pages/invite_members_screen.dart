@@ -51,7 +51,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
         content: SingleChildScrollView(
           child: Text(
             l10n.associationInviteDisclaimerBody,
-            style: const TextStyle(height: 1.5),
+            style: TextStyle(height: 1.5),
           ),
         ),
         actions: [
@@ -143,7 +143,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
         elevation: 0,
         title: Text(
           l10n.associationInviteTitle,
-          style: TextStyle(color: Colors.black, fontSize: 18),
+          style: TextStyle(color: AppColors.textColor, fontSize: 18),
         ),
       ),
       body: Column(
@@ -153,7 +153,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
             child: Text(
               l10n.associationInviteSubtitle(widget.associationName),
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.textSecondary,
                 fontSize: 14,
                 height: 1.45,
@@ -185,7 +185,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                       )
                     : null,
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: AppColors.card,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: BorderSide(color: AppColors.border),
@@ -213,7 +213,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Text(
                 localizeApiError(l10n, _error),
-                style: const TextStyle(color: AppColors.error, fontSize: 13),
+                style: TextStyle(color: AppColors.error, fontSize: 13),
               ),
             ),
           Expanded(
@@ -226,7 +226,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                             ? l10n.associationInviteSearchMinChars
                             : l10n.associationInviteNoResults,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(color: AppColors.textSecondary),
+                        style: TextStyle(color: AppColors.textSecondary),
                       ),
                     ),
                   )
@@ -238,7 +238,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                       final user = _results[index];
                       final sent = _invitedIds.contains(user.userId);
                       return Material(
-                        color: Colors.white,
+                        color: AppColors.card,
                         borderRadius: BorderRadius.circular(14),
                         child: ListTile(
                           shape: RoundedRectangleBorder(
@@ -251,7 +251,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                               user.username.isNotEmpty
                                   ? user.username[0].toUpperCase()
                                   : '?',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: AppColors.primary,
                                 fontWeight: FontWeight.w700,
                               ),
@@ -259,12 +259,12 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                           ),
                           title: Text(
                             user.username,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
+                            style: TextStyle(fontWeight: FontWeight.w600),
                           ),
                           trailing: sent
                               ? Text(
                                   l10n.associationInviteSentLabel,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: AppColors.incomeDark,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 13,

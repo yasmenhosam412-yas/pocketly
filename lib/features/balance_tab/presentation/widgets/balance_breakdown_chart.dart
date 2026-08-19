@@ -30,7 +30,7 @@ class BalanceBreakdownChart extends StatelessWidget {
         children: [
           Text(
             l10n.balanceIncomeVsExpenses,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: AppColors.textColor,
@@ -112,7 +112,7 @@ class _LegendDot extends StatelessWidget {
             ),
             Text(
               Money.format(value),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textColor,

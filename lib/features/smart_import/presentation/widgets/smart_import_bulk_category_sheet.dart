@@ -35,8 +35,7 @@ Future<BulkImportCategories?> showSmartImportBulkCategorySheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (ctx) => BlocProvider.value(
@@ -230,7 +229,7 @@ class _SmartImportBulkCategorySheetState
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: AppColors.textMuted.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -238,7 +237,7 @@ class _SmartImportBulkCategorySheetState
               const SizedBox(height: 20),
               Text(
                 widget.sheetTitle ?? l10n.smartImportBulkCategorySheetTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textColor,
@@ -257,7 +256,7 @@ class _SmartImportBulkCategorySheetState
                 const SizedBox(height: 24),
                 Text(
                   l10n.smartImportBulkExpenseCategory,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textColor,
@@ -312,7 +311,7 @@ class _SmartImportBulkCategorySheetState
                   ),
                   child: Text(
                     l10n.smartImportBulkApplyAndImport,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),

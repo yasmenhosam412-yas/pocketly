@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imrpo/core/config/app_router.dart';
 import 'package:imrpo/core/services/app_lock_service.dart';
 import 'package:imrpo/core/services/auto_sms_import_preferences.dart';
+import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/locale_preferences.dart';
+import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/sms_import_service.dart';
 import 'package:imrpo/features/home/presentation/widgets/auto_sms_import_settings.dart';
@@ -11,12 +13,15 @@ import 'package:imrpo/features/home/presentation/widgets/app_lock_settings.dart'
 import 'package:imrpo/core/session/user_session.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/core/widgets/show_app_bottom_sheet.dart';
 import 'package:imrpo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:imrpo/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:imrpo/features/home/domain/entities/user_profile.dart';
 import 'package:imrpo/features/home/presentation/bloc/home_bloc.dart';
 import 'package:imrpo/features/notifications/presentation/pages/notifications_screen.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
+import 'package:imrpo/features/balance_tab/presentation/widgets/edit_initial_balance_sheet.dart';
+import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
 class UserSettingsSheet extends StatefulWidget {
@@ -49,7 +54,9 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return MultiBlocListener(
+    return ListenableBuilder(
+      listenable: getIt<ThemePreferences>(),
+      builder: (context, _) => MultiBlocListener(
       listeners: [
         BlocListener<AuthBloc, AuthState>(
           listenWhen: (previous, current) =>
@@ -115,6 +122,7 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                   ? profile.displayName[0].toUpperCase()
                   : '?';
               final actionsLocked = isAuthBusy || isUpdatingUsername;
+              final palette = context.appPalette;
 
               return PopScope(
                 canPop: !isAuthBusy,
@@ -132,7 +140,7 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                         width: 40,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: palette.textMuted.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -142,10 +150,10 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         l10n.accountSettingsTitle,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textColor,
+                          color: palette.textPrimary,
                         ),
                       ),
                     ),
@@ -159,7 +167,7 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                           ),
                           child: Text(
                             avatarInitial,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
                               color: AppColors.primary,
@@ -173,7 +181,7 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                             children: [
                               Text(
                                 profile.displayName,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.textColor,
@@ -220,6 +228,58 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                           onTap: actionsLocked
                               ? null
                               : () => _showLanguageDialog(context),
+                        );
+                      },
+                    ),
+                    ListenableBuilder(
+                      listenable: getIt<ThemePreferences>(),
+                      builder: (context, _) {
+                        final themePrefs = getIt<ThemePreferences>();
+                        final currentTheme = ThemePreferences.modeLabel(
+                          l10n,
+                          themePrefs.themeMode,
+                        );
+
+                        return _SettingsTile(
+                          icon: Icons.dark_mode_outlined,
+                          label: l10n.settingsTheme,
+                          trailing: Text(
+                            currentTheme,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textColor.withValues(
+                                alpha: 0.55,
+                              ),
+                            ),
+                          ),
+                          onTap: actionsLocked
+                              ? null
+                              : () => _showThemeDialog(context),
+                        );
+                      },
+                    ),
+                    ListenableBuilder(
+                      listenable: getIt<InitialBalanceStore>(),
+                      builder: (context, _) {
+                        final store = getIt<InitialBalanceStore>();
+
+                        return _SettingsTile(
+                          icon: Icons.account_balance_wallet_outlined,
+                          label: l10n.settingsInitialBalance,
+                          trailing: Text(
+                            Money.format(store.amount),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.textColor.withValues(
+                                alpha: 0.55,
+                              ),
+                            ),
+                          ),
+                          onTap: actionsLocked
+                              ? null
+                              : () => showEditInitialBalanceSheet(context),
                         );
                       },
                     ),
@@ -427,6 +487,99 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                     ),
                   ),
                 ),
+              );
+            },
+          );
+        },
+      ),
+    ),
+    );
+  }
+
+  Future<void> _showThemeDialog(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+    final themePrefs = getIt<ThemePreferences>();
+    var selected = themePrefs.themeMode;
+
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (context, setDialogState) {
+          return ListenableBuilder(
+            listenable: themePrefs,
+            builder: (context, _) {
+              final isSaving = themePrefs.isSaving;
+
+              return AlertDialog(
+                title: Text(l10n.settingsTheme),
+                content: SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _ThemeModeOption(
+                        icon: Icons.light_mode_outlined,
+                        label: l10n.themeLight,
+                        selected: selected == ThemeMode.light,
+                        onTap: isSaving
+                            ? null
+                            : () => setDialogState(
+                                  () => selected = ThemeMode.light,
+                                ),
+                      ),
+                      const SizedBox(height: 8),
+                      _ThemeModeOption(
+                        icon: Icons.dark_mode_outlined,
+                        label: l10n.themeDark,
+                        selected: selected == ThemeMode.dark,
+                        onTap: isSaving
+                            ? null
+                            : () => setDialogState(
+                                  () => selected = ThemeMode.dark,
+                                ),
+                      ),
+                      const SizedBox(height: 8),
+                      _ThemeModeOption(
+                        icon: Icons.brightness_auto_outlined,
+                        label: l10n.themeSystem,
+                        selected: selected == ThemeMode.system,
+                        onTap: isSaving
+                            ? null
+                            : () => setDialogState(
+                                  () => selected = ThemeMode.system,
+                                ),
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: isSaving
+                        ? null
+                        : () => Navigator.pop(dialogContext),
+                    child: Text(l10n.cancel),
+                  ),
+                  FilledButton(
+                    onPressed: isSaving
+                        ? null
+                        : () async {
+                            await themePrefs.setThemeMode(selected);
+                            if (dialogContext.mounted) {
+                              Navigator.pop(dialogContext);
+                            }
+                          },
+                    child: isSaving
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : Text(l10n.save),
+                  ),
+                ],
               );
             },
           );
@@ -676,15 +829,78 @@ class _SettingsTile extends StatelessWidget {
   }
 }
 
+class _ThemeModeOption extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  const _ThemeModeOption({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          decoration: BoxDecoration(
+            color: selected
+                ? AppColors.primary.withValues(alpha: 0.12)
+                : AppColors.surface,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: selected
+                  ? AppColors.primary.withValues(alpha: 0.55)
+                  : AppColors.stroke.withValues(alpha: 0.12),
+              width: 1.5,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 22,
+                color: selected ? AppColors.primary : AppColors.textSecondary,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
+                    color: selected ? AppColors.primary : AppColors.textColor,
+                  ),
+                ),
+              ),
+              if (selected)
+                const Icon(
+                  Icons.check_circle_rounded,
+                  size: 22,
+                  color: AppColors.primary,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 void showUserSettingsSheet(BuildContext context, UserProfile profile) {
-  showModalBottomSheet(
+  showAppBottomSheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
     builder: (_) => MultiBlocProvider(
       providers: [
         BlocProvider.value(value: context.read<HomeBloc>()),

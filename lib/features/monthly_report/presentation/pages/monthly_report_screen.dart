@@ -94,7 +94,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
       appBar: AppBar(
         title: Text(
           l10n.monthlyReportTitle,
-          style: TextStyle(color: Colors.black, fontSize: 20),
+          style: TextStyle(color: AppColors.textColor, fontSize: 20),
         ),
         backgroundColor: AppColors.scaffold,
         foregroundColor: AppColors.textColor,
@@ -273,7 +273,7 @@ class _MonthSelectorBar extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(
                         label,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: AppColors.textColor,
@@ -354,7 +354,7 @@ class _NetHeroCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             Money.format(net),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.bold,
               color: Colors.white,
@@ -370,7 +370,7 @@ class _NetHeroCard extends StatelessWidget {
             ),
             child: Text(
               l10n.balanceSavedPercent((savingsRate * 100).round()),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,

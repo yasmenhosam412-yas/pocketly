@@ -2,19 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
+import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/core/widgets/plans_balance_tab_loading_skeleton.dart';
 import 'package:imrpo/core/widgets/tab_centered_scroll.dart';
 import 'package:imrpo/core/widgets/tab_refresh_overlay.dart';
-import 'package:imrpo/features/balance_tab/presentation/bloc/balance_tab_bloc.dart';
 import 'package:imrpo/features/balance_tab/domain/entities/balance_activity.dart';
+import 'package:imrpo/features/balance_tab/domain/entities/balance_summary.dart';
+import 'package:imrpo/features/balance_tab/domain/services/balance_summary_builder.dart';
 import 'package:imrpo/features/balance_tab/presentation/widgets/balance_activity_filter_bar.dart';
 import 'package:imrpo/features/balance_tab/presentation/widgets/balance_activity_tile.dart';
 import 'package:imrpo/features/balance_tab/presentation/widgets/balance_breakdown_chart.dart';
 import 'package:imrpo/features/balance_tab/presentation/widgets/balance_category_breakdown.dart';
+import 'package:imrpo/features/balance_tab/domain/services/wallet_balance_calculator.dart';
+import 'package:imrpo/features/balance_tab/presentation/widgets/balance_wallet_breakdown.dart';
 import 'package:imrpo/features/balance_tab/presentation/widgets/balance_stat_tile.dart';
+import 'package:imrpo/features/balance_tab/presentation/widgets/edit_initial_balance_sheet.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/features/balance_tab/domain/balance_source_constants.dart';
 import 'package:imrpo/features/budgets/domain/services/budget_calculator.dart';
@@ -57,44 +62,6 @@ class _BalanceTabState extends State<BalanceTab>
       totals[key] = (totals[key] ?? 0) + activity.amount;
     }
     final entries = totals.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    return Map.fromEntries(entries);
-  }
-
-  /// Per income source: gross income in period minus expenses assigned to that source.
-  /// Unassigned spending (no [BalanceActivity.incomeSource]) appears under
-  /// [BalanceSourceConstants.unassigned] as a negative remainder.
-  static Map<String, double> _remainingByIncomeSource(
-    List<BalanceActivity> activities,
-  ) {
-    final gross = <String, double>{};
-    var unassignedExpenseTotal = 0.0;
-    final charged = <String, double>{};
-
-    for (final activity in activities) {
-      if (activity.type == BalanceActivityType.income) {
-        final key = _categoryKey(activity);
-        gross[key] = (gross[key] ?? 0) + activity.amount;
-      } else {
-        final raw = activity.incomeSource?.trim();
-        if (raw == null || raw.isEmpty) {
-          unassignedExpenseTotal += activity.amount;
-        } else {
-          final key = BudgetCalculator.categoryKey(raw);
-          charged[key] = (charged[key] ?? 0) + activity.amount;
-        }
-      }
-    }
-
-    final keys = {...gross.keys, ...charged.keys};
-    final result = <String, double>{};
-    for (final k in keys) {
-      result[k] = (gross[k] ?? 0) - (charged[k] ?? 0);
-    }
-    if (unassignedExpenseTotal > 0) {
-      result[BalanceSourceConstants.unassigned] = -unassignedExpenseTotal;
-    }
-    final entries = result.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
     return Map.fromEntries(entries);
   }
@@ -143,12 +110,11 @@ class _BalanceTabState extends State<BalanceTab>
     });
   }
 
-  void _onIncomeSourceSelected(String source) {
+  void _onWalletSourceSelected(String? source) {
     setState(() {
       _activityFilter = BalanceActivityFilter.all;
       _selectedExpenseCategory = null;
-      _selectedIncomeSource =
-          _selectedIncomeSource == source ? null : source;
+      _selectedIncomeSource = source;
     });
   }
 
@@ -182,29 +148,23 @@ class _BalanceTabState extends State<BalanceTab>
   void initState() {
     super.initState();
     _dateFilter = getIt<HomeDateFilter>();
-    _dateFilter.addListener(_onDateFilterChanged);
-    _loadBalance();
   }
 
-  @override
-  void dispose() {
-    _dateFilter.removeListener(_onDateFilterChanged);
-    super.dispose();
-  }
-
-  void _onDateFilterChanged() {
-    if (mounted) _loadBalance();
-  }
-
-  void _loadBalance() {
+  Future<void> _refreshTransactions() async {
     if (!SupabaseAuthHelper.isSignedIn) return;
-    context.read<BalanceTabBloc>().add(
-          LoadBalanceEvent(
-            reference: _dateFilter.date,
-            filterByDay: _dateFilter.isDayMode,
-            includeAllDates: _dateFilter.isAllMode,
-          ),
-        );
+    context.read<IncomesTabBloc>().add(const LoadIncomesEvent(force: true));
+    context.read<ExpensesTabBloc>().add(const LoadExpensesEvent(force: true));
+    await Future.delayed(const Duration(milliseconds: 350));
+  }
+
+  double _netBalance(BalanceSummary summary, double initialBalance) =>
+      initialBalance + summary.monthlyIncome - summary.monthlyExpenses;
+
+  double _savingsRate(BalanceSummary summary) {
+    if (summary.monthlyIncome <= 0) return 0;
+    return ((summary.monthlyIncome - summary.monthlyExpenses) /
+            summary.monthlyIncome)
+        .clamp(0.0, 1.0);
   }
 
   @override
@@ -212,324 +172,345 @@ class _BalanceTabState extends State<BalanceTab>
     super.build(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: BlocConsumer<BalanceTabBloc, BalanceTabState>(
-        listener: (context, state) {
-          if (state is BalanceTabLoaded &&
-              state.status == BalanceTabStatus.error &&
-              state.error.isNotEmpty) {
-            final l10n = AppLocalizations.of(context)!;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(localizeApiError(l10n, state.error)),
-                backgroundColor: AppColors.error,
-              ),
-            );
-          }
-        },
-        builder: (context, blocState) {
-          if (blocState is! BalanceTabLoaded) {
-            return const BalanceTabLoadingSkeleton();
-          }
+      body: BlocBuilder<IncomesTabBloc, IncomesTabState>(
+        builder: (context, incomeState) {
+          return BlocBuilder<ExpensesTabBloc, ExpensesTabState>(
+            builder: (context, expenseState) {
+              final hasData = incomeState.incomes.isNotEmpty ||
+                  expenseState.expenses.isNotEmpty;
+              final isInitialLoading =
+                  (incomeState.status == IncomesTabStatus.loadingAll &&
+                      incomeState.incomes.isEmpty) ||
+                  (expenseState.status == ExpensesTabStatus.loadingAll &&
+                      expenseState.expenses.isEmpty);
 
-          final state = blocState;
+              if (isInitialLoading) {
+                return const BalanceTabLoadingSkeleton();
+              }
 
-          if (!state.hasData && state.status == BalanceTabStatus.loading) {
-            return const BalanceTabLoadingSkeleton();
-          }
-
-          if (!state.hasData && state.status == BalanceTabStatus.error) {
-            final l10n = AppLocalizations.of(context)!;
-            return tabCenteredScroll(
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline_rounded,
-                      size: 48,
-                      color: AppColors.textColor.withValues(alpha: 0.4),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      localizeApiError(l10n, state.error),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: AppColors.textColor.withValues(alpha: 0.7),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    FilledButton(
-                      onPressed: _loadBalance,
-                      style: FilledButton.styleFrom(
-                        backgroundColor: AppColors.balance,
-                      ),
-                      child: Text(l10n.errorTryAgainGeneric),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
-
-          final isRefreshing =
-              state.status == BalanceTabStatus.loading && state.hasData;
-
-          final sorted = List.of(state.activities)
-            ..sort((a, b) => b.date.compareTo(a.date));
-          final incomeGrossBySource =
-              _totalsByCategory(sorted, BalanceActivityType.income);
-          final remainingByIncomeSource =
-              _remainingByIncomeSource(sorted);
-          final expenseByCategory =
-              _totalsByCategory(sorted, BalanceActivityType.expense);
-          final filteredActivities = _filterActivities(sorted);
-          final incomeFilterChipSources =
-              incomeGrossBySource.keys.toList()..sort();
-          final expenseCategories = expenseByCategory.keys.toList()..sort();
-
-          final l10n = AppLocalizations.of(context)!;
-
-          return ListenableBuilder(
-            listenable: _dateFilter,
-            builder: (context, _) {
-              final periodLabel = _dateFilter.summaryPeriodLabel(context);
-              final activeIncomeSource =
-                  _selectedIncomeSource != null &&
-                      remainingByIncomeSource.containsKey(
-                        _selectedIncomeSource,
-                      )
-                  ? _selectedIncomeSource
-                  : null;
-              final activeExpenseCategory =
-                  _selectedExpenseCategory != null &&
-                      expenseCategories.contains(_selectedExpenseCategory)
-                  ? _selectedExpenseCategory
-                  : null;
-
-              return TabRefreshOverlay(
-            isRefreshing: isRefreshing,
-            indicatorColor: AppColors.balance,
-            child: RefreshIndicator(
-            color: AppColors.balance,
-            onRefresh: () async {
-              _loadBalance();
-              await Future.delayed(const Duration(milliseconds: 350));
-            },
-            child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-                    child: _NetBalanceCard(
-                      balance: state.netBalance,
-                      savingsRate: state.savingsRate,
-                      periodLabel: periodLabel,
-                      onAddToPlan: state.netBalance > 0
-                          ? () => _openAddToPlanSheet(
-                                context,
-                                state.netBalance,
-                              )
-                          : null,
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-                    child: Row(
-                      children: [
-                        BalanceStatTile(
-                          label: l10n.balanceStatIncome,
-                          amount: state.monthlyIncome,
-                          icon: Icons.trending_up_rounded,
-                          color: AppColors.income,
-                        ),
-                        const SizedBox(width: 12),
-                        BalanceStatTile(
-                          label: l10n.balanceStatExpense,
-                          amount: state.monthlyExpenses,
-                          icon: Icons.trending_down_rounded,
-                          color: AppColors.expense,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
-                    child: BalanceBreakdownChart(
-                      income: state.monthlyIncome,
-                      expenses: state.monthlyExpenses,
-                    ),
-                  ),
-                ),
-                if (remainingByIncomeSource.isNotEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                      child: BalanceCategoryBreakdown(
-                        title: l10n.balanceRemainingBySource,
-                        totals: remainingByIncomeSource,
-                        accentColor: AppColors.balance,
-                        accentLight: AppColors.balanceLight,
-                        accentDark: AppColors.balanceDark,
-                        selectedKey: activeIncomeSource,
-                        onSelected: _onIncomeSourceSelected,
-                        localizeKey: localizeIncomeCategory,
-                        signedAmountStyle: true,
-                      ),
-                    ),
-                  ),
-                if (expenseByCategory.isNotEmpty)
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                      child: BalanceCategoryBreakdown(
-                        title: l10n.expenseByCategory,
-                        totals: expenseByCategory,
-                        accentColor: AppColors.expense,
-                        accentLight: AppColors.expenseLight,
-                        accentDark: AppColors.expenseDark,
-                        selectedKey: activeExpenseCategory,
-                        onSelected: _onExpenseCategorySelected,
-                        localizeKey: localizeExpenseCategory,
-                      ),
-                    ),
-                  ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+              final loadError = !hasData &&
+                  (incomeState.status == IncomesTabStatus.errorAll ||
+                      expenseState.status == ExpensesTabStatus.errorAll);
+              if (loadError) {
+                final l10n = AppLocalizations.of(context)!;
+                final message = incomeState.status == IncomesTabStatus.errorAll
+                    ? incomeState.message
+                    : expenseState.error;
+                return tabCenteredScroll(
+                  Padding(
+                    padding: const EdgeInsets.all(24),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              l10n.balanceRecentActivity,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textColor,
-                              ),
-                            ),
-                            Text(
-                              l10n.itemsCount(filteredActivities.length),
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: AppColors.textColor
-                                    .withValues(alpha: 0.5),
-                              ),
-                            ),
-                          ],
+                        Icon(
+                          Icons.error_outline_rounded,
+                          size: 48,
+                          color: AppColors.textColor.withValues(alpha: 0.4),
                         ),
-                        const SizedBox(height: 12),
-                        BalanceActivityFilterBar(
-                          selected: _activityFilter,
-                          onTypeChanged: _onActivityFilterChanged,
+                        const SizedBox(height: 16),
+                        Text(
+                          localizeApiError(l10n, message),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: AppColors.textColor.withValues(alpha: 0.7),
+                          ),
                         ),
-                        if (_activityFilter == BalanceActivityFilter.income &&
-                            incomeFilterChipSources.length > 1) ...[
-                          const SizedBox(height: 12),
-                          BalanceCategoryFilterChips(
-                            categories: incomeFilterChipSources,
-                            selectedCategory:
-                                activeIncomeSource ==
-                                        BalanceSourceConstants.unassigned
-                                    ? null
-                                    : activeIncomeSource,
-                            accentColor: AppColors.income,
-                            allLabel: l10n.incomeFilterAllSources,
-                            onSelected: (source) {
-                              setState(() => _selectedIncomeSource = source);
-                            },
-                            localizeKey: localizeIncomeCategory,
+                        const SizedBox(height: 20),
+                        FilledButton(
+                          onPressed: _refreshTransactions,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.balance,
                           ),
-                        ],
-                        if (_activityFilter == BalanceActivityFilter.expense &&
-                            expenseCategories.length > 1) ...[
-                          const SizedBox(height: 12),
-                          BalanceCategoryFilterChips(
-                            categories: expenseCategories,
-                            selectedCategory: activeExpenseCategory,
-                            accentColor: AppColors.expense,
-                            allLabel: l10n.expenseFilterAllCategories,
-                            onSelected: (category) {
-                              setState(
-                                () => _selectedExpenseCategory = category,
-                              );
-                            },
-                            localizeKey: localizeExpenseCategory,
-                          ),
-                        ],
+                          child: Text(l10n.errorTryAgainGeneric),
+                        ),
                       ],
                     ),
                   ),
-                ),
-                if (filteredActivities.isEmpty && sorted.isNotEmpty)
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(40),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.filter_alt_off_outlined,
-                              size: 48,
-                              color: AppColors.textColor.withValues(
-                                alpha: 0.35,
+                );
+              }
+
+              final isRefreshing =
+                  incomeState.status == IncomesTabStatus.loadingAll ||
+                  expenseState.status == ExpensesTabStatus.loadingAll;
+
+              final l10n = AppLocalizations.of(context)!;
+
+              return ListenableBuilder(
+                listenable: Listenable.merge([
+                  _dateFilter,
+                  getIt<InitialBalanceStore>(),
+                ]),
+                builder: (context, _) {
+                  final summary = BalanceSummaryBuilder.build(
+                    incomes: incomeState.incomes,
+                    expenses: expenseState.expenses,
+                    reference: _dateFilter.date,
+                    filterByDay: _dateFilter.isDayMode,
+                    includeAllDates: _dateFilter.isAllMode,
+                  );
+                  final initialBalance = getIt<InitialBalanceStore>().amount;
+                  final initialBySource =
+                      getIt<InitialBalanceStore>().totalsBySource;
+                  final netBalance = _netBalance(summary, initialBalance);
+                  final periodLabel = _dateFilter.summaryPeriodLabel(context);
+
+                  final sorted = List.of(summary.activities)
+                    ..sort((a, b) => b.date.compareTo(a.date));
+                  final incomeGrossBySource =
+                      _totalsByCategory(sorted, BalanceActivityType.income);
+                  final walletSummaries = WalletBalanceCalculator.summaries(
+                    activities: sorted,
+                    initialBySource: initialBySource,
+                  );
+                  final expenseByCategory =
+                      _totalsByCategory(sorted, BalanceActivityType.expense);
+                  final filteredActivities = _filterActivities(sorted);
+                  final incomeFilterChipSources =
+                      incomeGrossBySource.keys.toList()..sort();
+                  final expenseCategories =
+                      expenseByCategory.keys.toList()..sort();
+                  final activeIncomeSource =
+                      _selectedIncomeSource != null &&
+                          walletSummaries.any(
+                            (row) => row.source == _selectedIncomeSource,
+                          )
+                      ? _selectedIncomeSource
+                      : null;
+                  final activeExpenseCategory =
+                      _selectedExpenseCategory != null &&
+                          expenseCategories.contains(_selectedExpenseCategory)
+                      ? _selectedExpenseCategory
+                      : null;
+
+                  return TabRefreshOverlay(
+                    isRefreshing: isRefreshing && hasData,
+                    indicatorColor: AppColors.balance,
+                    child: RefreshIndicator(
+                      color: AppColors.balance,
+                      onRefresh: _refreshTransactions,
+                      child: CustomScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        slivers: [
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+                              child: _NetBalanceCard(
+                                balance: netBalance,
+                                initialBalance: initialBalance,
+                                initialBySource: initialBySource,
+                                savingsRate: _savingsRate(summary),
+                                periodLabel: periodLabel,
+                                onEditInitialBalance: () =>
+                                    showEditInitialBalanceSheet(context),
+                                onAddToPlan: netBalance > 0
+                                    ? () => _openAddToPlanSheet(
+                                          context,
+                                          netBalance,
+                                        )
+                                    : null,
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.balanceNoFilteredActivity,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: AppColors.textColor.withValues(
-                                  alpha: 0.6,
+                          ),
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+                              child: Row(
+                                children: [
+                                  BalanceStatTile(
+                                    label: l10n.balanceStatIncome,
+                                    amount: summary.monthlyIncome,
+                                    icon: Icons.trending_up_rounded,
+                                    color: AppColors.income,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  BalanceStatTile(
+                                    label: l10n.balanceStatExpense,
+                                    amount: summary.monthlyExpenses,
+                                    icon: Icons.trending_down_rounded,
+                                    color: AppColors.expense,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (walletSummaries.isNotEmpty)
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                                child: BalanceWalletBreakdown(
+                                  summaries: walletSummaries,
+                                  selectedSource: activeIncomeSource,
+                                  onSourceSelected: _onWalletSourceSelected,
+                                  localizeKey: localizeIncomeCategory,
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  _activityFilter = BalanceActivityFilter.all;
-                                  _clearCategoryFilters();
-                                });
-                              },
-                              style: TextButton.styleFrom(
-                                foregroundColor: AppColors.balance,
+                          if (expenseByCategory.isNotEmpty)
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                                child: BalanceCategoryBreakdown(
+                                  title: l10n.expenseByCategory,
+                                  totals: expenseByCategory,
+                                  accentColor: AppColors.expense,
+                                  accentLight: AppColors.expenseLight,
+                                  accentDark: AppColors.expenseDark,
+                                  selectedKey: activeExpenseCategory,
+                                  onSelected: _onExpenseCategorySelected,
+                                  localizeKey: localizeExpenseCategory,
+                                ),
                               ),
-                              child: Text(l10n.balanceFilterAll),
                             ),
-                          ],
-                        ),
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 12, 20, 8),
+                              child: BalanceBreakdownChart(
+                                income: summary.monthlyIncome,
+                                expenses: summary.monthlyExpenses,
+                              ),
+                            ),
+                          ),
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        l10n.balanceRecentActivity,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.textColor,
+                                        ),
+                                      ),
+                                      Text(
+                                        l10n.itemsCount(filteredActivities.length),
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: AppColors.textColor
+                                              .withValues(alpha: 0.5),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  BalanceActivityFilterBar(
+                                    selected: _activityFilter,
+                                    onTypeChanged: _onActivityFilterChanged,
+                                  ),
+                                  if (_activityFilter ==
+                                          BalanceActivityFilter.income &&
+                                      incomeFilterChipSources.length > 1) ...[
+                                    const SizedBox(height: 12),
+                                    BalanceCategoryFilterChips(
+                                      categories: incomeFilterChipSources,
+                                      selectedCategory: activeIncomeSource ==
+                                              BalanceSourceConstants.unassigned
+                                          ? null
+                                          : activeIncomeSource,
+                                      accentColor: AppColors.income,
+                                      allLabel: l10n.incomeFilterAllSources,
+                                      onSelected: (source) {
+                                        setState(
+                                          () => _selectedIncomeSource = source,
+                                        );
+                                      },
+                                      localizeKey: localizeIncomeCategory,
+                                    ),
+                                  ],
+                                  if (_activityFilter ==
+                                          BalanceActivityFilter.expense &&
+                                      expenseCategories.length > 1) ...[
+                                    const SizedBox(height: 12),
+                                    BalanceCategoryFilterChips(
+                                      categories: expenseCategories,
+                                      selectedCategory: activeExpenseCategory,
+                                      accentColor: AppColors.expense,
+                                      allLabel: l10n.expenseFilterAllCategories,
+                                      onSelected: (category) {
+                                        setState(
+                                          () => _selectedExpenseCategory =
+                                              category,
+                                        );
+                                      },
+                                      localizeKey: localizeExpenseCategory,
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (filteredActivities.isEmpty && sorted.isNotEmpty)
+                            SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(40),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.filter_alt_off_outlined,
+                                        size: 48,
+                                        color: AppColors.textColor.withValues(
+                                          alpha: 0.35,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Text(
+                                        l10n.balanceNoFilteredActivity,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: AppColors.textColor.withValues(
+                                            alpha: 0.6,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _activityFilter =
+                                                BalanceActivityFilter.all;
+                                            _clearCategoryFilters();
+                                          });
+                                        },
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: AppColors.balance,
+                                        ),
+                                        child: Text(l10n.balanceFilterAll),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          else
+                            SliverPadding(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                              sliver: SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) => BalanceActivityTile(
+                                    activity: filteredActivities[index],
+                                  ),
+                                  childCount: filteredActivities.length,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                  )
-                else
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) => BalanceActivityTile(
-                          activity: filteredActivities[index],
-                        ),
-                        childCount: filteredActivities.length,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            ),
-          );
+                  );
+                },
+              );
             },
           );
         },
@@ -546,32 +527,29 @@ class _BalanceTabState extends State<BalanceTab>
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (sheetContext) => AnimatedPadding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
-        ),
-        duration: const Duration(milliseconds: 150),
-        curve: Curves.easeOut,
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: context.read<PlansTabBloc>()),
-            BlocProvider.value(value: context.read<IncomesTabBloc>()),
-          ],
-          child: AddToPlanFromBalanceSheet(
-            availableBalanceBase: availableBalance,
+      builder: (sheetContext) {
+        final bottomInset = MediaQuery.viewInsetsOf(sheetContext).bottom;
+        return Padding(
+          padding: EdgeInsets.only(bottom: bottomInset),
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: context.read<PlansTabBloc>()),
+              BlocProvider.value(value: context.read<IncomesTabBloc>()),
+            ],
+            child: AddToPlanFromBalanceSheet(
+              availableBalanceBase: availableBalance,
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
 
     if (!context.mounted) return;
     if (added == true) {
-      _loadBalance();
-      context.read<ExpensesTabBloc>().add(const LoadExpensesEvent());
+      context.read<ExpensesTabBloc>().add(const LoadExpensesEvent(force: true));
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -586,14 +564,20 @@ class _BalanceTabState extends State<BalanceTab>
 
 class _NetBalanceCard extends StatelessWidget {
   final double balance;
+  final double initialBalance;
+  final Map<String, double> initialBySource;
   final double savingsRate;
   final String periodLabel;
+  final VoidCallback onEditInitialBalance;
   final VoidCallback? onAddToPlan;
 
   const _NetBalanceCard({
     required this.balance,
+    required this.initialBalance,
+    required this.initialBySource,
     required this.savingsRate,
     required this.periodLabel,
+    required this.onEditInitialBalance,
     this.onAddToPlan,
   });
 
@@ -653,7 +637,7 @@ class _NetBalanceCard extends StatelessWidget {
                 ),
                 child: Text(
                   periodLabel,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -673,11 +657,94 @@ class _NetBalanceCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             '${isPositive ? '' : '-'}${Money.format(balance.abs())}',
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 36,
               fontWeight: FontWeight.bold,
               letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 14),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onEditInitialBalance,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.22),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            l10n.balanceInitialBalanceTitle,
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.9),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          Money.format(initialBalance),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.edit_outlined,
+                          size: 18,
+                          color: Colors.white.withValues(alpha: 0.85),
+                        ),
+                      ],
+                    ),
+                    if (initialBySource.isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      ...initialBySource.entries.map(
+                        (entry) => Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  localizeIncomeCategory(l10n, entry.key),
+                                  style: TextStyle(
+                                    color:
+                                        Colors.white.withValues(alpha: 0.82),
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                              Text(
+                                Money.format(entry.value),
+                                style: TextStyle(
+                                  color: Colors.white.withValues(alpha: 0.95),
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 16),
@@ -715,7 +782,7 @@ class _NetBalanceCard extends StatelessWidget {
                 icon: const Icon(Icons.savings_outlined, size: 20),
                 label: Text(
                   l10n.balanceAddToPlan,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: TextStyle(fontWeight: FontWeight.w600),
                 ),
               ),
             ),

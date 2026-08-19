@@ -30,7 +30,7 @@ class MonthlyTrendBarChart extends StatelessWidget {
         children: [
           Text(
             l10n.statisticsMonthlyTrend,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: AppColors.textColor,

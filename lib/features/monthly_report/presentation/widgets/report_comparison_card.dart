@@ -26,7 +26,7 @@ class ReportComparisonCard extends StatelessWidget {
         children: [
           Text(
             l10n.monthlyReportVsLastMonth,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
               color: AppColors.textColor,
@@ -52,7 +52,7 @@ class ReportComparisonCard extends StatelessWidget {
             ),
             positiveIsGood: false,
           ),
-          const Divider(height: 28),
+          Divider(height: 28),
           _ComparisonRow(
             label: l10n.balanceNetBalance,
             change: snapshot.netChange,

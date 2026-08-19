@@ -26,7 +26,7 @@ class NotificationIconBadge extends StatelessWidget {
         alignment: Alignment.center,
         child: Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
             fontSize: 10,
             fontWeight: FontWeight.w700,

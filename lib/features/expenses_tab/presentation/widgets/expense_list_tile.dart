@@ -92,7 +92,7 @@ class ExpenseListTile extends StatelessWidget {
                   children: [
                     Text(
                       category,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textColor,
@@ -169,7 +169,7 @@ class ExpenseListTile extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 1),
                 child: Text(
                   '-${Money.format(expense.amount)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: _expenseColor,

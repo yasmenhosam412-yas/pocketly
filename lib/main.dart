@@ -19,6 +19,7 @@ import 'package:imrpo/core/utils/locale_date_format.dart';
 import 'package:imrpo/core/widgets/bill_reminder_gate.dart';
 import 'package:imrpo/features/bill_reminders/presentation/bloc/bill_reminders_bloc.dart';
 import 'package:imrpo/core/services/locale_preferences.dart';
+import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/sms_imported_registry.dart';
 import 'package:imrpo/core/theme/app_theme.dart';
@@ -36,6 +37,7 @@ import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:upgrader/upgrader.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +54,10 @@ Future<void> main() async {
   setupServiceLocator();
   await getIt<CurrencyPreferences>().load();
   await getIt<LocalePreferences>().load();
+  await getIt<ThemePreferences>().load();
+  getIt<ThemePreferences>().updatePlatformBrightness(
+    WidgetsBinding.instance.platformDispatcher.platformBrightness,
+  );
   await LocaleDateFormat.ensureAppLocales();
   await getIt<ExpenseShortcutsStore>().load();
   await getIt<PaymentMethodsStore>().load();
@@ -87,13 +93,49 @@ class MainApp extends StatefulWidget {
   State<MainApp> createState() => _MainAppState();
 }
 
-class _MainAppState extends State<MainApp> {
+class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
+  late Upgrader _upgrader;
+  late String _upgraderLanguage;
+
   @override
   void initState() {
     super.initState();
+    _upgrader = _createUpgrader(
+      getIt<LocalePreferences>().locale.languageCode,
+    );
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       runDeferredAppStartup();
     });
+  }
+
+  Upgrader _createUpgrader(String languageCode) {
+    _upgraderLanguage = languageCode;
+    return Upgrader(
+      languageCode: languageCode,
+      countryCode: 'EG',
+      messages: UpgraderMessages(code: languageCode),
+    );
+  }
+
+  Upgrader _upgraderFor(String languageCode) {
+    if (_upgraderLanguage != languageCode) {
+      _upgrader = _createUpgrader(languageCode);
+    }
+    return _upgrader;
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    getIt<ThemePreferences>().updatePlatformBrightness(
+      WidgetsBinding.instance.platformDispatcher.platformBrightness,
+    );
   }
 
   String _initialRoute() {
@@ -117,15 +159,21 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: getIt<LocalePreferences>(),
+      listenable: Listenable.merge([
+        getIt<LocalePreferences>(),
+        getIt<ThemePreferences>(),
+      ]),
       builder: (context, _) {
         final locale = getIt<LocalePreferences>().locale;
+        final themePrefs = getIt<ThemePreferences>();
 
         return MaterialApp(
           navigatorKey: rootNavigatorKey,
           locale: locale,
           onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
           theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: themePrefs.themeMode,
           debugShowCheckedModeBanner: false,
           initialRoute: _initialRoute(),
           onGenerateRoute: AppRouter.generateRoute,
@@ -141,10 +189,15 @@ class _MainAppState extends State<MainApp> {
               textDirection: locale.languageCode == 'ar'
                   ? TextDirection.rtl
                   : TextDirection.ltr,
-              child: AppLockGate(
-                child: SharedTextImportGate(
-                  child: AutoSmsImportGate(
-                    child: BillReminderGate(child: child!),
+              child: UpgradeAlert(
+                key: ValueKey(_upgraderLanguage),
+                navigatorKey: rootNavigatorKey,
+                upgrader: _upgraderFor(locale.languageCode),
+                child: AppLockGate(
+                  child: SharedTextImportGate(
+                    child: AutoSmsImportGate(
+                      child: BillReminderGate(child: child!),
+                    ),
                   ),
                 ),
               ),

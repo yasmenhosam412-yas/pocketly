@@ -15,13 +15,15 @@ class AuthFooterLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.appPalette;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           prompt,
           style: TextStyle(
-            color: AppColors.textSecondary,
+            color: palette.textSecondary,
             fontSize: 14,
           ),
         ),
@@ -29,7 +31,7 @@ class AuthFooterLink extends StatelessWidget {
           onPressed: onTap,
           child: Text(
             actionLabel,
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.primary,
               fontWeight: FontWeight.w700,
             ),

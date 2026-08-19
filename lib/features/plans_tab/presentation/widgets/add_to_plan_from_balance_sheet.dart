@@ -5,6 +5,7 @@ import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/core/widgets/app_toast.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/core/widgets/currency_amount_field.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
@@ -13,7 +14,6 @@ import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
 import 'package:imrpo/features/plans_tab/presentation/widgets/plan_allocation_paid_from_section.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
-/// Allocate part of net balance to a savings plan.
 class AddToPlanFromBalanceSheet extends StatefulWidget {
   final double availableBalanceBase;
 
@@ -72,7 +72,6 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final maxHeight = MediaQuery.sizeOf(context).height * 0.75;
 
     return BlocConsumer<PlansTabBloc, PlansTabState>(
       listenWhen: (previous, current) {
@@ -118,7 +117,9 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
         }
 
         return ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: maxHeight),
+          constraints: BoxConstraints(
+            maxHeight: _sheetMaxHeight(context),
+          ),
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -131,7 +132,7 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
                     width: 40,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
+                      color: AppColors.textMuted.withValues(alpha: 0.35),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -139,7 +140,7 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
                 const SizedBox(height: 20),
                 Text(
                   l10n.balanceAddToPlanTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: AppColors.textPrimary,
@@ -171,7 +172,7 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
                 else ...[
                   Text(
                     l10n.balanceSelectPlan,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
                       color: AppColors.textColor,
                     ),
@@ -226,7 +227,9 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
                                     children: [
                                       Text(
                                         localizeDemoTitle(l10n, plan.title),
-                                        style: const TextStyle(
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 15,
                                         ),
@@ -247,7 +250,7 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
                                 ),
                                 Text(
                                   '${(plan.progress * 100).round()}%',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: _planColor,
                                   ),
@@ -297,7 +300,7 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
                             )
                           : Text(
                         l10n.balanceAddToPlan,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -311,6 +314,14 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
         );
       },
     );
+  }
+
+  double _sheetMaxHeight(BuildContext context) {
+    final media = MediaQuery.of(context);
+    final available = media.size.height
+        - media.viewInsets.bottom
+        - media.padding.vertical;
+    return (available * 0.75).clamp(160.0, media.size.height);
   }
 
   void _submit() {
@@ -356,12 +367,6 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.errorColor,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    AppToast.error(context, message);
   }
 }

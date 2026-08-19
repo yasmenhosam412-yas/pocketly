@@ -1,40 +1,39 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:imrpo/core/theme/app_color_scheme.dart';
 
 class AppColors {
   AppColors._();
 
-  static const stroke = Color(0xFF3A322E);
+  static Color stroke = AppColorScheme.light.stroke;
+  static Color background = AppColorScheme.light.background;
+  static Color scaffold = AppColorScheme.light.scaffold;
+  static Color surface = AppColorScheme.light.surface;
+  static Color card = AppColorScheme.light.card;
+  static Color border = AppColorScheme.light.border;
+  static Color textPrimary = AppColorScheme.light.textPrimary;
+  static Color textSecondary = AppColorScheme.light.textSecondary;
+  static Color textMuted = AppColorScheme.light.textMuted;
+  static Color incomeLight = AppColorScheme.light.incomeLight;
+  static Color expenseLight = AppColorScheme.light.expenseLight;
+  static Color plansLight = AppColorScheme.light.plansLight;
+  static Color balanceLight = AppColorScheme.light.balanceLight;
 
   static const primary = Color(0xFFF28C74);
   static const primaryLight = Color(0xFFF9A890);
   static const secondary = Color(0xFFF6A060);
 
-  static const background = Color(0xFFFFFDFB);
-  static const scaffold = Color(0xFFF7F3EF);
-  static const surface = Color(0xFFF0EBE6);
-  static const card = Color(0xFFFFFFFF);
-  static const border = Color(0xFFE8DED6);
-
-  static const textPrimary = stroke;
-  static const textSecondary = Color(0xFF6B625C);
-  static const textMuted = Color(0xFF9A9089);
-
   static const income = Color(0xFF7EB87A);
   static const incomeDark = Color(0xFF5A9B56);
-  static const incomeLight = Color(0xFFE8F3E6);
   static const incomeBill = Color(0xFFA8D1A0);
 
   static const expense = Color(0xFFE07A6A);
   static const expenseDark = Color(0xFFC96858);
-  static const expenseLight = Color(0xFFFFECE8);
 
   static const balance = primary;
   static const balanceDark = Color(0xFFE07862);
-  static const balanceLight = Color(0xFFFFF0EC);
 
   static const plans = Color(0xFFF7C14D);
   static const plansDark = Color(0xFFE5A83A);
-  static const plansLight = Color(0xFFFFF6DC);
 
   static const success = income;
   static const warning = plans;
@@ -44,8 +43,35 @@ class AppColors {
 
   static const primaryColor = primary;
   static const secondaryColor = primaryLight;
-  static const backgroundColor = background;
-  static const textColor = textPrimary;
   static const accentColor = warning;
   static const errorColor = error;
+
+  static Color get backgroundColor => background;
+  static Color get textColor => textPrimary;
+
+  static void applyScheme(AppColorScheme scheme) {
+    stroke = scheme.stroke;
+    background = scheme.background;
+    scaffold = scheme.scaffold;
+    surface = scheme.surface;
+    card = scheme.card;
+    border = scheme.border;
+    textPrimary = scheme.textPrimary;
+    textSecondary = scheme.textSecondary;
+    textMuted = scheme.textMuted;
+    incomeLight = scheme.incomeLight;
+    expenseLight = scheme.expenseLight;
+    plansLight = scheme.plansLight;
+    balanceLight = scheme.balanceLight;
+  }
+
+  static void applyDarkMode(bool isDark) {
+    applyScheme(isDark ? AppColorScheme.dark : AppColorScheme.light);
+  }
+}
+
+extension AppColorSchemeContext on BuildContext {
+  AppColorScheme get appPalette => Theme.of(this).brightness == Brightness.dark
+      ? AppColorScheme.dark
+      : AppColorScheme.light;
 }

@@ -112,7 +112,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                   onPressed: _finish,
                   child: Text(
                     l10n.onboardingSkip,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.textMuted,
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -209,7 +209,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                                   ? l10n.onboardingGetStarted
                                   : l10n.onboardingNext,
                               key: ValueKey(isLast),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),

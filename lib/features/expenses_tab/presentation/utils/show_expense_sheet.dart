@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/core/widgets/app_toast.dart';
 import 'package:imrpo/features/expenses_tab/presentation/bloc/expenses_tab_bloc.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
@@ -13,8 +13,7 @@ Future<void> showExpenseSheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (sheetContext) => AnimatedPadding(
@@ -38,12 +37,6 @@ Future<void> showExpenseSheet(
     _ => null,
   };
   if (message != null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.success,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    AppToast.success(context, message);
   }
 }

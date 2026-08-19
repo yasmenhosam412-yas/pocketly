@@ -155,7 +155,7 @@ class _SetBudgetSheetState extends State<SetBudgetSheet> {
                         width: 40,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: AppColors.textMuted.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -165,7 +165,7 @@ class _SetBudgetSheetState extends State<SetBudgetSheet> {
                       widget.initialRow?.budgetId != null
                           ? l10n.budgetEditTitle
                           : l10n.budgetSetTitle,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textColor,
@@ -183,7 +183,7 @@ class _SetBudgetSheetState extends State<SetBudgetSheet> {
                     const SizedBox(height: 20),
                     Text(
                       l10n.categoryField,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textColor,
@@ -254,7 +254,7 @@ class _SetBudgetSheetState extends State<SetBudgetSheet> {
                               )
                             : Text(
                                 l10n.budgetSave,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -282,8 +282,7 @@ Future<bool?> showSetBudgetSheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (_) => BlocProvider.value(

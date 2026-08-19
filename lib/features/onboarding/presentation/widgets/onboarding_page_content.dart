@@ -85,7 +85,7 @@ class _OnboardingPageContentState extends State<OnboardingPageContent>
               child: Text(
                 widget.title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
@@ -100,7 +100,7 @@ class _OnboardingPageContentState extends State<OnboardingPageContent>
               child: Text(
                 widget.body,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   color: AppColors.textSecondary,
                   height: 1.55,

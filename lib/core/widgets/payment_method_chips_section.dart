@@ -97,7 +97,7 @@ class _PaymentMethodChipsSectionState extends State<PaymentMethodChipsSection> {
               children: [
                 Text(
                   widget.label,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: AppColors.textColor,

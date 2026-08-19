@@ -256,7 +256,7 @@ class _PeriodBanner extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.textColor,
               ),

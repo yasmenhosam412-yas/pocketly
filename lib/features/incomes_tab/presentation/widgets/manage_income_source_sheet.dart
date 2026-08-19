@@ -15,8 +15,7 @@ Future<String?> showRenameIncomeSourceSheet(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (_) => _RenameIncomeSourceSheet(
@@ -121,7 +120,7 @@ class _RenameIncomeSourceSheetState extends State<_RenameIncomeSourceSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.textMuted.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -129,7 +128,7 @@ class _RenameIncomeSourceSheetState extends State<_RenameIncomeSourceSheet> {
             const SizedBox(height: 20),
             Text(
               l10n.incomeSourceRenameTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textColor,
@@ -187,7 +186,7 @@ class _RenameIncomeSourceSheetState extends State<_RenameIncomeSourceSheet> {
                 ),
                 child: Text(
                   l10n.save,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),

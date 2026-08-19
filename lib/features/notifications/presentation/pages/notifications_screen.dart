@@ -93,7 +93,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(primary: AppColors.primary),
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: AppColors.primary,
+            ),
           ),
           child: child!,
         );
@@ -125,13 +127,20 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       backgroundColor: AppColors.scaffold,
       appBar: AppBar(
         backgroundColor: AppColors.scaffold,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_rounded, color: AppColors.textColor),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text(
           l10n.notificationsTitle,
-          style: const TextStyle(color: Colors.black, fontSize: 20),
-        ),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          style: TextStyle(
+            color: AppColors.textColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
       ),
       body: RefreshIndicator(
@@ -149,7 +158,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               ),
             Text(
               l10n.notificationsSubtitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
                 color: AppColors.textSecondary,
                 height: 1.45,
@@ -206,7 +215,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             if (inbox.isNotEmpty) ...[
               Text(
                 l10n.notificationsInbox,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
@@ -223,7 +232,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             ],
             Text(
               l10n.notificationsUpcoming,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
                 color: AppColors.textPrimary,
@@ -289,7 +298,7 @@ class _PermissionBanner extends StatelessWidget {
               Expanded(
                 child: Text(
                   message,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     height: 1.4,
                     color: AppColors.textPrimary,
@@ -332,7 +341,7 @@ class _NotificationTypeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: AppColors.card,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
@@ -349,7 +358,7 @@ class _NotificationTypeCard extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
                         ),
@@ -357,7 +366,7 @@ class _NotificationTypeCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           color: AppColors.textSecondary,
                           height: 1.35,
@@ -403,7 +412,7 @@ class _InboxTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Material(
-      color: item.isUnread ? AppColors.primary.withValues(alpha: 0.06) : Colors.white,
+      color: item.isUnread ? AppColors.primary.withValues(alpha: 0.06) : AppColors.card,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -434,7 +443,7 @@ class _InboxTile extends StatelessWidget {
                         Container(
                           width: 8,
                           height: 8,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.primary,
                             shape: BoxShape.circle,
                           ),
@@ -444,7 +453,7 @@ class _InboxTile extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     item.subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: AppColors.textSecondary,
                       height: 1.35,
@@ -463,7 +472,7 @@ class _InboxTile extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       item.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         color: AppColors.textPrimary,
                         height: 1.4,
@@ -494,7 +503,7 @@ class _UpcomingTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: AppColors.card,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -509,7 +518,7 @@ class _UpcomingTile extends StatelessWidget {
                 children: [
                   Text(
                     item.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 15,
                     ),
@@ -517,7 +526,7 @@ class _UpcomingTile extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     item.subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       color: AppColors.textSecondary,
                       height: 1.35,
@@ -537,7 +546,7 @@ class _UpcomingTile extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       item.description,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         color: AppColors.textPrimary,
                         height: 1.4,
@@ -565,13 +574,13 @@ class _EmptyUpcoming extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Text(
         message,
         textAlign: TextAlign.center,
-        style: const TextStyle(
+        style: TextStyle(
           color: AppColors.textSecondary,
           fontSize: 15,
           height: 1.5,

@@ -279,7 +279,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
         elevation: 0,
         title: Text(
           l10n.associationHubTitle,
-          style: TextStyle(color: Colors.black, fontSize: 18),
+          style: TextStyle(color: AppColors.textColor, fontSize: 18),
         ),
       ),
       body: _buildBody(l10n),
@@ -332,7 +332,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
         children: [
           Text(
             hub.name,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w800,
               color: AppColors.textPrimary,
@@ -347,7 +347,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
                 : (hub.isOwner
                     ? l10n.associationHubOwnerSubtitle
                     : l10n.associationHubMemberSubtitle),
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.textSecondary,
               height: 1.45,
               fontSize: 14,
@@ -377,7 +377,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
                       l10n.associationHubEndedBanner(
                         _formatEndedDate(context, hub.gom3eyaEndedAt!),
                       ),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
                         height: 1.4,
@@ -456,13 +456,13 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
           const SizedBox(height: 24),
           Text(
             l10n.associationHubTurnList,
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 10),
           if (hub.slots.isEmpty)
             Text(
               l10n.associationHubEmptyTurnList,
-              style: const TextStyle(color: AppColors.textSecondary),
+              style: TextStyle(color: AppColors.textSecondary),
             )
           else
             ...hub.slots.map((slot) {
@@ -479,7 +479,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
               Expanded(
                 child: Text(
                   l10n.associationHubPaymentsTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w700,
                   ),
@@ -488,7 +488,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
               if (hub.payments.isNotEmpty)
                 Text(
                   l10n.associationHubPaymentsTotal(Money.formatEgp(hub.totalPaid)),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     color: AppColors.incomeDark,
@@ -500,7 +500,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
           if (hub.payments.isEmpty)
             Text(
               l10n.associationHubPaymentsEmpty,
-              style: const TextStyle(color: AppColors.textSecondary),
+              style: TextStyle(color: AppColors.textSecondary),
             )
           else
             ...hub.payments.map(
@@ -522,7 +522,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
             const SizedBox(height: 24),
             Text(
               l10n.associationHubAppMembers,
-              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
             ...hub.members.map(
@@ -532,7 +532,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
                   backgroundColor: AppColors.primary.withValues(alpha: 0.12),
                   child: Text(
                     (m.username.isNotEmpty ? m.username[0] : '?').toUpperCase(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
@@ -540,7 +540,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
                 ),
                 title: Text(
                   m.username.isNotEmpty ? m.username : m.userId,
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  style: TextStyle(fontWeight: FontWeight.w600),
                 ),
                 subtitle: Text(_roleLabel(l10n, m.role)),
               ),
@@ -588,7 +588,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
               label: Text(l10n.associationHubEndGam3eya),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.error,
-                side: const BorderSide(color: AppColors.error),
+                side: BorderSide(color: AppColors.error),
                 padding: const EdgeInsets.symmetric(vertical: 14),
               ),
             ),
@@ -603,7 +603,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
             ),
             child: Text(
               l10n.associationHubTreasurerNote,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 color: AppColors.textSecondary,
                 height: 1.45,
@@ -654,7 +654,7 @@ class _EmptySetupCard extends StatelessWidget {
           Text(
             l10n.associationHubEmptySetup,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.w600, height: 1.4),
+            style: TextStyle(fontWeight: FontWeight.w600, height: 1.4),
           ),
           if (onSetup != null) ...[
             const SizedBox(height: 14),
@@ -687,7 +687,7 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: AppColors.border),
       ),
@@ -698,7 +698,7 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
               color: AppColors.textSecondary,
             ),
@@ -706,7 +706,7 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
-            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
           ),
         ],
       ),
@@ -746,7 +746,7 @@ class _CurrentTurnCard extends StatelessWidget {
         children: [
           Text(
             l10n.associationHubCurrentTurn,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               color: AppColors.textSecondary,
               fontWeight: FontWeight.w600,
@@ -755,7 +755,7 @@ class _CurrentTurnCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             holderName,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w800,
               color: AppColors.primary,
@@ -764,7 +764,7 @@ class _CurrentTurnCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             turnLabel,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               color: AppColors.textSecondary,
             ),
@@ -799,7 +799,7 @@ class _PaymentTile extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -826,7 +826,7 @@ class _PaymentTile extends StatelessWidget {
               children: [
                 Text(
                   payment.payerName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 16,
                   ),
@@ -834,7 +834,7 @@ class _PaymentTile extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   Money.formatEgp(payment.amount),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w800,
                     fontSize: 15,
                     color: AppColors.incomeDark,
@@ -843,7 +843,7 @@ class _PaymentTile extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   l10n.associationHubPaymentPaidOn(_formatDate(context)),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     color: AppColors.textSecondary,
                   ),
@@ -894,7 +894,7 @@ class _TurnSlotTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: isCurrent
             ? AppColors.primary.withValues(alpha: 0.08)
-            : Colors.white,
+            : AppColors.card,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isCurrent ? AppColors.primary : AppColors.border,
@@ -938,7 +938,7 @@ class _TurnSlotTile extends StatelessWidget {
               ),
               child: Text(
                 l10n.associationHubCurrentBadge,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,

@@ -27,8 +27,7 @@ Future<EditGom3eyaResult?> showEditGom3eyaSheet(
   return showModalBottomSheet<EditGom3eyaResult>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (_) => _EditGom3eyaSheet(initial: initial),
@@ -197,7 +196,7 @@ class _EditGom3eyaSheetState extends State<_EditGom3eyaSheet> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: AppColors.textMuted.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -205,7 +204,7 @@ class _EditGom3eyaSheetState extends State<_EditGom3eyaSheet> {
               const SizedBox(height: 16),
               Text(
                 l10n.associationHubEdit,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -244,7 +243,7 @@ class _EditGom3eyaSheetState extends State<_EditGom3eyaSheet> {
                   Expanded(
                     child: Text(
                       l10n.associationHubTurnList,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 16,
                       ),
@@ -270,7 +269,7 @@ class _EditGom3eyaSheetState extends State<_EditGom3eyaSheet> {
                         alignment: Alignment.center,
                         child: Text(
                           '${index + 1}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w700,
                             color: AppColors.primary,
                           ),

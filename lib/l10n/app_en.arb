@@ -61,7 +61,7 @@
   "dailyDigestSubtitle": "Evening recap of yesterday's spending and your month so far",
   "dailyDigestTimeLabel": "Summary time",
   "dailyDigestNotificationTitle": "Your money yesterday",
-  "dailyDigestNotificationEmpty": "No transactions logged yesterday. Open imrpo to track today's spending.",
+  "dailyDigestNotificationEmpty": "No transactions logged yesterday. Open Pocketly to track today's spending.",
   "dailyDigestYesterdayExpenses": "{count, plural, one{1 expense ({amount})} other{{count} expenses ({amount})}}",
   "@dailyDigestYesterdayExpenses": {
     "placeholders": {
@@ -145,8 +145,8 @@
   "associationPickerTitle": "Choose ledger",
   "associationPickerSubtitle": "Each ledger has its own income, expenses, budgets, and plans.",
   "associationCreateTitle": "New ledger",
-  "associationCreateAction": "Create",
-  "associationNameHint": "e.g. Family fund, Club treasury",
+  "associationCreateAction": "Add ledger",
+  "associationNameHint": "e.g. Work, Home, Savings",
   "associationNameRequired": "Enter a name for the ledger",
   "associationCreated": "Created \"{name}\"",
   "@associationCreated": {
@@ -329,6 +329,10 @@
   "accountSettingsTitle": "Account settings",
   "changeUsername": "Change username",
   "settingsLanguage": "Language",
+  "settingsTheme": "Theme",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeSystem": "System",
   "settingsCalculator": "Calculator",
   "calculatorTitle": "Calculator",
   "languageEnglish": "English",
@@ -430,6 +434,21 @@
   "paymentPresetInstaPay": "InstaPay",
   "incomeBySource": "By source",
   "balanceRemainingBySource": "Remaining by source",
+  "balanceWalletTitle": "What's left per source",
+  "balanceWalletSubtitle": "Starting balance + income − spending for each source in this period.",
+  "balanceWalletFilterAll": "All",
+  "balanceWalletInitial": "Starting",
+  "balanceWalletUnassignedHint": "Spending not linked to a specific source.",
+  "balanceOpenWallet": "My wallet",
+  "balanceWalletDialogTitle": "My wallet",
+  "balanceWalletDialogPeriod": "For {period}",
+  "@balanceWalletDialogPeriod": {
+    "placeholders": {
+      "period": {}
+    }
+  },
+  "balanceWalletDialogTotal": "Total in wallet",
+  "balanceWalletDialogEmpty": "Set a starting balance per source to see your wallet here.",
   "paymentMethodAddChip": "+ Add method",
   "paymentMethodAddCancel": "Cancel",
   "paymentMethodNewLabel": "New method name",
@@ -652,6 +671,19 @@
   "saveAmountButton": "Save amount",
   "errorEnterValidSavedAmount": "Please enter a valid saved amount",
   "balanceNetBalance": "Net Balance",
+  "balanceInitialBalanceTitle": "Initial balance",
+  "balanceInitialBalanceHint": "How much you had when you started using the app.",
+  "balanceInitialBalanceAddSource": "Add another source",
+  "balanceInitialBalanceBySource": "By source",
+  "balanceInitialBalanceIncludes": "Includes {amount} starting balance",
+  "@balanceInitialBalanceIncludes": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "balanceInitialBalanceSaved": "Initial balance updated",
+  "balanceEditInitialBalance": "Edit initial balance",
+  "settingsInitialBalance": "Initial balance",
   "balanceSavedThisMonth": "{percent}% saved this month",
   "@balanceSavedThisMonth": {
     "placeholders": {

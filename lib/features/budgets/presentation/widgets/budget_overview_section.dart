@@ -59,7 +59,7 @@ class BudgetOverviewSection extends StatelessWidget {
                   children: [
                     Text(
                       l10n.budgetMonthlyTitle,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textColor,
@@ -117,7 +117,7 @@ class BudgetOverviewSection extends StatelessWidget {
               label: Text(l10n.budgetSetFirst),
               style: OutlinedButton.styleFrom(
                 foregroundColor: AppColors.expense,
-                side: const BorderSide(color: AppColors.expense),
+                side: BorderSide(color: AppColors.expense),
                 padding: const EdgeInsets.symmetric(
                   vertical: 12,
                   horizontal: 8,
@@ -298,7 +298,7 @@ class _CategoryBudgetRow extends StatelessWidget {
                     Expanded(
                       child: Text(
                         label,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                           color: AppColors.textColor,
@@ -393,7 +393,7 @@ class _BudgetAlertsBanner extends StatelessWidget {
           Expanded(
             child: Text(
               message,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: AppColors.textColor,

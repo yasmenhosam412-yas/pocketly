@@ -98,6 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscure: _obscurePassword,
                 icon: Icons.lock_outline_rounded,
                 suffixIcon: CustomFormField.visibilityToggle(
+                  context: context,
                   obscure: _obscurePassword,
                   onToggle: () =>
                       setState(() => _obscurePassword = !_obscurePassword),
@@ -114,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: Text(
                     l10n.forgotPasswordQuestion,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: AppColors.primary,
                       fontWeight: FontWeight.w600,
                     ),

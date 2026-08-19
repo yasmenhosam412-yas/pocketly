@@ -404,7 +404,7 @@ abstract class AppLocalizations {
   /// No description provided for @dailyDigestNotificationEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No transactions logged yesterday. Open imrpo to track today\'s spending.'**
+  /// **'No transactions logged yesterday. Open Pocketly to track today\'s spending.'**
   String get dailyDigestNotificationEmpty;
 
   /// No description provided for @dailyDigestYesterdayExpenses.
@@ -614,13 +614,13 @@ abstract class AppLocalizations {
   /// No description provided for @associationCreateAction.
   ///
   /// In en, this message translates to:
-  /// **'Create'**
+  /// **'Add ledger'**
   String get associationCreateAction;
 
   /// No description provided for @associationNameHint.
   ///
   /// In en, this message translates to:
-  /// **'e.g. Family fund, Club treasury'**
+  /// **'e.g. Work, Home, Savings'**
   String get associationNameHint;
 
   /// No description provided for @associationNameRequired.
@@ -1331,6 +1331,30 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get settingsLanguage;
 
+  /// No description provided for @settingsTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get settingsTheme;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeSystem;
+
   /// No description provided for @settingsCalculator.
   ///
   /// In en, this message translates to:
@@ -1864,6 +1888,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remaining by source'**
   String get balanceRemainingBySource;
+
+  /// No description provided for @balanceWalletTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s left per source'**
+  String get balanceWalletTitle;
+
+  /// No description provided for @balanceWalletSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting balance + income − spending for each source in this period.'**
+  String get balanceWalletSubtitle;
+
+  /// No description provided for @balanceWalletFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get balanceWalletFilterAll;
+
+  /// No description provided for @balanceWalletInitial.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting'**
+  String get balanceWalletInitial;
+
+  /// No description provided for @balanceWalletUnassignedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending not linked to a specific source.'**
+  String get balanceWalletUnassignedHint;
+
+  /// No description provided for @balanceOpenWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'My wallet'**
+  String get balanceOpenWallet;
+
+  /// No description provided for @balanceWalletDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My wallet'**
+  String get balanceWalletDialogTitle;
+
+  /// No description provided for @balanceWalletDialogPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'For {period}'**
+  String balanceWalletDialogPeriod(Object period);
+
+  /// No description provided for @balanceWalletDialogTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total in wallet'**
+  String get balanceWalletDialogTotal;
+
+  /// No description provided for @balanceWalletDialogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a starting balance per source to see your wallet here.'**
+  String get balanceWalletDialogEmpty;
 
   /// No description provided for @paymentMethodAddChip.
   ///
@@ -2698,6 +2782,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Net Balance'**
   String get balanceNetBalance;
+
+  /// No description provided for @balanceInitialBalanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial balance'**
+  String get balanceInitialBalanceTitle;
+
+  /// No description provided for @balanceInitialBalanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'How much you had when you started using the app.'**
+  String get balanceInitialBalanceHint;
+
+  /// No description provided for @balanceInitialBalanceAddSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Add another source'**
+  String get balanceInitialBalanceAddSource;
+
+  /// No description provided for @balanceInitialBalanceBySource.
+  ///
+  /// In en, this message translates to:
+  /// **'By source'**
+  String get balanceInitialBalanceBySource;
+
+  /// No description provided for @balanceInitialBalanceIncludes.
+  ///
+  /// In en, this message translates to:
+  /// **'Includes {amount} starting balance'**
+  String balanceInitialBalanceIncludes(Object amount);
+
+  /// No description provided for @balanceInitialBalanceSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial balance updated'**
+  String get balanceInitialBalanceSaved;
+
+  /// No description provided for @balanceEditInitialBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit initial balance'**
+  String get balanceEditInitialBalance;
+
+  /// No description provided for @settingsInitialBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial balance'**
+  String get settingsInitialBalance;
 
   /// No description provided for @balanceSavedThisMonth.
   ///

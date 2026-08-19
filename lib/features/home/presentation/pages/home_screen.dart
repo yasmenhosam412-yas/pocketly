@@ -6,6 +6,7 @@ import 'package:imrpo/features/home/presentation/bloc/home_bloc.dart';
 import 'package:imrpo/features/home/presentation/widgets/user_settings_sheet.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
+import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/services/association_context.dart';
@@ -13,6 +14,8 @@ import 'package:imrpo/core/session/user_session.dart';
 import 'package:imrpo/features/associations/presentation/widgets/association_ledger_banner.dart';
 import 'package:imrpo/features/home/presentation/widgets/association_selector.dart';
 import 'package:imrpo/features/home/presentation/widgets/home_date_filter_sheet.dart';
+import 'package:imrpo/features/home/presentation/theme/home_header_theme.dart';
+import 'package:imrpo/features/home/presentation/widgets/home_wallet_header_chip.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/features/balance_tab/presentation/pages/balance_tab.dart';
 import 'package:imrpo/features/expenses_tab/presentation/pages/expenses_tab.dart';
@@ -58,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen>
       if (!associations.isLoaded) {
         await associations.load();
       }
+      await getIt<InitialBalanceStore>().load();
     }
     if (!mounted) return;
     if (!getIt<AssociationContext>().isOffline) {
@@ -155,8 +159,9 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
     return ListenableBuilder(
       listenable: getIt<CurrencyPreferences>(),
       builder: (context, _) {
+        final palette = context.appPalette;
         return Scaffold(
-          backgroundColor: AppColors.scaffold,
+          backgroundColor: palette.scaffold,
           body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               SliverToBoxAdapter(
@@ -247,16 +252,13 @@ class _HomeHeader extends StatelessWidget {
         final isInitialLoading = homeState.isInitialLoading;
         final isRefreshingProfile = homeState.isRefreshingProfile ||
             homeState.isUpdatingUsername;
+        final headerTheme = HomeHeaderTheme.resolve(context, accent);
 
         return Container(
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                AppColors.primary,
-                Color.lerp(AppColors.primary, AppColors.secondary, 0.55)!,
-                Color.lerp(AppColors.secondary, accent, 0.4)!,
-              ],
+              colors: headerTheme.gradientColors,
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -266,13 +268,17 @@ class _HomeHeader extends StatelessWidget {
             ),
             border: Border(
               bottom: BorderSide(
-                color: AppColors.stroke.withValues(alpha: 0.08),
+                color: headerTheme.isDark
+                    ? headerTheme.glassBorder
+                    : AppColors.stroke.withValues(alpha: 0.08),
                 width: 1.5,
               ),
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.22),
+                color: headerTheme.isDark
+                    ? headerTheme.shadow
+                    : AppColors.primary.withValues(alpha: 0.22),
                 blurRadius: 0,
                 offset: const Offset(0, 4),
               ),
@@ -283,14 +289,16 @@ class _HomeHeader extends StatelessWidget {
               bottomLeft: Radius.circular(28),
               bottomRight: Radius.circular(28),
             ),
-            child: Stack(
+            child: HomeHeaderScope(
+              theme: headerTheme,
+              child: Stack(
               children: [
                 Positioned(
                   top: -40,
                   right: -20,
                   child: _HeaderDecorCircle(
                     size: 140,
-                    color: Colors.white.withValues(alpha: 0.08),
+                    color: headerTheme.decorSoft,
                   ),
                 ),
                 Positioned(
@@ -298,7 +306,9 @@ class _HomeHeader extends StatelessWidget {
                   left: -24,
                   child: _HeaderDecorCircle(
                     size: 110,
-                    color: accent.withValues(alpha: 0.22),
+                    color: accent.withValues(
+                      alpha: headerTheme.isDark ? 0.18 : 0.22,
+                    ),
                   ),
                 ),
                 Padding(
@@ -330,7 +340,7 @@ class _HomeHeader extends StatelessWidget {
                                     isInitialLoading,
                                   ),
                                   style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.88),
+                                    color: headerTheme.foregroundMuted,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -340,15 +350,17 @@ class _HomeHeader extends StatelessWidget {
                                 const SizedBox(height: 4),
                                 Text(
                                   l10n.homeFinanceOverview,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: headerTheme.foreground,
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
                                     letterSpacing: -0.4,
-                                    height: 1.15,
+                                    height: 1.2,
                                   ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(height: 10),
+                                const SizedBox(height: 6),
                                 _ActiveTabBadge(tab: selectedTab),
                               ],
                             ),
@@ -390,7 +402,11 @@ class _HomeHeader extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
-                            const AssociationSelector(),
+                            AssociationSelector(
+                              lightStyle: !headerTheme.isDark,
+                            ),
+                            const SizedBox(width: 8),
+                            const HomeWalletHeaderButton(),
                             const SizedBox(width: 8),
                             ListenableBuilder(
                               listenable: dateFilter,
@@ -425,17 +441,20 @@ class _HomeHeader extends StatelessWidget {
                   ),
                 ),
                 if (isRefreshingProfile)
-                  const Positioned(
+                  Positioned(
                     left: 0,
                     right: 0,
                     bottom: 0,
                     child: LinearProgressIndicator(
                       minHeight: 2,
-                      color: Colors.white,
-                      backgroundColor: Colors.white24,
+                      color: headerTheme.foreground,
+                      backgroundColor: headerTheme.foreground.withValues(
+                        alpha: 0.24,
+                      ),
                     ),
                   ),
               ],
+            ),
             ),
           ),
         );
@@ -479,22 +498,24 @@ class _ActiveTabBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = HomeHeaderScope.of(context);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
+        color: theme.chipFill,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.28)),
+        border: Border.all(color: theme.chipBorder),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(tab.icon, size: 14, color: Colors.white),
+          Icon(tab.icon, size: 14, color: theme.foreground),
           const SizedBox(width: 6),
           Text(
             tab.label,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: theme.foreground,
               fontSize: 12,
               fontWeight: FontWeight.w600,
             ),
@@ -520,6 +541,8 @@ class _HeaderIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = HomeHeaderScope.of(context);
+
     return Tooltip(
       message: tooltip,
       child: Material(
@@ -534,13 +557,11 @@ class _HeaderIconButton extends StatelessWidget {
                 height: 40,
                 width: 40,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.16),
+                  color: theme.chipFill,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.22),
-                  ),
+                  border: Border.all(color: theme.chipBorder),
                 ),
-                child: Icon(icon, color: Colors.white, size: 20),
+                child: Icon(icon, color: theme.foreground, size: 20),
               ),
               NotificationIconBadge(count: badgeCount),
             ],
@@ -568,6 +589,8 @@ class _HeaderActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = HomeHeaderScope.of(context);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -577,22 +600,24 @@ class _HeaderActionChip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
           decoration: BoxDecoration(
             color: isHighlighted
-                ? Colors.white.withValues(alpha: 0.28)
-                : Colors.white.withValues(alpha: 0.16),
+                ? theme.chipFillHighlighted
+                : theme.chipFill,
             borderRadius: BorderRadius.circular(20),
-            border: isHighlighted
-                ? Border.all(color: Colors.white.withValues(alpha: 0.45))
-                : Border.all(color: Colors.white.withValues(alpha: 0.12)),
+            border: Border.all(
+              color: isHighlighted
+                  ? theme.chipBorderHighlighted
+                  : theme.chipBorder,
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 16, color: Colors.white.withValues(alpha: 0.95)),
+              Icon(icon, size: 16, color: theme.foreground),
               const SizedBox(width: 6),
               Text(
                 label,
-                style: const TextStyle(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: theme.foreground,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
@@ -602,7 +627,7 @@ class _HeaderActionChip extends StatelessWidget {
                 Icon(
                   trailingIcon,
                   size: 18,
-                  color: Colors.white.withValues(alpha: 0.8),
+                  color: theme.foregroundMuted,
                 ),
               ],
             ],
@@ -629,14 +654,15 @@ class _UserAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final initial = _initial(profile);
+    final theme = HomeHeaderScope.of(context);
 
     final avatar = Container(
       height: 52,
       width: 52,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.18),
+        color: theme.chipFill,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+        border: Border.all(color: theme.chipBorder),
       ),
       child: isInitialLoading
           ? Skeletonizer(
@@ -645,8 +671,8 @@ class _UserAvatar extends StatelessWidget {
               child: Center(
                 child: Text(
                   initial ?? '?',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: theme.foreground,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
@@ -660,15 +686,15 @@ class _UserAvatar extends StatelessWidget {
                   child: initial != null
                       ? Text(
                           initial,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: theme.foreground,
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                           ),
                         )
-                      : const Icon(
+                      : Icon(
                           Icons.pie_chart_outline_rounded,
-                          color: Colors.white,
+                          color: theme.foreground,
                           size: 28,
                         ),
                 ),
@@ -681,7 +707,7 @@ class _UserAvatar extends StatelessWidget {
                       child: Icon(
                         Icons.sync_rounded,
                         size: 14,
-                        color: Colors.white.withValues(alpha: 0.95),
+                        color: theme.foreground,
                       ),
                     ),
                   ),
@@ -720,6 +746,7 @@ class _TabChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = context.appPalette;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -730,17 +757,17 @@ class _TabChip extends StatelessWidget {
           curve: Curves.easeOutCubic,
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? tab.color : AppColors.card,
+            color: isSelected ? tab.color : palette.card,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isSelected
-                  ? AppColors.stroke.withValues(alpha: 0.18)
-                  : AppColors.stroke.withValues(alpha: 0.1),
+                  ? palette.stroke.withValues(alpha: 0.18)
+                  : palette.stroke.withValues(alpha: 0.1),
               width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: (isSelected ? tab.color : AppColors.stroke)
+                color: (isSelected ? tab.color : palette.stroke)
                     .withValues(alpha: isSelected ? 0.28 : 0.08),
                 blurRadius: 0,
                 offset: const Offset(0, 3),
@@ -763,7 +790,7 @@ class _TabChip extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? Colors.white : AppColors.textColor,
+                  color: isSelected ? Colors.white : palette.textPrimary,
                 ),
               ),
             ],

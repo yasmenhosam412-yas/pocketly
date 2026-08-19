@@ -115,8 +115,8 @@ class _MockSummaryCard extends StatelessWidget {
                 ),
                 child: Text(
                   periodLabel,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppColors.card,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
@@ -135,8 +135,8 @@ class _MockSummaryCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             amountPreview,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: AppColors.card,
               fontSize: 36,
               fontWeight: FontWeight.bold,
               letterSpacing: -0.5,
@@ -184,7 +184,7 @@ class _MockListRow extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Source or category name',
                   style: TextStyle(
                     fontSize: 16,

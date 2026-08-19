@@ -1,43 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:imrpo/core/theme/app_color_scheme.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 
 class AppTheme {
   AppTheme._();
 
-  static TextTheme _textTheme(TextTheme base) {
+  static ThemeData get light => _build(AppColorScheme.light);
+
+  static ThemeData get dark => _build(AppColorScheme.dark);
+
+  static TextTheme _textTheme(TextTheme base, AppColorScheme scheme) {
     final quicksand = GoogleFonts.quicksandTextTheme(base);
     return quicksand.apply(
-      bodyColor: AppColors.textPrimary,
-      displayColor: AppColors.textPrimary,
+      bodyColor: scheme.textPrimary,
+      displayColor: scheme.textPrimary,
     );
   }
 
-  static ThemeData get light {
+  static ThemeData _build(AppColorScheme scheme) {
+    final isDark = scheme == AppColorScheme.dark;
+    final brightness = isDark ? Brightness.dark : Brightness.light;
+
     final base = ThemeData(
       useMaterial3: true,
-      brightness: Brightness.light,
-      colorScheme: ColorScheme.light(
+      brightness: brightness,
+      colorScheme: ColorScheme(
+        brightness: brightness,
         primary: AppColors.primary,
         onPrimary: AppColors.onWarm,
         secondary: AppColors.secondary,
         onSecondary: AppColors.onWarm,
         tertiary: AppColors.plans,
-        surface: AppColors.card,
-        onSurface: AppColors.textPrimary,
+        surface: scheme.card,
+        onSurface: scheme.textPrimary,
         error: AppColors.error,
         onError: AppColors.onWarm,
-        outline: AppColors.border,
+        outline: scheme.border,
       ),
-      scaffoldBackgroundColor: AppColors.scaffold,
+      scaffoldBackgroundColor: scheme.scaffold,
     );
 
-    final textTheme = _textTheme(base.textTheme);
+    final textTheme = _textTheme(base.textTheme, scheme);
 
     return base.copyWith(
       textTheme: textTheme,
-      primaryTextTheme: _textTheme(base.primaryTextTheme),
+      primaryTextTheme: _textTheme(base.primaryTextTheme, scheme),
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: AppColors.primary,
         selectionColor: AppColors.primary.withValues(alpha: 0.22),
@@ -54,12 +63,12 @@ class AppTheme {
         ),
       ),
       cardTheme: CardThemeData(
-        color: AppColors.card,
+        color: scheme.card,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDecorations.cardRadius),
           side: BorderSide(
-            color: AppColors.stroke.withValues(alpha: 0.12),
+            color: scheme.stroke.withValues(alpha: isDark ? 0.14 : 0.12),
             width: AppDecorations.outlineWidth,
           ),
         ),
@@ -72,7 +81,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDecorations.buttonRadius),
           side: BorderSide(
-            color: AppColors.stroke.withValues(alpha: 0.15),
+            color: scheme.stroke.withValues(alpha: isDark ? 0.18 : 0.15),
             width: AppDecorations.outlineWidth,
           ),
         ),
@@ -87,7 +96,7 @@ class AppTheme {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppDecorations.buttonRadius),
             side: BorderSide(
-              color: AppColors.stroke.withValues(alpha: 0.12),
+              color: scheme.stroke.withValues(alpha: isDark ? 0.16 : 0.12),
               width: AppDecorations.outlineWidth,
             ),
           ),
@@ -100,7 +109,7 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
           side: BorderSide(
-            color: AppColors.stroke.withValues(alpha: 0.2),
+            color: scheme.stroke.withValues(alpha: isDark ? 0.24 : 0.2),
             width: AppDecorations.outlineWidth,
           ),
           shape: RoundedRectangleBorder(
@@ -110,52 +119,52 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.card,
+        fillColor: scheme.card,
         contentPadding:
             const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDecorations.buttonRadius),
           borderSide: BorderSide(
-            color: AppColors.stroke.withValues(alpha: 0.14),
+            color: scheme.stroke.withValues(alpha: isDark ? 0.18 : 0.14),
             width: AppDecorations.outlineWidth,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDecorations.buttonRadius),
           borderSide: BorderSide(
-            color: AppColors.stroke.withValues(alpha: 0.14),
+            color: scheme.stroke.withValues(alpha: isDark ? 0.18 : 0.14),
             width: AppDecorations.outlineWidth,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDecorations.buttonRadius),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: AppColors.primary,
             width: 2,
           ),
         ),
-        hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.textMuted),
+        hintStyle: textTheme.bodyMedium?.copyWith(color: scheme.textMuted),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.stroke,
+        backgroundColor: isDark ? scheme.surface : scheme.stroke,
         contentTextStyle: textTheme.bodyMedium?.copyWith(
-          color: AppColors.onWarm,
+          color: isDark ? scheme.textPrimary : AppColors.onWarm,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDecorations.buttonRadius),
         ),
       ),
       dividerTheme: DividerThemeData(
-        color: AppColors.stroke.withValues(alpha: 0.1),
+        color: scheme.stroke.withValues(alpha: isDark ? 0.14 : 0.1),
         thickness: 1,
       ),
       chipTheme: ChipThemeData(
-        backgroundColor: AppColors.surface,
-        selectedColor: AppColors.primaryLight,
+        backgroundColor: scheme.surface,
+        selectedColor: scheme.primaryLight,
         labelStyle: textTheme.labelMedium,
         side: BorderSide(
-          color: AppColors.stroke.withValues(alpha: 0.12),
+          color: scheme.stroke.withValues(alpha: isDark ? 0.16 : 0.12),
           width: AppDecorations.outlineWidth,
         ),
         shape: RoundedRectangleBorder(
@@ -165,9 +174,9 @@ class AppTheme {
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.primary,
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
-        backgroundColor: AppColors.card,
-        shape: RoundedRectangleBorder(
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: scheme.card,
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
       ),

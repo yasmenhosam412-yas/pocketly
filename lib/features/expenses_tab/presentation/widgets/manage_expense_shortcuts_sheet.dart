@@ -19,8 +19,7 @@ class ManageExpenseShortcutsSheet extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) => BlocProvider.value(
@@ -79,7 +78,7 @@ class ManageExpenseShortcutsSheet extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.textMuted.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -87,7 +86,7 @@ class ManageExpenseShortcutsSheet extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               l10n.expenseShortcutsManageTitle,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textColor,
@@ -125,7 +124,7 @@ class ManageExpenseShortcutsSheet extends StatelessWidget {
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: items.length,
-                    separatorBuilder: (_, unusedIndex) => const Divider(height: 1),
+                    separatorBuilder: (_, unusedIndex) => Divider(height: 1),
                     itemBuilder: (context, index) {
                       final s = items[index];
                       final paid = s.incomeSource?.trim();
@@ -136,7 +135,7 @@ class ManageExpenseShortcutsSheet extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                         title: Text(
                           s.displayLabel,
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+                          style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
                           '${Money.format(s.amountBase)} · ${localizeExpenseCategory(l10n, s.category)} · $paidLabel\n${s.expenseTitle}',
@@ -174,7 +173,7 @@ class ManageExpenseShortcutsSheet extends StatelessWidget {
               icon: const Icon(Icons.add_rounded, color: Colors.white),
               label: Text(
                 l10n.expenseShortcutAddTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
                 ),

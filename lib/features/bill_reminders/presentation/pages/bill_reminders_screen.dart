@@ -30,8 +30,7 @@ class _BillRemindersScreenState extends State<BillRemindersScreen> {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => BlocProvider.value(
@@ -57,7 +56,7 @@ class _BillRemindersScreenState extends State<BillRemindersScreen> {
             onPressed: () => Navigator.pop(ctx, true),
             child: Text(
               l10n.expenseShortcutDelete,
-              style: const TextStyle(color: AppColors.error),
+              style: TextStyle(color: AppColors.error),
             ),
           ),
         ],
@@ -98,15 +97,20 @@ class _BillRemindersScreenState extends State<BillRemindersScreen> {
       backgroundColor: AppColors.scaffold,
       appBar: AppBar(
         backgroundColor: AppColors.scaffold,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_rounded, color: AppColors.textColor),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text(
           l10n.billRemindersTitle,
-          style: TextStyle(color: Colors.black, fontSize: 20),
-        ),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          style: TextStyle(
+            color: AppColors.textColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -144,7 +148,7 @@ class _BillRemindersScreenState extends State<BillRemindersScreen> {
                 child: Text(
                   l10n.billRemindersEmpty,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: AppColors.textSecondary,
                     fontSize: 16,
                     height: 1.5,
@@ -165,7 +169,7 @@ class _BillRemindersScreenState extends State<BillRemindersScreen> {
                   : null;
 
               return Material(
-                color: Colors.white,
+                color: AppColors.card,
                 borderRadius: BorderRadius.circular(16),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
@@ -190,7 +194,7 @@ class _BillRemindersScreenState extends State<BillRemindersScreen> {
                             children: [
                               Text(
                                 reminder.title,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 16,
                                 ),
@@ -201,7 +205,7 @@ class _BillRemindersScreenState extends State<BillRemindersScreen> {
                                 '${_formatReminderTime(context, reminder)} · '
                                 '${_leadLabel(l10n, reminder.remindDaysBefore)}'
                                 '${amountLabel != null ? ' · $amountLabel' : ''}',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 13,
                                   color: AppColors.textSecondary,
                                 ),

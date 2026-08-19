@@ -5,6 +5,7 @@ import 'package:imrpo/core/models/parsed_financial_entry.dart';
 import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
+import 'package:imrpo/core/services/sms_bulk_import_service.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/widgets/currency_amount_field.dart';
@@ -13,10 +14,11 @@ import 'package:imrpo/features/expenses_tab/domain/expense_categories.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
 import 'package:imrpo/core/services/payment_methods_store.dart';
 import 'package:imrpo/core/widgets/payment_method_chips_section.dart';
+import 'package:imrpo/features/smart_import/presentation/utils/smart_import_actions.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
-typedef QuickAddPayload = ({
+typedef _QuickAddPayload = ({
   FinancialEntryType type,
   double amountInBase,
   String? title,
@@ -28,16 +30,10 @@ typedef QuickAddPayload = ({
 
 class SmartImportQuickAddTab extends StatefulWidget {
   final ScrollController scrollController;
-  final bool saving;
-  final Future<void> Function(QuickAddPayload payload) onAddNow;
-  final Future<void> Function(QuickAddPayload payload) onOpenFullForm;
 
   const SmartImportQuickAddTab({
     super.key,
     required this.scrollController,
-    required this.saving,
-    required this.onAddNow,
-    required this.onOpenFullForm,
   });
 
   @override
@@ -47,6 +43,8 @@ class SmartImportQuickAddTab extends StatefulWidget {
 class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
   final _amountController = TextEditingController();
   final _titleController = TextEditingController();
+  final _bulkImportService = getIt<SmsBulkImportService>();
+  final _currencyPrefs = getIt<CurrencyPreferences>();
 
   FinancialEntryType _type = FinancialEntryType.expense;
   DateTime _date = DateTime.now();
@@ -54,13 +52,14 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
   String _expensePaidFrom = PaymentMethodsStore.defaultPresets.first;
   String _incomeSource = PaymentMethodsStore.defaultPresets.first;
   String _currencyCode = CurrencyConverter.defaultDisplayCode;
+  bool _saving = false;
 
   bool get _isExpense => _type == FinancialEntryType.expense;
 
   @override
   void initState() {
     super.initState();
-    _currencyCode = getIt<CurrencyPreferences>().displayCode;
+    _currencyCode = _currencyPrefs.displayCode;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<IncomesTabBloc>().add(const LoadIncomesEvent());
@@ -74,7 +73,7 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
     super.dispose();
   }
 
-  void resetForm() {
+  void _resetForm() {
     setState(() {
       _amountController.clear();
       _titleController.clear();
@@ -83,23 +82,14 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
       _expenseCategory = 'Food';
       _expensePaidFrom = PaymentMethodsStore.defaultPresets.first;
       _incomeSource = PaymentMethodsStore.defaultPresets.first;
+      _currencyCode = _currencyPrefs.displayCode;
     });
   }
 
-  void _toast(String message, {bool error = false}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: error ? AppColors.errorColor : AppColors.success,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
-  QuickAddPayload? _buildPayload(AppLocalizations l10n) {
+  _QuickAddPayload? _buildPayload(AppLocalizations l10n) {
     final amount = double.tryParse(_amountController.text.trim());
     if (amount == null || amount <= 0) {
-      _toast(l10n.errorEnterValidAmount, error: true);
+      showSmartImportSnack(context, l10n.errorEnterValidAmount, isError: true);
       return null;
     }
 
@@ -108,7 +98,11 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
 
     if (_isExpense) {
       if (_expensePaidFrom.trim().isEmpty) {
-        _toast(l10n.smartImportBulkSelectPaidFrom, error: true);
+        showSmartImportSnack(
+          context,
+          l10n.smartImportBulkSelectPaidFrom,
+          isError: true,
+        );
         return null;
       }
       return (
@@ -123,7 +117,11 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
     }
 
     if (_incomeSource.trim().isEmpty) {
-      _toast(l10n.smartImportBulkSelectIncomeSource, error: true);
+      showSmartImportSnack(
+        context,
+        l10n.smartImportBulkSelectIncomeSource,
+        isError: true,
+      );
       return null;
     }
 
@@ -138,6 +136,67 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
     );
   }
 
+  ParsedFinancialEntry _entryFromPayload(_QuickAddPayload payload) {
+    return ParsedFinancialEntry(
+      title: payload.title,
+      amount: _currencyPrefs.displayAmount(payload.amountInBase),
+      currencyCode: _currencyPrefs.displayCode,
+      date: payload.date,
+      type: payload.type,
+      rawText: 'quick-add',
+    );
+  }
+
+  Future<void> _addNow(_QuickAddPayload payload) async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _saving = true);
+    try {
+      final result = await _bulkImportService.importParsedEntries(
+        [_entryFromPayload(payload)],
+        expenseCategory: payload.expenseCategory,
+        incomeSource: payload.incomeSource,
+        expensePaidFrom: payload.expensePaidFrom,
+      );
+      if (!mounted) return;
+
+      reloadTransactionTabs(context);
+
+      if (result.hasAny) {
+        _resetForm();
+        showSmartImportSnack(context, l10n.smartImportQuickAdded);
+      } else {
+        showSmartImportSnack(
+          context,
+          l10n.smartImportBulkNothingToAdd,
+          isError: true,
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        showSmartImportSnack(context, l10n.smartImportSmsFailed, isError: true);
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _openFullForm(_QuickAddPayload payload) async {
+    final l10n = AppLocalizations.of(context)!;
+    final result = await showSmartImportEntrySheet(
+      context,
+      type: payload.type,
+      title: smartImportFallbackTitle(l10n, payload.title),
+      amountInBase: payload.amountInBase,
+      date: payload.date,
+    );
+
+    if (!mounted) return;
+    if (isSmartImportSheetSuccess(result)) {
+      _resetForm();
+      showSmartImportSnack(context, l10n.smartImportQuickAdded);
+    }
+  }
+
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
       context: context,
@@ -148,8 +207,8 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
     if (picked != null) setState(() => _date = picked);
   }
 
-  Future<void> _submit(Future<void> Function(QuickAddPayload) action) async {
-    if (widget.saving) return;
+  Future<void> _submit(Future<void> Function(_QuickAddPayload) action) async {
+    if (_saving) return;
     final l10n = AppLocalizations.of(context)!;
     final payload = _buildPayload(l10n);
     if (payload == null) return;
@@ -160,7 +219,7 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
-    final disabled = widget.saving;
+    final disabled = _saving;
     final accent = _isExpense ? AppColors.expense : AppColors.income;
 
     return ListView(
@@ -205,7 +264,7 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
         const SizedBox(height: 18),
         Text(
           l10n.smartImportQuickTypeLabel,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: AppColors.textColor,
@@ -257,7 +316,7 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
         ),
         const SizedBox(height: 14),
         Material(
-          color: Colors.white,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(16),
           child: InkWell(
             onTap: disabled ? null : _pickDate,
@@ -285,7 +344,7 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
                         ),
                         Text(
                           DateFormat.yMMMd(locale).format(_date),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w600,
                             color: AppColors.textColor,
                           ),
@@ -306,7 +365,7 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
           const SizedBox(height: 20),
           Text(
             l10n.smartImportBulkExpenseCategory,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: AppColors.textColor,
@@ -363,8 +422,8 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
         ],
         const SizedBox(height: 24),
         FilledButton.icon(
-          onPressed: disabled ? null : () => _submit(widget.onAddNow),
-          icon: widget.saving
+          onPressed: disabled ? null : () => _submit(_addNow),
+          icon: _saving
               ? const SizedBox(
                   width: 20,
                   height: 20,
@@ -385,7 +444,7 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
         ),
         const SizedBox(height: 10),
         OutlinedButton.icon(
-          onPressed: disabled ? null : () => _submit(widget.onOpenFullForm),
+          onPressed: disabled ? null : () => _submit(_openFullForm),
           icon: const Icon(Icons.edit_note_rounded, size: 20),
           label: Text(l10n.smartImportQuickReview),
           style: OutlinedButton.styleFrom(
@@ -419,7 +478,7 @@ class _TypeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? color.withValues(alpha: 0.14) : Colors.white,
+      color: selected ? color.withValues(alpha: 0.14) : AppColors.card,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         onTap: onTap,

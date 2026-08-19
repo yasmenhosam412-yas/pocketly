@@ -79,7 +79,7 @@ class IncomeListTile extends StatelessWidget {
                   children: [
                     Text(
                       source,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textColor,
@@ -132,7 +132,7 @@ class IncomeListTile extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 1),
                 child: Text(
                   '+${Money.format(income.amount)}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: AppColors.income,

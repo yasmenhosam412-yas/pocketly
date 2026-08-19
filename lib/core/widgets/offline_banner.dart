@@ -56,7 +56,7 @@ class OfflineBanner extends StatelessWidget {
                     Expanded(
                       child: Text(
                         message,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           height: 1.35,

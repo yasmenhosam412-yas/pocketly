@@ -19,8 +19,7 @@ Future<String?> showAppLockPinSheet(
     useSafeArea: true,
     isDismissible: dismissible,
     enableDrag: dismissible,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (_) => _AppLockPinSheet(
@@ -119,7 +118,7 @@ class _AppLockPinSheetState extends State<_AppLockPinSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: AppColors.textMuted.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -127,7 +126,7 @@ class _AppLockPinSheetState extends State<_AppLockPinSheet> {
             const SizedBox(height: 20),
             Text(
               widget.title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textColor,
@@ -271,7 +270,7 @@ class _KeyButton extends StatelessWidget {
               child: label != null
                   ? Text(
                       label!,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w600,
                         color: AppColors.textColor,

@@ -11,6 +11,7 @@ import 'package:imrpo/core/utils/receipt_image_validator.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/features/expenses_tab/presentation/widgets/receipt_attachment_section.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/core/widgets/app_toast.dart';
 import 'package:imrpo/core/widgets/currency_amount_field.dart';
 import 'package:imrpo/core/widgets/payment_method_chips_section.dart';
 import 'package:imrpo/features/auth/presentation/widgets/custom_text_field.dart';
@@ -189,7 +190,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                         width: 40,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
+                          color: AppColors.textMuted.withValues(alpha: 0.35),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -197,7 +198,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                     const SizedBox(height: 20),
                     Text(
                       _isEditing ? l10n.editExpense : l10n.addExpense,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: AppColors.textColor,
@@ -298,7 +299,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                           vertical: 16,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
+                          color: AppColors.surface,
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: Row(
@@ -311,7 +312,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                             const SizedBox(width: 12),
                             Text(
                               _formatDate(context, _date),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w500,
                                 color: AppColors.textColor,
@@ -354,7 +355,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
                                 _isEditing
                                     ? l10n.updateExpense
                                     : l10n.saveExpense,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: Colors.white,
@@ -385,11 +386,9 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
               primary: _expenseColor,
               onPrimary: Colors.white,
-              surface: Colors.white,
-              onSurface: AppColors.textColor,
             ),
           ),
           child: child!,
@@ -505,13 +504,7 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppColors.errorColor,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+    AppToast.error(context, message);
   }
 
   String _formatDate(BuildContext context, DateTime date) {

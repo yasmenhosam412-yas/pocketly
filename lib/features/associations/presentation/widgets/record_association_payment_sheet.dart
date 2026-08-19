@@ -31,8 +31,7 @@ Future<RecordAssociationPaymentResult?> showRecordAssociationPaymentSheet(
   return showModalBottomSheet<RecordAssociationPaymentResult>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(
+shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
     ),
     builder: (_) => _RecordAssociationPaymentSheet(hub: hub),
@@ -179,7 +178,7 @@ class _RecordAssociationPaymentSheetState
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: AppColors.textMuted.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -187,7 +186,7 @@ class _RecordAssociationPaymentSheetState
               const SizedBox(height: 16),
               Text(
                 l10n.associationHubRecordPayment,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
@@ -196,7 +195,7 @@ class _RecordAssociationPaymentSheetState
               if (slots.isNotEmpty) ...[
                 Text(
                   l10n.associationHubPaymentPayer,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
                   ),
@@ -204,7 +203,7 @@ class _RecordAssociationPaymentSheetState
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   initialValue: _selectedSlotKey,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     filled: true,
                     fillColor: AppColors.card,
                   ),
@@ -251,7 +250,7 @@ class _RecordAssociationPaymentSheetState
               const SizedBox(height: 12),
               Text(
                 l10n.associationHubPaymentDate,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 15,
                 ),
@@ -280,7 +279,7 @@ class _RecordAssociationPaymentSheetState
                       const SizedBox(width: 12),
                       Text(
                         _formatDate(context),
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
                         ),

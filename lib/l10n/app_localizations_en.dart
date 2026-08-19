@@ -166,7 +166,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyDigestNotificationTitle => 'Your money yesterday';
 
   @override
-  String get dailyDigestNotificationEmpty => 'No transactions logged yesterday. Open imrpo to track today\'s spending.';
+  String get dailyDigestNotificationEmpty => 'No transactions logged yesterday. Open Pocketly to track today\'s spending.';
 
   @override
   String dailyDigestYesterdayExpenses(int count, String amount) {
@@ -301,10 +301,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get associationCreateTitle => 'New ledger';
 
   @override
-  String get associationCreateAction => 'Create';
+  String get associationCreateAction => 'Add ledger';
 
   @override
-  String get associationNameHint => 'e.g. Family fund, Club treasury';
+  String get associationNameHint => 'e.g. Work, Home, Savings';
 
   @override
   String get associationNameRequired => 'Enter a name for the ledger';
@@ -691,6 +691,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguage => 'Language';
 
   @override
+  String get settingsTheme => 'Theme';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
   String get settingsCalculator => 'Calculator';
 
   @override
@@ -966,6 +978,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get balanceRemainingBySource => 'Remaining by source';
+
+  @override
+  String get balanceWalletTitle => 'What\'s left per source';
+
+  @override
+  String get balanceWalletSubtitle => 'Starting balance + income − spending for each source in this period.';
+
+  @override
+  String get balanceWalletFilterAll => 'All';
+
+  @override
+  String get balanceWalletInitial => 'Starting';
+
+  @override
+  String get balanceWalletUnassignedHint => 'Spending not linked to a specific source.';
+
+  @override
+  String get balanceOpenWallet => 'My wallet';
+
+  @override
+  String get balanceWalletDialogTitle => 'My wallet';
+
+  @override
+  String balanceWalletDialogPeriod(Object period) {
+    return 'For $period';
+  }
+
+  @override
+  String get balanceWalletDialogTotal => 'Total in wallet';
+
+  @override
+  String get balanceWalletDialogEmpty => 'Set a starting balance per source to see your wallet here.';
 
   @override
   String get paymentMethodAddChip => '+ Add method';
@@ -1415,6 +1459,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get balanceNetBalance => 'Net Balance';
+
+  @override
+  String get balanceInitialBalanceTitle => 'Initial balance';
+
+  @override
+  String get balanceInitialBalanceHint => 'How much you had when you started using the app.';
+
+  @override
+  String get balanceInitialBalanceAddSource => 'Add another source';
+
+  @override
+  String get balanceInitialBalanceBySource => 'By source';
+
+  @override
+  String balanceInitialBalanceIncludes(Object amount) {
+    return 'Includes $amount starting balance';
+  }
+
+  @override
+  String get balanceInitialBalanceSaved => 'Initial balance updated';
+
+  @override
+  String get balanceEditInitialBalance => 'Edit initial balance';
+
+  @override
+  String get settingsInitialBalance => 'Initial balance';
 
   @override
   String balanceSavedThisMonth(int percent) {
