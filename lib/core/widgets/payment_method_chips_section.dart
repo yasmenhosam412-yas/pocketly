@@ -19,17 +19,17 @@ class PaymentMethodChipsSection extends StatefulWidget {
   final bool allowNone;
   final VoidCallback? onClearSelection;
 
-  const PaymentMethodChipsSection({
+  PaymentMethodChipsSection({
     super.key,
     required this.label,
     this.hint,
     required this.selected,
     required this.onSelected,
-    this.accentColor = AppColors.primary,
+    Color? accentColor,
     this.enabled = true,
     this.allowNone = false,
     this.onClearSelection,
-  });
+  }) : accentColor = accentColor ?? AppColors.primary;
 
   @override
   State<PaymentMethodChipsSection> createState() =>

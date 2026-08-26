@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/theme/app_appearance.dart';
 import 'package:imrpo/core/theme/app_color_scheme.dart';
 
 class AppColors {
@@ -18,9 +19,9 @@ class AppColors {
   static Color plansLight = AppColorScheme.light.plansLight;
   static Color balanceLight = AppColorScheme.light.balanceLight;
 
-  static const primary = Color(0xFFF28C74);
-  static const primaryLight = Color(0xFFF9A890);
-  static const secondary = Color(0xFFF6A060);
+  static Color primary = AppAccentPalette.coral.primary;
+  static Color primaryLight = AppAccentPalette.coral.primaryLight;
+  static Color secondary = AppAccentPalette.coral.secondary;
 
   static const income = Color(0xFF7EB87A);
   static const incomeDark = Color(0xFF5A9B56);
@@ -29,8 +30,8 @@ class AppColors {
   static const expense = Color(0xFFE07A6A);
   static const expenseDark = Color(0xFFC96858);
 
-  static const balance = primary;
-  static const balanceDark = Color(0xFFE07862);
+  static Color balance = AppAccentPalette.coral.primary;
+  static Color balanceDark = AppAccentPalette.coral.primaryDark;
 
   static const plans = Color(0xFFF7C14D);
   static const plansDark = Color(0xFFE5A83A);
@@ -41,13 +42,21 @@ class AppColors {
 
   static const onWarm = Color(0xFFFFFFFF);
 
-  static const primaryColor = primary;
-  static const secondaryColor = primaryLight;
+  static Color get primaryColor => primary;
+  static Color get secondaryColor => primaryLight;
   static const accentColor = warning;
   static const errorColor = error;
 
   static Color get backgroundColor => background;
   static Color get textColor => textPrimary;
+
+  static void applyPalette(AppAccentPalette palette) {
+    primary = palette.primary;
+    primaryLight = palette.primaryLight;
+    secondary = palette.secondary;
+    balance = palette.primary;
+    balanceDark = palette.primaryDark;
+  }
 
   static void applyScheme(AppColorScheme scheme) {
     stroke = scheme.stroke;

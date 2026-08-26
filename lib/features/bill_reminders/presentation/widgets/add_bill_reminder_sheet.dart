@@ -340,7 +340,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.schedule_rounded,
                         color: AppColors.primary,
                       ),

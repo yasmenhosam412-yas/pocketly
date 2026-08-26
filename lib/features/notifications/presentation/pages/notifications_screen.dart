@@ -240,8 +240,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             ),
             const SizedBox(height: 10),
             if (_loading)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 32),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 32),
                 child: Center(
                   child: CircularProgressIndicator(color: AppColors.primary),
                 ),

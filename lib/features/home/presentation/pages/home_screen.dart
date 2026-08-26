@@ -8,6 +8,7 @@ import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
 import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/service_locator.dart';
+import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/services/association_context.dart';
 import 'package:imrpo/core/session/user_session.dart';
@@ -157,7 +158,10 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
     final selectedTab = tabs[selected];
 
     return ListenableBuilder(
-      listenable: getIt<CurrencyPreferences>(),
+      listenable: Listenable.merge([
+        getIt<CurrencyPreferences>(),
+        getIt<ThemePreferences>(),
+      ]),
       builder: (context, _) {
         final palette = context.appPalette;
         return Scaffold(
@@ -259,8 +263,8 @@ class _HomeHeader extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: headerTheme.gradientColors,
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+              begin: headerTheme.gradientBegin,
+              end: headerTheme.gradientEnd,
             ),
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(28),

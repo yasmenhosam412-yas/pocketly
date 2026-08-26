@@ -691,7 +691,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguage => 'Language';
 
   @override
-  String get settingsTheme => 'Theme';
+  String get settingsTheme => 'Appearance';
 
   @override
   String get themeLight => 'Light';
@@ -701,6 +701,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get themeSystem => 'System';
+
+  @override
+  String get appearanceColors => 'App color';
+
+  @override
+  String get appearanceGradients => 'Gradient style';
+
+  @override
+  String get appearanceCustom => 'Custom';
+
+  @override
+  String get appearancePickColor => 'Pick a color';
+
+  @override
+  String get appearanceCustomPrimary => 'Main color';
+
+  @override
+  String get appearanceCustomSecondary => 'Accent color';
+
+  @override
+  String get appearanceGradientStops => 'Gradient colors';
+
+  @override
+  String get appearancePaletteCoral => 'Coral';
+
+  @override
+  String get appearancePaletteOcean => 'Ocean';
+
+  @override
+  String get appearancePaletteForest => 'Forest';
+
+  @override
+  String get appearancePaletteSunset => 'Sunset';
+
+  @override
+  String get appearancePaletteGrape => 'Grape';
+
+  @override
+  String get appearancePaletteRose => 'Rose';
+
+  @override
+  String get appearancePaletteSlate => 'Slate';
+
+  @override
+  String get appearanceGradientDiagonal => 'Diagonal';
+
+  @override
+  String get appearanceGradientSunset => 'Sunset sweep';
+
+  @override
+  String get appearanceGradientAurora => 'Aurora';
+
+  @override
+  String get appearanceGradientWave => 'Wave';
+
+  @override
+  String get appearanceGradientSoft => 'Soft fade';
 
   @override
   String get settingsCalculator => 'Calculator';

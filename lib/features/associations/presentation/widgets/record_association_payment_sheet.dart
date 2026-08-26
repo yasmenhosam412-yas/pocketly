@@ -271,7 +271,7 @@ class _RecordAssociationPaymentSheetState
                   ),
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.calendar_today_outlined,
                         color: AppColors.primary,
                         size: 22,

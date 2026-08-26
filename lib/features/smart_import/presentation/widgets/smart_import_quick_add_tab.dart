@@ -241,7 +241,7 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
                   color: AppColors.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.bolt_rounded,
                   color: AppColors.primary,
                   size: 24,

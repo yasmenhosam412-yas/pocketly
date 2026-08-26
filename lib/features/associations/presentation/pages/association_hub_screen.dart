@@ -645,7 +645,7 @@ class _EmptySetupCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.groups_3_outlined,
             size: 48,
             color: AppColors.primary,

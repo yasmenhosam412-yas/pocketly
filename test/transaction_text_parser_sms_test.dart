@@ -324,6 +324,86 @@ void main() {
       );
       expect(title, 'Talabat');
     });
+
+    test('thousands separator is the txn amount not 1', () {
+      const body =
+          'Your account was debited with EGP 1,500.00 at CARREFOUR on 12/05/2026 18:40. Available balance is EGP 22,000.00';
+      final r = TransactionTextParser.parseSms(body, sender: 'CIB');
+      expect(r, isNotNull);
+      expect(r!.amount, 1500);
+      expect(r.title, 'CARREFOUR');
+      expect(r.type, FinancialEntryType.expense);
+    });
+
+    test('NBE debit by — expense not available balance', () {
+      const body =
+          'Dear Customer, Your a/c is debit by EGP 1,250.00 on 25/08/2026. Avl Bal EGP 10,000.00';
+      final r = TransactionTextParser.parseSms(
+        body,
+        smsReceivedAt: DateTime(2026, 8, 25, 12),
+        sender: 'NBE',
+      );
+      expect(r, isNotNull);
+      expect(r!.type, FinancialEntryType.expense);
+      expect(r.amount, 1250);
+    });
+
+    test('Arabic-Indic digits and invisible RTL marks', () {
+      const body =
+          '\u200fتم استلام مبلغ \u0666\u0660\u0660\u0660 جنيه من رقم 01094490330 المسجل بإسم Mona على رقم محفظتك';
+      final r = TransactionTextParser.parseSms(body, sender: 'VF-Cash');
+      expect(r, isNotNull);
+      expect(r!.amount, 6000);
+      expect(r.title, 'Mona');
+      expect(r.type, FinancialEntryType.income);
+    });
+
+    test('Orange Cash income is not labeled Vodafone', () {
+      const body =
+          'تم استلام مبلغ 350 جنيه من رقم 01011112222 المسجل باسم Karim على محفظة اورنج كاش. رصيدك الحالي 900 جنيه';
+      final r = TransactionTextParser.parseSms(body, sender: 'Orange');
+      expect(r, isNotNull);
+      expect(r!.type, FinancialEntryType.income);
+      expect(r.amount, 350);
+      expect(r.title, 'Karim');
+    });
+
+    test('purchase of EGP at merchant', () {
+      const body =
+          'Purchase of EGP 89.50 at SPINNEYS on 31/05/2026 20:15. Available balance EGP 4,200.00';
+      final r = TransactionTextParser.parseSms(
+        body,
+        smsReceivedAt: DateTime(2026, 5, 31, 21),
+        sender: 'QNB',
+      );
+      expect(r, isNotNull);
+      expect(r!.type, FinancialEntryType.expense);
+      expect(r.amount, 89.50);
+      expect(r.date!.day, 31);
+    });
+
+    test('مبلغ وقدره debit', () {
+      const body =
+          'تم خصم مبلغ وقدره 2,750.00 جم من حسابكم يوم 31/08/2026 09:05 المتاح 15000 جم';
+      final r = TransactionTextParser.parseSms(
+        body,
+        smsReceivedAt: DateTime(2026, 8, 31, 10),
+        sender: 'BanqueMisr',
+      );
+      expect(r, isNotNull);
+      expect(r!.type, FinancialEntryType.expense);
+      expect(r.amount, 2750);
+      expect(r.date!.day, 31);
+    });
+
+    test('insurance premium debit is a real expense not excluded', () {
+      const body =
+          'EGP 450.00 has been debited from your account for insurance premium. Available balance EGP 8,000.00';
+      final r = TransactionTextParser.parseSms(body, sender: 'CIB');
+      expect(r, isNotNull);
+      expect(r!.type, FinancialEntryType.expense);
+      expect(r.amount, 450);
+    });
   });
 
   group('parseMultiplePasted', () {

@@ -1334,7 +1334,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsTheme.
   ///
   /// In en, this message translates to:
-  /// **'Theme'**
+  /// **'Appearance'**
   String get settingsTheme;
 
   /// No description provided for @themeLight.
@@ -1354,6 +1354,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'System'**
   String get themeSystem;
+
+  /// No description provided for @appearanceColors.
+  ///
+  /// In en, this message translates to:
+  /// **'App color'**
+  String get appearanceColors;
+
+  /// No description provided for @appearanceGradients.
+  ///
+  /// In en, this message translates to:
+  /// **'Gradient style'**
+  String get appearanceGradients;
+
+  /// No description provided for @appearanceCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get appearanceCustom;
+
+  /// No description provided for @appearancePickColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a color'**
+  String get appearancePickColor;
+
+  /// No description provided for @appearanceCustomPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Main color'**
+  String get appearanceCustomPrimary;
+
+  /// No description provided for @appearanceCustomSecondary.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent color'**
+  String get appearanceCustomSecondary;
+
+  /// No description provided for @appearanceGradientStops.
+  ///
+  /// In en, this message translates to:
+  /// **'Gradient colors'**
+  String get appearanceGradientStops;
+
+  /// No description provided for @appearancePaletteCoral.
+  ///
+  /// In en, this message translates to:
+  /// **'Coral'**
+  String get appearancePaletteCoral;
+
+  /// No description provided for @appearancePaletteOcean.
+  ///
+  /// In en, this message translates to:
+  /// **'Ocean'**
+  String get appearancePaletteOcean;
+
+  /// No description provided for @appearancePaletteForest.
+  ///
+  /// In en, this message translates to:
+  /// **'Forest'**
+  String get appearancePaletteForest;
+
+  /// No description provided for @appearancePaletteSunset.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunset'**
+  String get appearancePaletteSunset;
+
+  /// No description provided for @appearancePaletteGrape.
+  ///
+  /// In en, this message translates to:
+  /// **'Grape'**
+  String get appearancePaletteGrape;
+
+  /// No description provided for @appearancePaletteRose.
+  ///
+  /// In en, this message translates to:
+  /// **'Rose'**
+  String get appearancePaletteRose;
+
+  /// No description provided for @appearancePaletteSlate.
+  ///
+  /// In en, this message translates to:
+  /// **'Slate'**
+  String get appearancePaletteSlate;
+
+  /// No description provided for @appearanceGradientDiagonal.
+  ///
+  /// In en, this message translates to:
+  /// **'Diagonal'**
+  String get appearanceGradientDiagonal;
+
+  /// No description provided for @appearanceGradientSunset.
+  ///
+  /// In en, this message translates to:
+  /// **'Sunset sweep'**
+  String get appearanceGradientSunset;
+
+  /// No description provided for @appearanceGradientAurora.
+  ///
+  /// In en, this message translates to:
+  /// **'Aurora'**
+  String get appearanceGradientAurora;
+
+  /// No description provided for @appearanceGradientWave.
+  ///
+  /// In en, this message translates to:
+  /// **'Wave'**
+  String get appearanceGradientWave;
+
+  /// No description provided for @appearanceGradientSoft.
+  ///
+  /// In en, this message translates to:
+  /// **'Soft fade'**
+  String get appearanceGradientSoft;
 
   /// No description provided for @settingsCalculator.
   ///

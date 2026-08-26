@@ -123,8 +123,8 @@ class _AuthGradientHeader extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: header.gradientColors,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: header.gradientBegin,
+          end: header.gradientEnd,
         ),
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(28),

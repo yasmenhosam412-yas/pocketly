@@ -78,7 +78,7 @@ class _StatisticsTabState extends State<StatisticsTab>
                         children: [
                           SizedBox(
                             height: MediaQuery.sizeOf(context).height * 0.35,
-                            child: const Center(
+                            child: Center(
                               child: CircularProgressIndicator(
                                 color: AppColors.secondary,
                               ),
@@ -247,7 +247,7 @@ class _PeriodBanner extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.bar_chart_rounded,
             size: 20,
             color: AppColors.secondary,

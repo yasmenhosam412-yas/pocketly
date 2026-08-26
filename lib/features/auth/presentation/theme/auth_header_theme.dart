@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/services/service_locator.dart';
+import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 
-/// Auth hero header colors — warm gradient in light, deep brown in dark.
+/// Auth hero header colors — selected appearance gradient in light, tinted dark in dark mode.
 class AuthHeaderTheme {
   const AuthHeaderTheme._({
     required this.gradientColors,
+    required this.gradientBegin,
+    required this.gradientEnd,
     required this.foreground,
     required this.foregroundMuted,
     required this.glassFill,
@@ -14,6 +18,8 @@ class AuthHeaderTheme {
   });
 
   final List<Color> gradientColors;
+  final Alignment gradientBegin;
+  final Alignment gradientEnd;
   final Color foreground;
   final Color foregroundMuted;
   final Color glassFill;
@@ -24,10 +30,13 @@ class AuthHeaderTheme {
   factory AuthHeaderTheme.resolve(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = context.appPalette;
+    final gradient = getIt<ThemePreferences>().headerGradient();
 
     if (!isDark) {
       return AuthHeaderTheme._(
-        gradientColors: [AppColors.primary, AppColors.secondary],
+        gradientColors: gradient.colors,
+        gradientBegin: gradient.begin,
+        gradientEnd: gradient.end,
         foreground: Colors.white,
         foregroundMuted: Colors.white.withValues(alpha: 0.88),
         glassFill: Colors.white.withValues(alpha: 0.16),
@@ -38,11 +47,9 @@ class AuthHeaderTheme {
     }
 
     return AuthHeaderTheme._(
-      gradientColors: [
-        const Color(0xFF14100E),
-        const Color(0xFF221A17),
-        Color.lerp(const Color(0xFF2B211D), AppColors.primary, 0.28)!,
-      ],
+      gradientColors: gradient.colors,
+      gradientBegin: gradient.begin,
+      gradientEnd: gradient.end,
       foreground: palette.textPrimary,
       foregroundMuted: palette.textSecondary,
       glassFill: palette.surface.withValues(alpha: 0.72),

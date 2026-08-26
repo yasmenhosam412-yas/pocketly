@@ -26,11 +26,28 @@ class SmsMessageItem {
   /// Sender / bank short code shown in lists and form title (not message body).
   String get header => sender.trim();
 
+  SmsMessageItem copyWith({
+    ParsedFinancialEntry? parsed,
+    DateTime? date,
+  }) {
+    return SmsMessageItem(
+      id: id,
+      sender: sender,
+      body: body,
+      date: date ?? this.date,
+      parsed: parsed ?? this.parsed,
+    );
+  }
+
+  SmsMessageItem withType(FinancialEntryType type) {
+    return copyWith(parsed: parsed.copyWith(type: type));
+  }
+
   /// Merchant, person, or bank name — never a hotline like 19123.
   String displayTitle(String fallbackLabel) {
     return TransactionTextParser.resolveSmsTitle(
           parsedTitle: parsed.title,
-          body: body,
+          body: parsed.rawText.isNotEmpty ? parsed.rawText : body,
           sender: header,
         ) ??
         fallbackLabel;
@@ -40,7 +57,7 @@ class SmsMessageItem {
   String? get displaySubtitle {
     final title = TransactionTextParser.resolveSmsTitle(
       parsedTitle: parsed.title,
-      body: body,
+      body: parsed.rawText.isNotEmpty ? parsed.rawText : body,
       sender: header,
     );
     if (title == null || header.isEmpty) return null;
@@ -72,7 +89,7 @@ class SmsImportService {
   static const defaultPageSize = 30;
 
   /// Raw inbox rows fetched per query call.
-  static const _rawBatchSize = 60;
+  static const _rawBatchSize = 80;
 
   /// Cap raw rows scanned per load call (avoids ANR on huge inboxes).
   static const _maxRawScanPerCall = 400;
@@ -120,12 +137,16 @@ class SmsImportService {
     var rawScanned = 0;
 
     while (items.length < pageSize && hasMoreRaw && rawScanned < scanLimit) {
+      final remainingScan = scanLimit - rawScanned;
+      final batchCount =
+          remainingScan < _rawBatchSize ? remainingScan : _rawBatchSize;
+
       List<SmsMessage> batch;
       try {
-        batch = await query.querySms(
-          kinds: [SmsQueryKind.inbox],
+        batch = await _queryInbox(
+          query,
           start: offset,
-          count: _rawBatchSize,
+          count: batchCount,
         );
       } catch (e, st) {
         debugPrint('SmsImportService.querySms failed: $e\n$st');
@@ -138,9 +159,10 @@ class SmsImportService {
         break;
       }
 
+      final batchStart = offset;
       offset += batch.length;
       rawScanned += batch.length;
-      if (batch.length < _rawBatchSize) {
+      if (batch.length < batchCount) {
         hasMoreRaw = false;
       }
 
@@ -149,13 +171,15 @@ class SmsImportService {
           await Future<void>.delayed(Duration.zero);
         }
         final msg = batch[i];
-        final item = _mapMessage(msg, items.length + i);
+        final item = _mapMessage(msg, batchStart + i);
         if (item == null) continue;
         if (!seenIds.add(item.id)) continue;
         items.add(item);
         if (items.length >= pageSize) break;
       }
     }
+
+    items.sort(_compareItemsByDateDesc);
 
     return SmsPageResult(
       items: items,
@@ -176,12 +200,34 @@ class SmsImportService {
     );
   }
 
+  Future<List<SmsMessage>> _queryInbox(
+    SmsQuery query, {
+    required int start,
+    required int count,
+  }) async {
+    try {
+      return await query.querySms(
+        kinds: const [SmsQueryKind.inbox],
+        start: start,
+        count: count,
+      );
+    } catch (e, st) {
+      debugPrint('SmsImportService.querySms retrying: $e\n$st');
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      return query.querySms(
+        kinds: const [SmsQueryKind.inbox],
+        start: start,
+        count: count,
+      );
+    }
+  }
+
   SmsMessageItem? _mapMessage(SmsMessage msg, int fallbackIndex) {
     final body = msg.body ?? '';
     if (body.trim().isEmpty) return null;
 
-    final header = (msg.address ?? '').trim();
-    final smsDate = msg.date ?? DateTime.now();
+    final header = _normalizeSender(msg.address);
+    final smsDate = _messageDate(msg);
     final parsed = TransactionTextParser.parseSms(
       body,
       defaultCurrencyCode: getIt<CurrencyPreferences>().displayCode,
@@ -191,11 +237,13 @@ class SmsImportService {
     if (parsed == null) return null;
 
     final transactionDate = parsed.date ?? smsDate;
+    final titleBody =
+        parsed.rawText.trim().isNotEmpty ? parsed.rawText : body;
     final enriched = parsed.copyWith(
       date: transactionDate,
       title: TransactionTextParser.resolveSmsTitle(
         parsedTitle: parsed.title,
-        body: body,
+        body: titleBody,
         sender: header,
       ),
     );
@@ -209,11 +257,30 @@ class SmsImportService {
     );
   }
 
+  static DateTime _messageDate(SmsMessage msg) {
+    return msg.date ?? msg.dateSent ?? DateTime.now();
+  }
+
+  static String _normalizeSender(String? address) {
+    if (address == null) return '';
+    return address
+        .replaceAll(RegExp(r'[\u200e\u200f\u202a-\u202e]'), '')
+        .trim();
+  }
+
+  static int _compareItemsByDateDesc(SmsMessageItem a, SmsMessageItem b) {
+    final cmp = b.date.compareTo(a.date);
+    if (cmp != 0) return cmp;
+    return b.id.compareTo(a.id);
+  }
+
   static String _messageId(SmsMessage msg, int fallbackIndex) {
     if (msg.id != null) return msg.id.toString();
     final body = msg.body ?? '';
     final address = msg.address ?? '';
-    final date = msg.date?.millisecondsSinceEpoch ?? fallbackIndex;
-    return '${address}_${date}_${body.hashCode}';
+    final date = msg.date?.millisecondsSinceEpoch ??
+        msg.dateSent?.millisecondsSinceEpoch ??
+        fallbackIndex;
+    return '${address}_${date}_${body.hashCode}_$fallbackIndex';
   }
 }

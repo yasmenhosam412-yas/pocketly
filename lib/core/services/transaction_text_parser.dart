@@ -12,16 +12,29 @@ class TransactionTextParser {
     'was debited',
     'debited with egp',
     'debited with le',
+    'debited by',
+    'debit by',
+    'has been debit',
+    'is debit by',
     'withdrawn from',
     'withdrawn with',
     'charged to',
     'charged on',
     'paid to',
     'payment of',
+    'purchase of',
+    'purchase for',
     'purchase at',
+    'pos purchase',
     'spent at',
     'spent on',
     'bill payment',
+    'transferred to',
+    'transfer to',
+    'عملية شراء',
+    'تم الشراء',
+    'مبلغ وقدره',
+    'مبلغ وقدرة',
     'تم خصم',
     'تم سحب',
     'تم دفع',
@@ -66,11 +79,19 @@ class TransactionTextParser {
     'was credited to your account',
     'been credited with',
     'credited with egp',
+    'credited by',
+    'credit by',
+    'has been credit',
+    'is credit by',
     'deposited to your account',
     'deposited into your account',
     'received in your account',
+    'received egp',
     'transfer from',
     'transfer in',
+    'instapay',
+    'إنستاباي',
+    'انستاباي',
     'salary',
     'salary/bonus',
     'payroll',
@@ -195,7 +216,6 @@ class TransactionTextParser {
     'card statement',
     'minimum payment',
     'minimum payment of',
-    'total amount of',
     'your card #',
     'شكرا لإرسال دفعتك',
     'شكراً لإرسال دفعتك',
@@ -207,8 +227,9 @@ class TransactionTextParser {
     'إصدار كشف',
     'survey',
     'استبيان',
-    'insurance',
-    'تأمين',
+    'insurance offer',
+    'عرض تأمين',
+    'عرض تامين',
     'loan offer',
     'عرض تمويل',
   ];
@@ -217,6 +238,10 @@ class TransactionTextParser {
     'available balance',
     'current balance',
     'account balance is',
+    'avl bal',
+    'avail bal',
+    'available bal',
+    'remaining balance',
     'رصيدكم',
     'رصيدك الحالي',
     'رصيدك الحالى',
@@ -228,6 +253,7 @@ class TransactionTextParser {
     'رصيد الحساب',
     'الرصيد الحالي',
     'الرصيد الحالى',
+    'رصيد بعد العملية',
   ];
 
   static final _vfBalanceNotification = RegExp(
@@ -240,68 +266,90 @@ class TransactionTextParser {
     caseSensitive: false,
   );
 
+  /// 1500 / 1,500 / 1,500.00 / 1500.50
+  static const _amountNumber =
+      r'([0-9]{1,9}(?:[, ][0-9]{3})*(?:[.,][0-9]{1,2})?)';
+
+  static const _maxCapturedAmount = 99_999_999.0;
+
   /// "EGP 1000.00 has been credited to your card account"
   static final _cardBillPaymentAmount = RegExp(
-    r'egp\s*([0-9]{1,6}(?:[.,][0-9]{1,2})?)\s+has\s+been\s+credited\s+to\s+your\s+card',
+    r'egp\s*'
+    '$_amountNumber'
+    r'\s+has\s+been\s+credited\s+to\s+your\s+card',
     caseSensitive: false,
   );
 
   static final _mobileWalletSender = RegExp(
     r'vodafone|vf[\s-]?cash|vf-cash|vfcash|فودافون|محفظ|^vf$|'
-    r'etisalat|e&|اتصالات|flous|ايه\s*اند|orange\s*cash',
+    r'etisalat|e&|اتصالات|flous|ايه\s*اند|'
+    r'orange(?:\s*cash)?|اورنج|أورنج|'
+    r'we[\s-]?pay|we[\s-]?cash|وي\s*باي|وى\s*كاش|'
+    r'bm[\s-]?wallet|محفظة\s*بنك\s*مصر',
     caseSensitive: false,
   );
 
   static final _amountWithCurrency = RegExp(
-    r'(?:EGP|LE|ج\.?\s*م|جم\b|جنيه|جنية|SAR|USD|EUR|GBP|\$|€|£)\s*([0-9]{1,6}(?:[,\s][0-9]{3})*(?:[.,][0-9]{1,2})?)',
+    r'(?:EGP|LE|ج\.?\s*م|جم\b|جنيه|جنية|SAR|USD|EUR|GBP|\$|€|£)\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   static final _amountBeforeCurrency = RegExp(
-    r'([0-9]{1,6}(?:[,\s][0-9]{3})*(?:[.,][0-9]{1,2})?)\s*(?:EGP|LE|ج\.?\s*م|جم\b|جنيه|جنية|SAR|USD|EUR|GBP)',
+    '$_amountNumber'
+    r'\s*(?:EGP|LE|ج\.?\s*م|جم\b|جنيه|جنية|SAR|USD|EUR|GBP)',
     caseSensitive: false,
   );
 
   static final _amountAttachedEgp = RegExp(
-    r'([0-9]{1,6}(?:[.,][0-9]{1,2})?)\s*(?:ج\.?م|جم\b)(?!\w)',
+    '$_amountNumber'
+    r'\s*(?:ج\.?م|جم\b)(?!\w)',
     caseSensitive: false,
   );
 
   static final _amountLabeled = RegExp(
-    r'(?:مبلغ|amount|value|قيمة|بقيمة|مقدار)\s*:?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'(?:مبلغ|amount|value|قيمة|بقيمة|مقدار|و?قدره|و?قدرة)\s*:?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   /// "8000جم" / "8000.00جنيه" right after the number
   static final _amountAttachedCurrency = RegExp(
-    r'([0-9]{1,9}(?:[.,][0-9]{1,2})?)\s*(?:جنيه|جنية|ج\.?\s*م|جم\b|egp|le)(?!\w)',
+    '$_amountNumber'
+    r'\s*(?:جنيه|جنية|ج\.?\s*م|جم\b|egp|le)(?!\w)',
     caseSensitive: false,
   );
 
   static final _vfReceivedAmount = RegExp(
-    r'تم\s*استلام\s*مبلغ\s*([0-9]{1,6}(?:[.,][0-9]{1,2})?)',
+    r'تم\s*استلام\s*مبلغ\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   /// "تم سحب 5900.00 جنية" / "تم استلام 6000 جنيه" (without مبلغ)
   static final _vfDirectTxnAmount = RegExp(
-    r'تم\s*(?:استلام|خصم|سحب|دفع|سداد)\s*([0-9]{1,6}(?:[.,][0-9]{1,2})?)\s*(?:جنيه|جنية|ج\.?\s*م|جم\b|egp|le)',
+    r'تم\s*(?:استلام|خصم|سحب|دفع|سداد)\s*'
+    '$_amountNumber'
+    r'\s*(?:جنيه|جنية|ج\.?\s*م|جم\b|egp|le)',
     caseSensitive: false,
   );
 
   static final _vfDebitedAmount = RegExp(
-    r'تم\s*(?:خصم|سحب|دفع|سداد)\s*مبلغ\s*([0-9]{1,6}(?:[.,][0-9]{1,2})?)',
+    r'تم\s*(?:خصم|سحب|دفع|سداد)\s*مبلغ\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   static final _vfTransferInAmount = RegExp(
-    r'تم\s*تحويل\s*مبلغ\s*:?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'تم\s*تحويل\s*مبلغ\s*:?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   /// "تم تحويل لحظى بمبلغ 200 إلى رقم مرجعى …"
   static final _instantTransferOutAmount = RegExp(
-    r'تم\s*تحويل\s*لحظ[يى]\s*بمبلغ\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'تم\s*تحويل\s*لحظ[يى]\s*بمبلغ\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
@@ -316,79 +364,125 @@ class TransactionTextParser {
   );
 
   static final _vfAcceptedAmount = RegExp(
-    r'تم\s*قبول\s*مبلغ\s*:?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'تم\s*قبول\s*مبلغ\s*:?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   static final _incomingRemittanceAmount = RegExp(
-    r'حوالة\s*واردة\s*بمبلغ\s*:?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'حوالة\s*واردة\s*بمبلغ\s*:?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   static final _walletCreditedAmount = RegExp(
-    r'(?:egp|le)\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?).{0,120}(?:vodafone\s*cash|vf-cash|your\s+(?:vodafone\s*)?wallet|محفظتك)',
+    r'(?:egp|le)\s*'
+    '$_amountNumber'
+    r'.{0,120}(?:vodafone\s*cash|vf-cash|orange\s*cash|your\s+(?:vodafone\s*)?wallet|محفظتك)',
     caseSensitive: false,
   );
 
   static final _englishReceivedAmount = RegExp(
-    r'(?:you\s+have\s+)?received\s+(?:an\s+)?amount\s+of\s*(?:egp|le)?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'(?:you\s+have\s+)?received\s+'
+    r'(?:(?:an\s+)?amount\s+of\s*(?:egp|le)?\s*|(?:egp|le)\s*)'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   static final _txnAmountPhrase = RegExp(
-    r'(?:استلام|خصم|سحب|دفع|إيداع|ايداع)\s*مبلغ\s*([0-9]{1,6}(?:[.,][0-9]{1,2})?)',
+    r'(?:استلام|خصم|سحب|دفع|إيداع|ايداع)\s*مبلغ\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
-  /// "EGP 55.00 has been debited" / "debited with EGP 55"
+  /// "EGP 55.00 has been debited" / "debited with EGP 55" / "debit by EGP 1,500"
   static final _bankDebitedAmount = RegExp(
-    r'(?:debited|withdrawn|charged|paid)\s+(?:with|for|amount\s+of)?\s*(?:egp|le)?\s*([0-9]{1,6}(?:[.,][0-9]{1,2})?)',
+    r'(?:(?:has\s+been\s+)?(?:debited|debit|withdrawn|charged|paid))\s+'
+    r'(?:by|with|for|amount\s+of)?\s*(?:egp|le)?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   static final _bankCreditedAmount = RegExp(
-    r'(?:egp|le)\s*([0-9]{1,6}(?:[.,][0-9]{1,2})?)\s+has\s+been\s+credited',
+    r'(?:egp|le)\s*'
+    '$_amountNumber'
+    r'\s+has\s+been\s+credit(?:ed)?',
+    caseSensitive: false,
+  );
+
+  static final _nbeDebitByAmount = RegExp(
+    r'(?:is\s+)?(?:debit(?:ed)?|credit(?:ed)?)\s+by\s+(?:egp|le)\s*'
+    '$_amountNumber',
+    caseSensitive: false,
+  );
+
+  static final _purchaseOfAmount = RegExp(
+    r'(?:purchase|purchased|pos(?:\s+purchase)?|trx|transaction)\s+'
+    r'(?:of|for)?\s*(?:egp|le)\s*'
+    '$_amountNumber',
+    caseSensitive: false,
+  );
+
+  static final _arabicPurchaseAmount = RegExp(
+    r'(?:عملية\s*شراء|تم\s*الشراء|شراء)\s*(?:بمبلغ\s*)?(?:egp|le)?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   /// "تم إيداع EGP 7900" / "تم إيداع مبلغ 5000 جنيه"
   static final _bankArabicDepositAmount = RegExp(
-    r'تم\s*(?:إيداع|ايداع)\s*(?:مبلغ\s*)?(?:egp|le)?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'تم\s*(?:إيداع|ايداع)\s*(?:مبلغ\s*)?(?:egp|le)?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   /// "تم خصم EGP 500" / "تم سحب مبلغ 500 من الصراف"
   static final _bankArabicDebitAmount = RegExp(
-    r'تم\s*(?:خصم|سحب)\s*(?:مبلغ\s*)?(?:egp|le)?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'تم\s*(?:خصم|سحب)\s*(?:مبلغ\s*)?(?:و?قدره\s*)?(?:egp|le)?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   /// "سداد فاتورة كهرباء بمبلغ 350" / "Bill payment of EGP 200"
   static final _billPaymentAmount = RegExp(
-    r'(?:سداد|تم\s*سداد|bill\s+payment)\s*(?:فاتورة|فاتورتك|of)?\s*(?:بمبلغ\s*)?(?:egp|le)?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'(?:سداد|تم\s*سداد|bill\s+payment)\s*(?:فاتورة|فاتورتك|of)?\s*(?:بمبلغ\s*)?(?:egp|le)?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   /// "Cash withdrawal of EGP 500 at ATM" / "تم سحب 500 من الصراف الآلي"
   static final _atmWithdrawalAmount = RegExp(
-    r'(?:cash\s+withdrawal|atm\s+withdrawal|withdrawn\s+at\s+atm)\s+(?:of\s+)?(?:egp|le)?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'(?:cash\s+withdrawal|atm\s+withdrawal|withdrawn\s+at\s+atm)\s+(?:of\s+)?(?:egp|le)?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   static final _atmWithdrawalArabicAmount = RegExp(
-    r'تم\s*سحب\s*(?:مبلغ\s*)?([0-9]{1,9}(?:[.,][0-9]{1,2})?).{0,80}(?:صراف|atm)',
+    r'تم\s*سحب\s*(?:مبلغ\s*)?'
+    '$_amountNumber'
+    r'.{0,80}(?:صراف|atm)',
     caseSensitive: false,
   );
 
   /// "Cash deposit of EGP 1000" / "إيداع نقدي بمبلغ 2000"
   static final _cashDepositAmount = RegExp(
-    r'(?:cash\s+deposit|ايداع\s*نقدي|إيداع\s*نقدي)\s*(?:of\s+)?(?:مبلغ\s*)?(?:egp|le)?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'(?:cash\s+deposit|ايداع\s*نقدي|إيداع\s*نقدي)\s*(?:of\s+)?(?:مبلغ\s*)?(?:egp|le)?\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   /// CIB / bank: "debited with EGP 1,500.00 at CARREFOUR"
   static final _bankDebitedAtMerchant = RegExp(
-    r'(?:debited|charged)\s+(?:with|for)\s+(?:egp|le)?\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?).{0,60}\s+at\s+(.+?)(?:\s+on\s+\d|\s+available|\s+for\s+more|$)',
+    r'(?:debited|charged|debit)\s+(?:with|for|by)\s+(?:egp|le)?\s*'
+    '$_amountNumber'
+    r'.{0,60}\s+at\s+(.+?)(?:\s+on\s+\d|\s+available|\s+for\s+more|$)',
+    caseSensitive: false,
+  );
+
+  static final _purchaseAtMerchant = RegExp(
+    r'(?:purchase|trx|transaction)\s+(?:of\s+)?(?:egp|le)\s*'
+    '$_amountNumber'
+    r'.{0,40}\s+(?:at|from)\s+(.+?)(?:\s+on\s+\d|\s+available|\s+for\s+more|\.|$)',
     caseSensitive: false,
   );
 
@@ -415,23 +509,27 @@ class TransactionTextParser {
 
   /// "إضافة راتب/حافز بمبلغ 12500" / "اضافة راتب بمبلغ 5000"
   static final _salaryBonusAmount = RegExp(
-    r'(?:إضافة|اضافة|تم\s*إضافة|تم\s*اضافة)\s*(?:راتب|مرتب)(?:\s*/\s*حافز)?\s*(?:بمبلغ\s*)?([0-9]{1,9}(?:[.,][0-9]{1,2})?)',
+    r'(?:إضافة|اضافة|تم\s*إضافة|تم\s*اضافة)\s*(?:راتب|مرتب)(?:\s*/\s*حافز)?\s*(?:بمبلغ\s*)?'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   static final _salaryBonusEgpAmount = RegExp(
-    r'(?:egp|le|جنيه|جنية)\s*([0-9]{1,9}(?:[.,][0-9]{1,2})?).{0,140}(?:راتب|حافز|مرتب|salary|payroll|bonus)',
+    r'(?:egp|le|جنيه|جنية)\s*'
+    '$_amountNumber'
+    r'.{0,140}(?:راتب|حافز|مرتب|salary|payroll|bonus)',
     caseSensitive: false,
   );
 
   /// "from Talabat for EGP 204.16" (may include "on 19-May at …" before for EGP)
   static final _cardPurchaseAmount = RegExp(
-    r'from\s+(.+?)\s+for\s+egp\s*([0-9]{1,6}(?:[.,][0-9]{1,2})?)',
+    r'from\s+(.+?)\s+for\s+egp\s*'
+    '$_amountNumber',
     caseSensitive: false,
   );
 
   static final _cardPurchaseDateTime = RegExp(
-    r'on\s+(\d{1,2})-([A-Za-z]{3})\s+at\s+(\d{1,2}):(\d{2})',
+    r'on\s+(\d{1,2})-([A-Za-z]{3})(?:-(\d{2,4}))?\s+at\s+(\d{1,2}):(\d{2})',
     caseSensitive: false,
   );
 
@@ -446,7 +544,7 @@ class TransactionTextParser {
   );
 
   static final _plainAmount = RegExp(
-    r'\b([0-9]{1,6}(?:,[0-9]{3})*(?:[.,][0-9]{1,2})?)\b',
+    r'(?<![\d.,])$_amountNumber(?![\d.,])',
   );
 
   static bool isMobileWalletSender(String address) {
@@ -692,13 +790,17 @@ class TransactionTextParser {
   }
 
   static bool _isVodafoneCashMessage(String lower) {
+    if (_isEtisalatCashMessage(lower) ||
+        _isOrangeCashMessage(lower) ||
+        _isWePayMessage(lower)) {
+      return false;
+    }
     return lower.contains('فودافون') ||
         lower.contains('vodafone') ||
         lower.contains('vf-cash') ||
         lower.contains('vf.eg') ||
         lower.contains('vfcash') ||
-        (lower.contains('محفظتك') && !lower.contains('اتصالات')) ||
-        (lower.contains('محفظة') &&
+        (lower.contains('محفظتك') &&
             !lower.contains('اتصالات') &&
             !lower.contains('cib'));
   }
@@ -713,8 +815,27 @@ class TransactionTextParser {
         lower.contains('ايه اند');
   }
 
+  static bool _isOrangeCashMessage(String lower) {
+    return lower.contains('orange cash') ||
+        lower.contains('orangecash') ||
+        lower.contains('اورنج كاش') ||
+        lower.contains('محفظة اورنج') ||
+        (lower.contains('اورنج') && lower.contains('محفظ'));
+  }
+
+  static bool _isWePayMessage(String lower) {
+    return lower.contains('we pay') ||
+        lower.contains('we cash') ||
+        lower.contains('wepay') ||
+        lower.contains('وي باي') ||
+        lower.contains('وى كاش');
+  }
+
   static bool _isAnyMobileWalletMessage(String lower) {
-    return _isVodafoneCashMessage(lower) || _isEtisalatCashMessage(lower);
+    return _isVodafoneCashMessage(lower) ||
+        _isEtisalatCashMessage(lower) ||
+        _isOrangeCashMessage(lower) ||
+        _isWePayMessage(lower);
   }
 
   static bool _isCibMessage(String lower) {
@@ -784,6 +905,8 @@ class TransactionTextParser {
   static String? _extractWalletTitle(String text) {
     final lower = text.toLowerCase();
     if (_isEtisalatCashMessage(lower)) return 'Etisalat Cash';
+    if (_isOrangeCashMessage(lower)) return 'Orange Cash';
+    if (_isWePayMessage(lower)) return 'WE Pay';
     if (_isVodafoneCashMessage(lower)) return 'Vodafone Cash';
     return null;
   }
@@ -802,10 +925,21 @@ class TransactionTextParser {
     return parseSms(text, sender: sender) != null;
   }
 
-  /// Normalize common Arabic spelling variants in Vodafone/bank SMS.
+  static final _invisibleSmsChars = RegExp(
+    r'[\u0000\u00AD\u200B-\u200F\u202A-\u202E\u2060\u2066-\u2069\uFEFF\u0640]',
+  );
+
+  static final _smsNbsp = RegExp(r'[\u00A0\u202F\u2007]');
+
+  /// Normalize Arabic digits, hidden chars, and common SMS spelling variants.
   static String _normalizeSmsText(String text) {
-    var t = text.replaceAll('\r', '').replaceAll('\n', ' ').trim();
-    t = t.replaceAll(RegExp(r'\s+'), ' ');
+    var t = text.replaceAll('\r', '').replaceAll('\n', ' ');
+    t = t.replaceAll(_invisibleSmsChars, '');
+    t = t.replaceAll(_smsNbsp, ' ');
+    t = t.replaceAll('\u066C', ',');
+    t = t.replaceAll('\u066B', '.');
+    t = _westernizeDigits(t);
+    t = t.replaceAll(RegExp(r'\s+'), ' ').trim();
     const replacements = <String, String>{
       'إستلام': 'استلام',
       'أستلام': 'استلام',
@@ -816,11 +950,29 @@ class TransactionTextParser {
       'مرجعى': 'مرجعي',
       'فى': 'في',
       'إلى': 'الى',
+      'ج.م.': 'جم',
+      'ج.م': 'جم',
+      'أورنج': 'اورنج',
+      'إنستاباي': 'انستاباي',
     };
     for (final entry in replacements.entries) {
       t = t.replaceAll(entry.key, entry.value);
     }
     return t;
+  }
+
+  static String _westernizeDigits(String input) {
+    final buf = StringBuffer();
+    for (final unit in input.codeUnits) {
+      if (unit >= 0x0660 && unit <= 0x0669) {
+        buf.writeCharCode(0x30 + (unit - 0x0660));
+      } else if (unit >= 0x06F0 && unit <= 0x06F9) {
+        buf.writeCharCode(0x30 + (unit - 0x06F0));
+      } else {
+        buf.writeCharCode(unit);
+      }
+    }
+    return buf.toString();
   }
 
   /// Parse bank/wallet SMS into an entry, or null if not a transaction.
@@ -1093,6 +1245,8 @@ class TransactionTextParser {
       'راتب/حافز',
       'credited to your account',
       'has been credited to your account',
+      'credit by',
+      'has been credit',
     ];
     const expenseAnchors = [
       'تم خصم',
@@ -1111,6 +1265,9 @@ class TransactionTextParser {
       'withdrawn from',
       'trx on your card',
       'you have a trx',
+      'purchase of',
+      'debit by',
+      'has been debit',
     ];
 
     final hasIncomeAnchor = incomeAnchors.any(lower.contains);
@@ -1171,14 +1328,28 @@ class TransactionTextParser {
     return FinancialEntryType.expense;
   }
 
-  static bool _isCardPurchase(String lower) {
+  static bool _isCardTrx(String lower) {
     return lower.contains('trx on your card') ||
         lower.contains('you have a trx');
   }
 
+  static bool _isCardPurchase(String lower) {
+    return _isCardTrx(lower) ||
+        lower.contains('purchase of egp') ||
+        lower.contains('purchase of le') ||
+        lower.contains('pos purchase');
+  }
+
   static String? _extractCardMerchant(String text) {
-    final match = _cardPurchaseAmount.firstMatch(text);
-    return _sanitizeMerchantTitle(match?.group(1));
+    final fromFor = _cardPurchaseAmount.firstMatch(text);
+    if (fromFor != null) {
+      return _sanitizeMerchantTitle(fromFor.group(1));
+    }
+    final atMerchant = _purchaseAtMerchant.firstMatch(text);
+    if (atMerchant != null) {
+      return _sanitizeMerchantTitle(atMerchant.group(2));
+    }
+    return _extractBankDebitMerchant(text);
   }
 
   static String? _sanitizeMerchantTitle(String? raw) {
@@ -1237,64 +1408,39 @@ class TransactionTextParser {
   static double? _extractAmount(String text) {
     final lower = text.toLowerCase();
 
-    if (_isCardPurchase(lower)) {
-      final cardPurchase = _cardPurchaseAmount.firstMatch(text);
-      if (cardPurchase != null) {
-        final value = _parseNumber(cardPurchase.group(2)!);
-        if (value > 0 && value <= 1_000_000) return value;
-      }
+    if (_isCardTrx(lower)) {
+      final cardPurchase = _validAmount(
+        _cardPurchaseAmount.firstMatch(text),
+        group: 2,
+      );
+      if (cardPurchase != null) return cardPurchase;
+      final purchaseOf = _validAmount(_purchaseOfAmount.firstMatch(text));
+      if (purchaseOf != null) return purchaseOf;
+      final atMerchant = _validAmount(_purchaseAtMerchant.firstMatch(text));
+      if (atMerchant != null) return atMerchant;
+      final withCurrency = _firstCurrencyAmount(text);
+      if (withCurrency != null) return withCurrency;
       return null;
     }
 
-    final cardPurchase = _cardPurchaseAmount.firstMatch(text);
-    if (cardPurchase != null) {
-      final value = _parseNumber(cardPurchase.group(2)!);
-      if (value > 0 && value <= 1_000_000) return value;
-    }
-
-    final cardBill = _cardBillPaymentAmount.firstMatch(text);
-    if (cardBill != null) {
-      final value = _parseNumber(cardBill.group(1)!);
-      if (value > 0 && value <= 1_000_000) return value;
-    }
-
-    final instantOut = _instantTransferOutAmount.firstMatch(text);
-    if (instantOut != null) {
-      final value = _parseNumber(instantOut.group(1)!);
-      if (value > 0 && value <= 1_000_000) return value;
-    }
-
-    final billPay = _billPaymentAmount.firstMatch(text);
-    if (billPay != null) {
-      final value = _parseNumber(billPay.group(1)!);
-      if (value > 0 && value <= 1_000_000) return value;
-    }
-
-    final atmEn = _atmWithdrawalAmount.firstMatch(text);
-    if (atmEn != null) {
-      final value = _parseNumber(atmEn.group(1)!);
-      if (value > 0 && value <= 1_000_000) return value;
-    }
-
-    final atmAr = _atmWithdrawalArabicAmount.firstMatch(text);
-    if (atmAr != null) {
-      final value = _parseNumber(atmAr.group(1)!);
-      if (value > 0 && value <= 1_000_000) return value;
-    }
-
-    final cashDep = _cashDepositAmount.firstMatch(text);
-    if (cashDep != null) {
-      final value = _parseNumber(cashDep.group(1)!);
-      if (value > 0 && value <= 1_000_000) return value;
-    }
-
-    final bankDebitMerchant = _bankDebitedAtMerchant.firstMatch(text);
-    if (bankDebitMerchant != null) {
-      final value = _parseNumber(bankDebitMerchant.group(1)!);
-      if (value > 0 && value <= 1_000_000) return value;
-    }
+    final fromMerchantFor = _validAmount(
+      _cardPurchaseAmount.firstMatch(text),
+      group: 2,
+    );
+    if (fromMerchantFor != null) return fromMerchantFor;
 
     for (final pattern in [
+      _cardBillPaymentAmount,
+      _instantTransferOutAmount,
+      _billPaymentAmount,
+      _atmWithdrawalAmount,
+      _atmWithdrawalArabicAmount,
+      _cashDepositAmount,
+      _bankDebitedAtMerchant,
+      _purchaseAtMerchant,
+      _purchaseOfAmount,
+      _arabicPurchaseAmount,
+      _nbeDebitByAmount,
       _bankArabicDepositAmount,
       _bankArabicDebitAmount,
       _salaryBonusAmount,
@@ -1313,10 +1459,8 @@ class TransactionTextParser {
       _bankCreditedAmount,
       _amountLabeled,
     ]) {
-      final match = pattern.firstMatch(text);
-      if (match == null) continue;
-      final value = _parseNumber(match.group(1)!);
-      if (value > 0 && value <= 1_000_000) return value;
+      final value = _validAmount(pattern.firstMatch(text));
+      if (value != null) return value;
     }
 
     final candidates = <double>[];
@@ -1324,12 +1468,12 @@ class TransactionTextParser {
     void addFromMatches(Iterable<RegExpMatch> matches) {
       for (final match in matches) {
         if (_isBalanceContext(text, match.start)) continue;
-        if (_isPhoneNumberContext(text, match.start)) continue;
-        if (_isDateFragmentContext(text, match.start)) continue;
-        final value = _parseNumber(match.group(1)!);
-        if (value > 0 && value <= 1_000_000) {
-          candidates.add(value);
+        if (_isPhoneNumberContext(text, match.start, match.group(1))) {
+          continue;
         }
+        if (_isDateFragmentContext(text, match.start)) continue;
+        final value = _validAmount(match);
+        if (value != null) candidates.add(value);
       }
     }
 
@@ -1342,9 +1486,45 @@ class TransactionTextParser {
     }
 
     if (candidates.isEmpty) return null;
+    return _pickTransactionAmount(candidates);
+  }
 
-    candidates.sort();
-    return candidates.last;
+  static double? _firstCurrencyAmount(String text) {
+    final candidates = <double>[];
+    for (final match in [
+      ..._amountWithCurrency.allMatches(text),
+      ..._amountBeforeCurrency.allMatches(text),
+      ..._amountAttachedEgp.allMatches(text),
+    ]) {
+      if (_isBalanceContext(text, match.start)) continue;
+      if (_isPhoneNumberContext(text, match.start, match.group(1))) continue;
+      if (_isDateFragmentContext(text, match.start)) continue;
+      final value = _validAmount(match);
+      if (value != null) candidates.add(value);
+    }
+    if (candidates.isEmpty) return null;
+    return _pickTransactionAmount(candidates);
+  }
+
+  static double? _validAmount(RegExpMatch? match, {int group = 1}) {
+    if (match == null) return null;
+    final raw = match.group(group);
+    if (raw == null) return null;
+    final value = _parseNumber(raw);
+    if (value <= 0 || value > _maxCapturedAmount) return null;
+    return value;
+  }
+
+  /// Transaction amount is written before the remaining balance in bank SMS.
+  static double _pickTransactionAmount(List<double> candidates) {
+    if (candidates.length == 1) return candidates.first;
+    final unique = candidates.toSet().toList()..sort();
+    if (unique.length >= 2) {
+      final small = unique.first;
+      final large = unique.last;
+      if (large >= small * 5 && large >= 1000) return small;
+    }
+    return candidates.first;
   }
 
   static bool _hasCurrencyAmount(String text) {
@@ -1365,26 +1545,39 @@ class TransactionTextParser {
     return false;
   }
 
-  static bool _isPhoneNumberContext(String text, int matchStart) {
-    final start = matchStart > 80 ? matchStart - 80 : 0;
-    final end = matchStart + 30 < text.length ? matchStart + 30 : text.length;
+  static bool _isPhoneNumberContext(
+    String text,
+    int matchStart, [
+    String? captured,
+  ]) {
+    if (captured != null) {
+      final digits = captured.replaceAll(RegExp(r'[^\d]'), '');
+      if (digits.length >= 10) return true;
+      if (digits.length >= 4 &&
+          digits.length <= 6 &&
+          !captured.contains('.') &&
+          !captured.contains(',')) {
+        final aroundStart = matchStart > 24 ? matchStart - 24 : 0;
+        final around = text.substring(aroundStart, matchStart).toLowerCase();
+        if (around.contains('call') || around.contains('اتصل')) return true;
+      }
+    }
+    final start = matchStart > 40 ? matchStart - 40 : 0;
+    final end = matchStart + 24 < text.length ? matchStart + 24 : text.length;
     final snippet = text.substring(start, end).toLowerCase();
     const nearPhone = [
-      'call ',
       'please call',
-      'please call ',
       'for more info',
       'for more information',
       'اتصل ب',
-      'اتصل ',
       'للمزيد',
-      'رقم ',
       'من رقم',
       'على رقم',
-      'حساب رقم',
       'phone',
     ];
-    return nearPhone.any(snippet.contains);
+    if (!nearPhone.any(snippet.contains)) return false;
+    final digits = captured?.replaceAll(RegExp(r'[^\d]'), '') ?? '';
+    return digits.length >= 8 || snippet.contains('call') || snippet.contains('اتصل');
   }
 
   static bool _isBalanceContext(String text, int matchStart) {
@@ -1396,12 +1589,16 @@ class TransactionTextParser {
       'available balance',
       'your available balance',
       'current balance is',
+      'avl bal',
+      'avail bal',
+      'available bal',
+      'remaining balance',
       'رصيدك الحالي',
       'رصيد حسابك الحالي',
       'الرصيد المتاح',
       'رصيد الحساب',
+      'رصيد بعد',
       'المتاح',
-      'متاح ',
     ];
     return nearBalance.any(snippet.contains);
   }
@@ -1447,12 +1644,18 @@ class TransactionTextParser {
       try {
         final day = int.parse(cardDt.group(1)!);
         final month = _monthNames[cardDt.group(2)!.toLowerCase()];
-        final hour = int.parse(cardDt.group(3)!);
-        final minute = int.parse(cardDt.group(4)!);
+        final yearRaw = cardDt.group(3);
+        final hour = int.parse(cardDt.group(4)!);
+        final minute = int.parse(cardDt.group(5)!);
         if (month != null) {
           return _resolveTransactionDateTime(
             day: day,
             month: month,
+            year: yearRaw == null
+                ? null
+                : (int.parse(yearRaw) < 100
+                    ? 2000 + int.parse(yearRaw)
+                    : int.parse(yearRaw)),
             hour: hour,
             minute: minute,
             reference: reference,
@@ -1596,12 +1799,18 @@ class TransactionTextParser {
     required DateTime reference,
   }) {
     year ??= reference.year;
-    var dt = DateTime(year, month, day.clamp(1, 28), hour, minute);
+    DateTime at(int y) {
+      final lastDay = DateTime(y, month + 1, 0).day;
+      final safeDay = day.clamp(1, lastDay);
+      return DateTime(y, month, safeDay, hour, minute);
+    }
+
+    var dt = at(year);
     if (dt.isAfter(reference.add(const Duration(days: 3)))) {
-      dt = DateTime(year - 1, month, day.clamp(1, 28), hour, minute);
+      dt = at(year - 1);
     }
     if (dt.isBefore(reference.subtract(const Duration(days: 400)))) {
-      dt = DateTime(year + 1, month, day.clamp(1, 28), hour, minute);
+      dt = at(year + 1);
     }
     return dt;
   }

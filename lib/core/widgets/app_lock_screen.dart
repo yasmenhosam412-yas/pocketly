@@ -104,7 +104,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
                   color: AppColors.primary.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child:  Icon(
                   Icons.lock_rounded,
                   size: 36,
                   color: AppColors.primary,
@@ -148,7 +148,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
               ],
               const Spacer(flex: 3),
               if (_isVerifying)
-                const Padding(
+                 Padding(
                   padding: EdgeInsets.only(bottom: 24),
                   child: CircularProgressIndicator(color: AppColors.primary),
                 )

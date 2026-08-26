@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/services/service_locator.dart';
+import 'package:imrpo/core/services/theme_preferences.dart';
+import 'package:imrpo/core/theme/app_appearance.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 
 /// Flat, outlined decorations matching the wallet illustration style.
@@ -32,12 +35,14 @@ class AppDecorations {
   static BoxDecoration gradientHeader({
     required Color start,
     required Color end,
+    Alignment begin = Alignment.topLeft,
+    Alignment endAlign = Alignment.bottomRight,
   }) =>
       BoxDecoration(
         gradient: LinearGradient(
           colors: [start, end],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: begin,
+          end: endAlign,
         ),
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(28),
@@ -55,22 +60,38 @@ class AppDecorations {
         ),
       );
 
-  static BoxDecoration summaryCard(List<Color> colors) => BoxDecoration(
-        gradient: LinearGradient(
-          colors: colors,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(cardRadius),
-        border: Border.all(
-          color: AppColors.stroke.withValues(alpha: 0.1),
-          width: outlineWidth,
-        ),
-        boxShadow: flatShadow(
-          color: colors.first,
-          offset: const Offset(0, 4),
-        ),
-      );
+  static ResolvedAppGradient? get _activeGradient {
+    try {
+      if (!getIt.isRegistered<ThemePreferences>()) return null;
+      return getIt<ThemePreferences>().headerGradient();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static BoxDecoration summaryCard(
+    List<Color> colors, {
+    Alignment? begin,
+    Alignment? end,
+  }) {
+    final g = _activeGradient;
+    return BoxDecoration(
+      gradient: LinearGradient(
+        colors: colors,
+        begin: begin ?? g?.begin ?? Alignment.topLeft,
+        end: end ?? g?.end ?? Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(cardRadius),
+      border: Border.all(
+        color: AppColors.stroke.withValues(alpha: 0.1),
+        width: outlineWidth,
+      ),
+      boxShadow: flatShadow(
+        color: colors.first,
+        offset: const Offset(0, 4),
+      ),
+    );
+  }
 
   static BoxDecoration outlined({
     Color? fill,

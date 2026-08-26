@@ -323,7 +323,7 @@ class _InfoCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.info_outline_rounded, color: AppColors.primary),
+          Icon(Icons.info_outline_rounded, color: AppColors.primary),
           const SizedBox(width: 10),
           Expanded(
             child: Text(

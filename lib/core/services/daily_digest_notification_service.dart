@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:imrpo/core/services/android_notification_permission.dart';
 import 'package:imrpo/core/services/bill_reminder_debug_log.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/daily_digest_preferences.dart';
@@ -8,7 +9,6 @@ import 'package:imrpo/core/utils/daily_digest_body_formatter.dart';
 import 'package:imrpo/core/services/locale_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 
@@ -59,13 +59,7 @@ class DailyDigestNotificationService {
   }
 
   Future<bool> requestPermissionIfNeeded() async {
-    if (defaultTargetPlatform != TargetPlatform.android) return true;
-
-    var status = await Permission.notification.status;
-    if (!status.isGranted) {
-      status = await Permission.notification.request();
-    }
-    return status.isGranted;
+    return requestAndroidNotificationPermission();
   }
 
   Future<AndroidScheduleMode> _androidScheduleMode() async {

@@ -393,7 +393,7 @@ class _SmartImportPasteTabState extends State<SmartImportPasteTab> {
             decoration: AppDecorations.card(),
             child: Column(
               children: [
-                const CircularProgressIndicator(color: AppColors.primary),
+                CircularProgressIndicator(color: AppColors.primary),
                 const SizedBox(height: 14),
                 Text(
                   l10n.smartImportPasteProcessing,
@@ -501,7 +501,7 @@ class _PasteHintCard extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.content_paste_search_rounded,
               color: AppColors.primary,
               size: 24,

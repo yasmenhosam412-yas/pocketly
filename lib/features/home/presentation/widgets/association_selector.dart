@@ -421,7 +421,7 @@ class _AssociationPickerSheet extends StatelessWidget {
                                   },
                                 ),
                               if (selected)
-                                const Icon(
+                                Icon(
                                   Icons.check_circle_rounded,
                                   color: AppColors.primary,
                                 ),
@@ -436,7 +436,7 @@ class _AssociationPickerSheet extends StatelessWidget {
                       const SizedBox(height: 8),
                       ListTile(
                         contentPadding: EdgeInsets.zero,
-                        leading: const Icon(
+                        leading: Icon(
                           Icons.add_circle_outline_rounded,
                           color: AppColors.primary,
                         ),

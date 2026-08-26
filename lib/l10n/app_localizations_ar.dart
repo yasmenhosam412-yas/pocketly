@@ -703,6 +703,63 @@ class AppLocalizationsAr extends AppLocalizations {
   String get themeSystem => 'حسب الجهاز';
 
   @override
+  String get appearanceColors => 'لون التطبيق';
+
+  @override
+  String get appearanceGradients => 'شكل التدرج';
+
+  @override
+  String get appearanceCustom => 'مخصص';
+
+  @override
+  String get appearancePickColor => 'اختار لون';
+
+  @override
+  String get appearanceCustomPrimary => 'اللون الأساسي';
+
+  @override
+  String get appearanceCustomSecondary => 'لون مميز';
+
+  @override
+  String get appearanceGradientStops => 'ألوان التدرج';
+
+  @override
+  String get appearancePaletteCoral => 'مرجاني';
+
+  @override
+  String get appearancePaletteOcean => 'بحري';
+
+  @override
+  String get appearancePaletteForest => 'غابة';
+
+  @override
+  String get appearancePaletteSunset => 'غروب';
+
+  @override
+  String get appearancePaletteGrape => 'بنفسجي';
+
+  @override
+  String get appearancePaletteRose => 'وردي';
+
+  @override
+  String get appearancePaletteSlate => 'رمادي';
+
+  @override
+  String get appearanceGradientDiagonal => 'مائل';
+
+  @override
+  String get appearanceGradientSunset => 'غروب';
+
+  @override
+  String get appearanceGradientAurora => 'شفق';
+
+  @override
+  String get appearanceGradientWave => 'موج';
+
+  @override
+  String get appearanceGradientSoft => 'ناعم';
+
+  @override
   String get settingsCalculator => 'الآلة الحاسبة';
 
   @override

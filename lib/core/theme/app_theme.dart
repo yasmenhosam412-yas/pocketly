@@ -161,7 +161,7 @@ class AppTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: scheme.surface,
-        selectedColor: scheme.primaryLight,
+        selectedColor: AppColors.primary.withValues(alpha: 0.22),
         labelStyle: textTheme.labelMedium,
         side: BorderSide(
           color: scheme.stroke.withValues(alpha: isDark ? 0.16 : 0.12),
@@ -171,7 +171,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(20),
         ),
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
+      progressIndicatorTheme: ProgressIndicatorThemeData(
         color: AppColors.primary,
       ),
       bottomSheetTheme: BottomSheetThemeData(

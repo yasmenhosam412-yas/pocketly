@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:imrpo/core/services/android_notification_permission.dart';
 import 'package:imrpo/core/services/bill_reminder_debug_log.dart';
 import 'package:imrpo/core/services/bill_reminder_preferences.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
@@ -77,17 +78,18 @@ class BillReminderNotificationService {
       return true;
     }
 
-    var status = await Permission.notification.status;
-    billReminderLog('permission: notification status=$status');
-
-    if (!status.isGranted) {
-      status = await Permission.notification.request();
-      billReminderLog('permission: after request=$status');
+    final before = await Permission.notification.status;
+    billReminderLog('permission: notification status=$before');
+    final granted = await requestAndroidNotificationPermission();
+    if (!before.isGranted) {
+      billReminderLog(
+        'permission: after request=${granted ? PermissionStatus.granted : PermissionStatus.denied}',
+      );
     }
 
     await _requestExactAlarmsPermission();
     await _logAndroidScheduleCapabilities();
-    return status.isGranted;
+    return granted;
   }
 
   Future<void> _requestExactAlarmsPermission() async {

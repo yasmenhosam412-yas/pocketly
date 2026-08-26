@@ -122,7 +122,7 @@ shape: const RoundedRectangleBorder(
       body: BlocBuilder<BillRemindersBloc, BillRemindersState>(
         builder: (context, state) {
           if (state is BillRemindersLoading) {
-            return const Center(
+            return Center(
               child: CircularProgressIndicator(color: AppColors.primary),
             );
           }

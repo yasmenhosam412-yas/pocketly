@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/services/service_locator.dart';
+import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 
-/// Header colors that adapt between the warm light gradient and a dark home hero.
+/// Header colors that adapt between the selected appearance gradient and dark mode.
 class HomeHeaderTheme {
   const HomeHeaderTheme._({
     required this.isDark,
     required this.gradientColors,
+    required this.gradientBegin,
+    required this.gradientEnd,
     required this.foreground,
     required this.foregroundMuted,
     required this.foregroundSubtle,
@@ -22,6 +26,8 @@ class HomeHeaderTheme {
 
   final bool isDark;
   final List<Color> gradientColors;
+  final Alignment gradientBegin;
+  final Alignment gradientEnd;
   final Color foreground;
   final Color foregroundMuted;
   final Color foregroundSubtle;
@@ -38,15 +44,14 @@ class HomeHeaderTheme {
   factory HomeHeaderTheme.resolve(BuildContext context, Color tabAccent) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = context.appPalette;
+    final gradient = getIt<ThemePreferences>().headerGradient(accent: tabAccent);
 
     if (!isDark) {
       return HomeHeaderTheme._(
         isDark: false,
-        gradientColors: [
-          AppColors.primary,
-          Color.lerp(AppColors.primary, AppColors.secondary, 0.55)!,
-          Color.lerp(AppColors.secondary, tabAccent, 0.4)!,
-        ],
+        gradientColors: gradient.colors,
+        gradientBegin: gradient.begin,
+        gradientEnd: gradient.end,
         foreground: Colors.white,
         foregroundMuted: Colors.white.withValues(alpha: 0.88),
         foregroundSubtle: Colors.white.withValues(alpha: 0.72),
@@ -64,11 +69,9 @@ class HomeHeaderTheme {
 
     return HomeHeaderTheme._(
       isDark: true,
-      gradientColors: [
-        const Color(0xFF14100E),
-        const Color(0xFF221A17),
-        Color.lerp(const Color(0xFF2B211D), tabAccent, 0.38)!,
-      ],
+      gradientColors: gradient.colors,
+      gradientBegin: gradient.begin,
+      gradientEnd: gradient.end,
       foreground: palette.textPrimary,
       foregroundMuted: palette.textSecondary,
       foregroundSubtle: palette.textMuted,

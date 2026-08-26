@@ -568,7 +568,7 @@ class _BalanceNetCardMock extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [
             AppColors.balanceDark,
             AppColors.balance,

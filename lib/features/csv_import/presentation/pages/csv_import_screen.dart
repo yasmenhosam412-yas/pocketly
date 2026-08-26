@@ -53,7 +53,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const CircularProgressIndicator(color: AppColors.primary),
+                  CircularProgressIndicator(color: AppColors.primary),
                   const SizedBox(height: 16),
                   Text(l10n.csvImportProgress),
                 ],

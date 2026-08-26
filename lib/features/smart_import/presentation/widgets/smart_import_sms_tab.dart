@@ -52,7 +52,9 @@ class _SmartImportSmsTabState extends State<SmartImportSmsTab> {
     super.initState();
     widget.tabController.addListener(_onTabChanged);
     widget.scrollController.addListener(_onScroll);
-    _ensureLoadedIfNeeded();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _ensureLoadedIfNeeded();
+    });
   }
 
   @override
@@ -142,8 +144,21 @@ class _SmartImportSmsTabState extends State<SmartImportSmsTab> {
     _selectedIds.removeWhere((id) => !_messages.any((m) => m.id == id));
   }
 
+  void _swapType(SmsMessageItem item) {
+    final nextType = item.parsed.type == FinancialEntryType.expense
+        ? FinancialEntryType.income
+        : FinancialEntryType.expense;
+    setState(() {
+      final index = _messages.indexWhere((m) => m.id == item.id);
+      if (index < 0) return;
+      _messages[index] = _messages[index].withType(nextType);
+    });
+  }
+
   Future<void> _loadSms() async {
-    final l10n = AppLocalizations.of(context)!;
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    if (l10n == null) return;
 
     if (!_smsService.isSupported) {
       setState(() {
@@ -419,6 +434,7 @@ class _SmartImportSmsTabState extends State<SmartImportSmsTab> {
                       onAddAgain: canReimport
                           ? () => _openPrefilledSheet(item, reimport: true)
                           : null,
+                      onSwapType: () => _swapType(item),
                     );
                   },
                 ),
@@ -497,7 +513,7 @@ class _BulkImportProgressCard extends StatelessWidget {
               color: AppColors.primary.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
-            child: const SizedBox(
+            child: SizedBox(
               width: 32,
               height: 32,
               child: CircularProgressIndicator(
@@ -550,7 +566,7 @@ class _SmsLoadingList extends StatelessWidget {
                       color: AppColors.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: const SizedBox(
+                    child: SizedBox(
                       width: 28,
                       height: 28,
                       child: CircularProgressIndicator(
@@ -702,7 +718,7 @@ class _SmsPaginationFooter extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(
+            SizedBox(
               width: 20,
               height: 20,
               child: CircularProgressIndicator(
@@ -747,6 +763,7 @@ class _SmsListTile extends StatelessWidget {
   final VoidCallback? onToggleSelect;
   final VoidCallback onAdd;
   final VoidCallback? onAddAgain;
+  final VoidCallback onSwapType;
 
   const _SmsListTile({
     required this.item,
@@ -758,6 +775,7 @@ class _SmsListTile extends StatelessWidget {
     required this.onToggleSelect,
     required this.onAdd,
     this.onAddAgain,
+    required this.onSwapType,
   });
 
   @override
@@ -982,6 +1000,30 @@ class _SmsListTile extends StatelessWidget {
                       ),
                     ],
                   ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: EdgeInsets.only(left: canImport ? 40 : 12),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: disabled ? null : onSwapType,
+                    icon: const Icon(Icons.swap_horiz_rounded, size: 16),
+                    label: Text(
+                      isExpense
+                          ? l10n.smartImportPasteMarkIncome
+                          : l10n.smartImportPasteMarkExpense,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor:
+                          isExpense ? AppColors.income : AppColors.expense,
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ),
                 ),
               ),
             ],

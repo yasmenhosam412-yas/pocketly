@@ -136,8 +136,8 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                             padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
                             children: [
                               if (isLoading)
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 24),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(vertical: 24),
                                   child: Center(
                                     child: CircularProgressIndicator(
                                       color: AppColors.primary,
@@ -265,7 +265,7 @@ class _MonthSelectorBar extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.calendar_month_outlined,
                         size: 20,
                         color: AppColors.primary,

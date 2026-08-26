@@ -8,6 +8,7 @@ import 'package:imrpo/core/services/locale_preferences.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/sms_import_service.dart';
+import 'package:imrpo/features/home/presentation/widgets/appearance_settings_sheet.dart';
 import 'package:imrpo/features/home/presentation/widgets/auto_sms_import_settings.dart';
 import 'package:imrpo/features/home/presentation/widgets/app_lock_settings.dart';
 import 'package:imrpo/core/session/user_session.dart';
@@ -235,13 +236,10 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                       listenable: getIt<ThemePreferences>(),
                       builder: (context, _) {
                         final themePrefs = getIt<ThemePreferences>();
-                        final currentTheme = ThemePreferences.modeLabel(
-                          l10n,
-                          themePrefs.themeMode,
-                        );
+                        final currentTheme = themePrefs.appearanceSummary(l10n);
 
                         return _SettingsTile(
-                          icon: Icons.dark_mode_outlined,
+                          icon: Icons.palette_outlined,
                           label: l10n.settingsTheme,
                           trailing: Text(
                             currentTheme,
@@ -255,7 +253,7 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                           ),
                           onTap: actionsLocked
                               ? null
-                              : () => _showThemeDialog(context),
+                              : () => showAppearanceSettingsSheet(context),
                         );
                       },
                     ),
@@ -496,98 +494,6 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
     );
   }
 
-  Future<void> _showThemeDialog(BuildContext context) async {
-    final l10n = AppLocalizations.of(context)!;
-    final themePrefs = getIt<ThemePreferences>();
-    var selected = themePrefs.themeMode;
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setDialogState) {
-          return ListenableBuilder(
-            listenable: themePrefs,
-            builder: (context, _) {
-              final isSaving = themePrefs.isSaving;
-
-              return AlertDialog(
-                title: Text(l10n.settingsTheme),
-                content: SizedBox(
-                  width: double.maxFinite,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _ThemeModeOption(
-                        icon: Icons.light_mode_outlined,
-                        label: l10n.themeLight,
-                        selected: selected == ThemeMode.light,
-                        onTap: isSaving
-                            ? null
-                            : () => setDialogState(
-                                  () => selected = ThemeMode.light,
-                                ),
-                      ),
-                      const SizedBox(height: 8),
-                      _ThemeModeOption(
-                        icon: Icons.dark_mode_outlined,
-                        label: l10n.themeDark,
-                        selected: selected == ThemeMode.dark,
-                        onTap: isSaving
-                            ? null
-                            : () => setDialogState(
-                                  () => selected = ThemeMode.dark,
-                                ),
-                      ),
-                      const SizedBox(height: 8),
-                      _ThemeModeOption(
-                        icon: Icons.brightness_auto_outlined,
-                        label: l10n.themeSystem,
-                        selected: selected == ThemeMode.system,
-                        onTap: isSaving
-                            ? null
-                            : () => setDialogState(
-                                  () => selected = ThemeMode.system,
-                                ),
-                      ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: isSaving
-                        ? null
-                        : () => Navigator.pop(dialogContext),
-                    child: Text(l10n.cancel),
-                  ),
-                  FilledButton(
-                    onPressed: isSaving
-                        ? null
-                        : () async {
-                            await themePrefs.setThemeMode(selected);
-                            if (dialogContext.mounted) {
-                              Navigator.pop(dialogContext);
-                            }
-                          },
-                    child: isSaving
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Text(l10n.save),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-
   Future<void> _showLanguageDialog(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final localePrefs = getIt<LocalePreferences>();
@@ -808,7 +714,7 @@ class _SettingsTile extends StatelessWidget {
               ),
               ?trailing,
               if (isLoading)
-                const SizedBox(
+                SizedBox(
                   width: 22,
                   height: 22,
                   child: CircularProgressIndicator(
@@ -820,73 +726,6 @@ class _SettingsTile extends StatelessWidget {
                 Icon(
                   Icons.chevron_right_rounded,
                   color: AppColors.textColor.withValues(alpha: 0.35),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ThemeModeOption extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final VoidCallback? onTap;
-
-  const _ThemeModeOption({
-    required this.icon,
-    required this.label,
-    required this.selected,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(14),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-          decoration: BoxDecoration(
-            color: selected
-                ? AppColors.primary.withValues(alpha: 0.12)
-                : AppColors.surface,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: selected
-                  ? AppColors.primary.withValues(alpha: 0.55)
-                  : AppColors.stroke.withValues(alpha: 0.12),
-              width: 1.5,
-            ),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                icon,
-                size: 22,
-                color: selected ? AppColors.primary : AppColors.textSecondary,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
-                    color: selected ? AppColors.primary : AppColors.textColor,
-                  ),
-                ),
-              ),
-              if (selected)
-                const Icon(
-                  Icons.check_circle_rounded,
-                  size: 22,
-                  color: AppColors.primary,
                 ),
             ],
           ),
