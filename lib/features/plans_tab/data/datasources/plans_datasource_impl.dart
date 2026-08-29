@@ -17,23 +17,24 @@ class PlansDatasourceImpl with AssociationDatasourceMixin
     String category,
     double targetAmount,
     double savedAmount,
-    DateTime? deadline,
-  ) async {
-    final row = await supabaseClient
+    DateTime? deadline, {
+    String? imageUrl,
+  }) async {
+    final row = {
+      'title': title,
+      'category': category,
+      'target_amount': targetAmount,
+      'saved_amount': savedAmount,
+      'deadline': deadline?.toIso8601String(),
+      'user_id': SupabaseAuthHelper.requireUserId(),
+      'image_url': _nullableUrl(imageUrl),
+    };
+    final inserted = await supabaseClient
         .from('plans')
-        .insert(
-          scopedFinancialRow({
-            'title': title,
-            'category': category,
-            'target_amount': targetAmount,
-            'saved_amount': savedAmount,
-            'deadline': deadline?.toIso8601String(),
-            'user_id': SupabaseAuthHelper.requireUserId(),
-          }),
-        )
+        .insert(scopedFinancialRow(row))
         .select('plan_id')
         .single();
-    return row['plan_id'] as String;
+    return inserted['plan_id'] as String;
   }
 
   @override
@@ -70,14 +71,16 @@ class PlansDatasourceImpl with AssociationDatasourceMixin
     String category,
     double targetAmount,
     double savedAmount,
-    DateTime? deadline,
-  ) async {
+    DateTime? deadline, {
+    String? imageUrl,
+  }) async {
     var updateQuery = supabaseClient.from('plans').update({
       'title': title,
       'category': category,
       'target_amount': targetAmount,
       'saved_amount': savedAmount,
       'deadline': deadline?.toIso8601String(),
+      'image_url': _nullableUrl(imageUrl),
     }).eq('plan_id', planId).eq('user_id', SupabaseAuthHelper.requireUserId());
     updateQuery = scopeFinancialQuery(updateQuery);
     await updateQuery;
@@ -92,5 +95,11 @@ class PlansDatasourceImpl with AssociationDatasourceMixin
         .eq('user_id', SupabaseAuthHelper.requireUserId());
     updateQuery = scopeFinancialQuery(updateQuery);
     await updateQuery;
+  }
+
+  static String? _nullableUrl(String? url) {
+    final trimmed = url?.trim();
+    if (trimmed == null || trimmed.isEmpty) return null;
+    return trimmed;
   }
 }

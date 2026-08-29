@@ -6,8 +6,9 @@ abstract class PlansDatasource {
     String category,
     double targetAmount,
     double savedAmount,
-    DateTime? deadline,
-  );
+    DateTime? deadline, {
+    String? imageUrl,
+  });
 
   Future<void> updatePlan(
     String planId,
@@ -15,8 +16,9 @@ abstract class PlansDatasource {
     String category,
     double targetAmount,
     double savedAmount,
-    DateTime? deadline,
-  );
+    DateTime? deadline, {
+    String? imageUrl,
+  });
 
   Future<void> updatePlanSaved(String planId, double savedAmount);
 

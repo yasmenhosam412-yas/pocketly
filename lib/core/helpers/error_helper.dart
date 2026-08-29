@@ -31,15 +31,27 @@ class UsernameTakenException implements Exception {
   const UsernameTakenException();
 }
 
+class SocialAuthCancelledException implements Exception {
+  const SocialAuthCancelledException();
+}
+
 class ErrorHelper {
   static Failure handle(Object e) {
     if (e is UsernameTakenException) {
       return ServerError(error: l10nUsernameTakenToken);
     }
 
+    if (e is SocialAuthCancelledException) {
+      return AuthError(error: l10nSocialAuthCancelledToken);
+    }
+
     if (e is AuthException) {
       if (messageIndicatesNoInternet(e.message)) {
         return NetworkError(error: l10nNoInternetToken);
+      }
+      final lower = e.message.toLowerCase();
+      if (lower.contains('cancel') || lower.contains('access_denied')) {
+        return AuthError(error: l10nSocialAuthCancelledToken);
       }
       return AuthError(error: e.message);
     }

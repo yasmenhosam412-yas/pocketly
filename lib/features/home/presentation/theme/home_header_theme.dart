@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 
 /// Header colors that adapt between the selected appearance gradient and dark mode.
@@ -45,25 +46,31 @@ class HomeHeaderTheme {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = context.appPalette;
     final gradient = getIt<ThemePreferences>().headerGradient(accent: tabAccent);
+    final lightBg = ColorContrast.isLightAverage(gradient.colors);
+    final on = OnSurfaceColors.fromColors(
+      gradient.colors,
+      isDark: isDark,
+      palette: palette,
+    );
 
-    if (!isDark) {
+    if (!isDark || lightBg) {
       return HomeHeaderTheme._(
-        isDark: false,
+        isDark: isDark,
         gradientColors: gradient.colors,
         gradientBegin: gradient.begin,
         gradientEnd: gradient.end,
-        foreground: Colors.white,
-        foregroundMuted: Colors.white.withValues(alpha: 0.88),
-        foregroundSubtle: Colors.white.withValues(alpha: 0.72),
-        glassFill: Colors.white.withValues(alpha: 0.14),
-        glassFillStrong: Colors.white.withValues(alpha: 0.2),
-        glassBorder: Colors.white.withValues(alpha: 0.3),
-        shadow: Colors.black.withValues(alpha: 0.1),
-        chipFill: Colors.white.withValues(alpha: 0.16),
-        chipFillHighlighted: Colors.white.withValues(alpha: 0.28),
-        chipBorder: Colors.white.withValues(alpha: 0.12),
-        chipBorderHighlighted: Colors.white.withValues(alpha: 0.45),
-        decorSoft: Colors.white.withValues(alpha: 0.08),
+        foreground: on.foreground,
+        foregroundMuted: on.muted,
+        foregroundSubtle: on.subtle,
+        glassFill: on.overlay,
+        glassFillStrong: on.overlayStrong,
+        glassBorder: on.border,
+        shadow: Colors.black.withValues(alpha: lightBg ? 0.08 : 0.1),
+        chipFill: on.overlay,
+        chipFillHighlighted: on.overlayStrong,
+        chipBorder: on.foreground.withValues(alpha: 0.12),
+        chipBorderHighlighted: on.foreground.withValues(alpha: 0.45),
+        decorSoft: on.foreground.withValues(alpha: 0.08),
       );
     }
 
@@ -82,8 +89,8 @@ class HomeHeaderTheme {
       chipFill: palette.card.withValues(alpha: 0.55),
       chipFillHighlighted: palette.surface,
       chipBorder: palette.border.withValues(alpha: 0.7),
-      chipBorderHighlighted: AppColors.primary.withValues(alpha: 0.45),
-      decorSoft: AppColors.primary.withValues(alpha: 0.1),
+        chipBorderHighlighted: AppColors.primaryInk.withValues(alpha: 0.45),
+        decorSoft: AppColors.primaryInk.withValues(alpha: 0.1),
     );
   }
 }
@@ -101,6 +108,10 @@ class HomeHeaderScope extends InheritedWidget {
     final scope = context.dependOnInheritedWidgetOfExactType<HomeHeaderScope>();
     assert(scope != null, 'HomeHeaderScope not found');
     return scope!.theme;
+  }
+
+  static HomeHeaderTheme? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<HomeHeaderScope>()?.theme;
   }
 
   @override

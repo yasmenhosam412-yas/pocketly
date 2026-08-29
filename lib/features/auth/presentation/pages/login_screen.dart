@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/features/auth/domain/entities/social_auth_provider.dart';
 import 'package:imrpo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:imrpo/features/auth/presentation/pages/forget_password_screen.dart';
 import 'package:imrpo/features/auth/presentation/pages/signup_screen.dart';
 import 'package:imrpo/features/auth/presentation/widgets/auth_footer_link.dart';
 import 'package:imrpo/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:imrpo/features/auth/presentation/widgets/auth_screen_layout.dart';
+import 'package:imrpo/features/auth/presentation/widgets/auth_social_buttons.dart';
 import 'package:imrpo/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:imrpo/core/services/app_lock_service.dart';
 import 'package:imrpo/core/services/service_locator.dart';
@@ -21,7 +24,7 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with WidgetsBindingObserver {
   late final TextEditingController _emailController;
   late final TextEditingController _passController;
   late final FocusNode _emailFocus;
@@ -31,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _emailController = TextEditingController();
     _passController = TextEditingController();
     _emailFocus = FocusNode();
@@ -39,11 +43,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _emailController.dispose();
     _passController.dispose();
     _emailFocus.dispose();
     _passwordFocus.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    if (ModalRoute.of(context)?.isCurrent != true) return;
+    final auth = context.read<AuthBloc>().state;
+    if (auth.status != AuthStatus.loadingLogin || auth.socialProvider == null) {
+      return;
+    }
+    Future<void>.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      final bloc = context.read<AuthBloc>();
+      if (bloc.state.status != AuthStatus.loadingLogin) return;
+      if (SupabaseAuthHelper.isSignedIn) return;
+      bloc.add(const ResetAuthEvent());
+    });
   }
 
   @override
@@ -64,6 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
+          if (ModalRoute.of(context)?.isCurrent != true) return;
           if (state.status == AuthStatus.errorLogin) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -86,6 +109,11 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         },
         builder: (context, state) {
+          final isBusy =
+              state.status == AuthStatus.loadingLogin ||
+              state.status == AuthStatus.successLogin;
+          final emailLoading = isBusy && state.socialProvider == null;
+
           return AutofillGroup(
             child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -135,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Text(
                     l10n.forgotPasswordQuestion,
                     style: TextStyle(
-                      color: AppColors.primary,
+                      color: AppColors.primaryInk,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -144,10 +172,14 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 8),
               AuthPrimaryButton(
                 label: l10n.loginButton,
-                isLoading:
-                    state.status == AuthStatus.loadingLogin ||
-                    state.status == AuthStatus.successLogin,
-                onPressed: _onLogin,
+                isLoading: emailLoading,
+                onPressed: isBusy ? null : _onLogin,
+              ),
+              const SizedBox(height: 20),
+              AuthSocialButtons(
+                isBusy: isBusy,
+                loadingProvider: state.socialProvider,
+                onPressed: _onSocialLogin,
               ),
             ],
             ),
@@ -175,5 +207,9 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passController.text,
       ),
     );
+  }
+
+  void _onSocialLogin(SocialAuthProvider provider) {
+    context.read<AuthBloc>().add(SocialLoginEvent(provider: provider));
   }
 }

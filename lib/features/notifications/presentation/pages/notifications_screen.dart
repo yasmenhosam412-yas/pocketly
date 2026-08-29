@@ -94,7 +94,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: AppColors.primary,
+              primary: AppColors.primaryInk,
+              onPrimary: AppColors.onPrimaryInk,
             ),
           ),
           child: child!,
@@ -144,7 +145,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         ),
       ),
       body: RefreshIndicator(
-        color: AppColors.primary,
+        color: AppColors.primaryInk,
         onRefresh: _reload,
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -243,7 +244,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 32),
                 child: Center(
-                  child: CircularProgressIndicator(color: AppColors.primary),
+                  child: CircularProgressIndicator(color: AppColors.primaryInk),
                 ),
               )
             else if (_upcoming.isEmpty)
@@ -350,7 +351,7 @@ class _NotificationTypeCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, color: AppColors.primary),
+                Icon(icon, color: AppColors.primaryInk),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -377,7 +378,7 @@ class _NotificationTypeCard extends StatelessWidget {
                 ),
                 Switch.adaptive(
                   value: enabled,
-                  activeThumbColor: AppColors.primary,
+                  activeThumbColor: AppColors.primaryInk,
                   onChanged: onToggle,
                 ),
               ],
@@ -412,14 +413,14 @@ class _InboxTile extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
 
     return Material(
-      color: item.isUnread ? AppColors.primary.withValues(alpha: 0.06) : AppColors.card,
+      color: item.isUnread ? AppColors.primaryInk.withValues(alpha: 0.06) : AppColors.card,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(_icon, color: AppColors.primary, size: 22),
+            Icon(_icon, color: AppColors.primaryInk, size: 22),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -444,7 +445,7 @@ class _InboxTile extends StatelessWidget {
                           width: 8,
                           height: 8,
                           decoration: BoxDecoration(
-                            color: AppColors.primary,
+                            color: AppColors.primaryInk,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -510,7 +511,7 @@ class _UpcomingTile extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(_icon, color: AppColors.primary, size: 22),
+            Icon(_icon, color: AppColors.primaryInk, size: 22),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

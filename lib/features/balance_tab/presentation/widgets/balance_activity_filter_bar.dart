@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
@@ -40,7 +41,7 @@ class BalanceActivityFilterBar extends StatelessWidget {
       style: ButtonStyle(
         foregroundColor: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return Colors.white;
+            return ColorContrast.onColor(AppColors.balance);
           }
           return AppColors.textColor;
         }),
@@ -87,10 +88,10 @@ class BalanceCategoryFilterChips extends StatelessWidget {
             selected: selectedCategory == null,
             onSelected: (_) => onSelected(null),
             selectedColor: accentColor,
-            checkmarkColor: Colors.white,
+            checkmarkColor: ColorContrast.onColor(accentColor),
             labelStyle: TextStyle(
               color: selectedCategory == null
-                  ? Colors.white
+                  ? ColorContrast.onColor(accentColor)
                   : AppColors.textColor,
               fontWeight: FontWeight.w500,
             ),
@@ -110,9 +111,11 @@ class BalanceCategoryFilterChips extends StatelessWidget {
                 selected: selected,
                 onSelected: (_) => onSelected(category),
                 selectedColor: accentColor,
-                checkmarkColor: Colors.white,
+                checkmarkColor: ColorContrast.onColor(accentColor),
                 labelStyle: TextStyle(
-                  color: selected ? Colors.white : AppColors.textColor,
+                  color: selected
+                      ? ColorContrast.onColor(accentColor)
+                      : AppColors.textColor,
                   fontWeight: FontWeight.w500,
                 ),
                 backgroundColor: AppColors.surface,

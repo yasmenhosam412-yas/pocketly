@@ -62,6 +62,27 @@ class BalanceSummaryBuilder {
     );
   }
 
+  /// Cash left after initial balance + income − expenses. Never negative.
+  static double availableNet({
+    required List<IncomeModel> incomes,
+    required List<ExpenseModel> expenses,
+    required double initialBalance,
+    DateTime? reference,
+    bool filterByDay = false,
+    bool includeAllDates = true,
+  }) {
+    final summary = build(
+      incomes: incomes,
+      expenses: expenses,
+      reference: reference ?? DateTime.now(),
+      filterByDay: filterByDay,
+      includeAllDates: includeAllDates,
+    );
+    final net =
+        initialBalance + summary.monthlyIncome - summary.monthlyExpenses;
+    return net < 0 ? 0 : net;
+  }
+
   static bool _matches(DateTime date, DateTime reference, bool filterByDay) {
     if (filterByDay) {
       return date.year == reference.year &&

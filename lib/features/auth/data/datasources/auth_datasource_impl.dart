@@ -1,11 +1,16 @@
+import 'dart:async';
+
+import 'package:imrpo/core/config/oauth_config.dart';
 import 'package:imrpo/core/helpers/error_helper.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/helpers/username_uniqueness.dart';
 import 'package:imrpo/features/auth/data/datasources/auth_datasource.dart';
+import 'package:imrpo/features/auth/domain/entities/social_auth_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthDatasourceImpl extends AuthDatasource {
   final SupabaseClient supabaseClient;
+  Completer<void>? _oauthSessionReady;
 
   AuthDatasourceImpl({required this.supabaseClient});
   @override
@@ -22,6 +27,113 @@ class AuthDatasourceImpl extends AuthDatasource {
       password: password,
       email: email,
     );
+  }
+
+  @override
+  Future<void> loginWithSocial(SocialAuthProvider provider) async {
+    if (supabaseClient.auth.currentSession != null) {
+      await _ensureProfileForCurrentUser();
+      return;
+    }
+
+    final oauthProvider = switch (provider) {
+      SocialAuthProvider.google => OAuthProvider.google,
+      SocialAuthProvider.facebook => OAuthProvider.facebook,
+    };
+
+    final sessionReady = Completer<void>();
+    final previous = _oauthSessionReady;
+    if (previous != null && !previous.isCompleted) {
+      previous.completeError(const SocialAuthCancelledException());
+    }
+    _oauthSessionReady = sessionReady;
+    final authSub = supabaseClient.auth.onAuthStateChange.listen((data) {
+      if (data.session != null && !sessionReady.isCompleted) {
+        sessionReady.complete();
+      }
+    });
+
+    try {
+      final launched = await supabaseClient.auth.signInWithOAuth(
+        oauthProvider,
+        redirectTo: OAuthConfig.redirectUrl,
+        authScreenLaunchMode: LaunchMode.externalApplication,
+        queryParams: provider == SocialAuthProvider.google
+            ? const {'prompt': 'select_account'}
+            : null,
+      );
+      if (!launched) {
+        throw const AuthException('Could not start social login.');
+      }
+
+      try {
+        await sessionReady.future.timeout(const Duration(minutes: 3));
+      } on TimeoutException {
+        throw const SocialAuthCancelledException();
+      } on SocialAuthCancelledException {
+        rethrow;
+      } finally {
+        if (identical(_oauthSessionReady, sessionReady)) {
+          _oauthSessionReady = null;
+        }
+      }
+
+      await _ensureProfileForCurrentUser();
+    } finally {
+      await authSub.cancel();
+    }
+  }
+
+  Future<void> _ensureProfileForCurrentUser() async {
+    final user = supabaseClient.auth.currentUser;
+    if (user == null) return;
+
+    final existing = await supabaseClient
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+    if (existing != null) return;
+
+    var username = _usernameFrom(user);
+    try {
+      await assertUsernameAvailable(supabaseClient, username);
+    } on UsernameTakenException {
+      username = '${username}_${user.id.substring(0, 6)}';
+    }
+
+    try {
+      await supabaseClient.from('profiles').insert({
+        'id': user.id,
+        'username': username,
+        'email': user.email ?? '',
+      });
+    } on PostgrestException catch (e) {
+      if (e.code == '23505') return;
+      rethrow;
+    }
+
+    try {
+      await supabaseClient.auth.updateUser(
+        UserAttributes(data: {'username': username}),
+      );
+    } catch (_) {}
+  }
+
+  String _usernameFrom(User user) {
+    final meta = user.userMetadata ?? {};
+    for (final key in ['full_name', 'name', 'username']) {
+      final value = meta[key];
+      if (value is String && value.trim().isNotEmpty) {
+        return value.trim();
+      }
+    }
+    final email = user.email;
+    if (email != null && email.contains('@')) {
+      final local = email.split('@').first.trim();
+      if (local.isNotEmpty) return local;
+    }
+    return 'user_${user.id.substring(0, 8)}';
   }
 
   @override

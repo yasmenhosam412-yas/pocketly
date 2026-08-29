@@ -102,7 +102,8 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: Theme.of(context).colorScheme.copyWith(
-              primary: AppColors.primary,
+              primary: AppColors.primaryInk,
+              onPrimary: AppColors.onPrimaryInk,
             ),
           ),
           child: child!,
@@ -256,7 +257,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
                         IconButton(
                           onPressed: () => _shiftReferenceMonth(-1),
                           icon: const Icon(Icons.chevron_left_rounded),
-                          color: AppColors.primary,
+                          color: AppColors.primaryInk,
                         ),
                         Expanded(
                           child: Text(
@@ -271,7 +272,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
                         IconButton(
                           onPressed: () => _shiftReferenceMonth(1),
                           icon: const Icon(Icons.chevron_right_rounded),
-                          color: AppColors.primary,
+                          color: AppColors.primaryInk,
                         ),
                       ],
                     ),
@@ -297,7 +298,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
                             min: 1,
                             max: _maxDayInReferenceMonth.toDouble(),
                             divisions: _maxDayInReferenceMonth - 1,
-                            activeColor: AppColors.primary,
+                            activeColor: AppColors.primaryInk,
                             onChanged: (v) =>
                                 setState(() => _dayOfMonth = v.round()),
                           ),
@@ -342,7 +343,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
                     children: [
                       Icon(
                         Icons.schedule_rounded,
-                        color: AppColors.primary,
+                        color: AppColors.primaryInk,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -382,7 +383,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
                   label: Text(opt.label),
                   selected: selected,
                   onSelected: (_) => setState(() => _leadDays = opt.days),
-                  selectedColor: AppColors.primary.withValues(alpha: 0.2),
+                  selectedColor: AppColors.primaryInk.withValues(alpha: 0.2),
                 );
               }).toList(),
             ),
@@ -391,6 +392,7 @@ class _AddBillReminderSheetState extends State<AddBillReminderSheet> {
               onPressed: _save,
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.onPrimary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),

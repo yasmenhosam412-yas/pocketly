@@ -4,3 +4,4 @@ const String l10nDeleteNotFoundToken = 'delete_not_found';
 const String l10nDeleteAccountFailedToken = 'delete_account_failed';
 const String l10nDeleteAccountRpcRequiredToken = 'delete_account_rpc_required';
 const String l10nUsernameTakenToken = 'username_taken';
+const String l10nSocialAuthCancelledToken = 'social_auth_cancelled';

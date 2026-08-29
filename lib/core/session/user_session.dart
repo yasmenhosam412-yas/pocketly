@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
@@ -5,6 +7,7 @@ import 'package:imrpo/core/services/app_lock_service.dart';
 import 'package:imrpo/core/services/association_context.dart';
 import 'package:imrpo/core/services/association_member_names.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
+import 'package:imrpo/core/services/pocketly_home_widget.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:imrpo/features/balance_tab/presentation/bloc/balance_tab_bloc.dart';
@@ -21,6 +24,7 @@ import 'package:imrpo/core/services/offline_transaction_store.dart';
 import 'package:imrpo/core/services/offline_transaction_sync_service.dart';
 import 'package:imrpo/features/bill_reminders/data/bill_reminder_store.dart';
 import 'package:imrpo/features/bill_reminders/presentation/bloc/bill_reminders_bloc.dart';
+import 'package:imrpo/features/recurring_transactions/presentation/bloc/recurring_transactions_bloc.dart';
 import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
 import 'package:imrpo/features/loans_tab/presentation/bloc/loans_tab_bloc.dart';
 
@@ -43,6 +47,9 @@ class UserSession {
       getIt<BillReminderStore>().clear(userId);
     }
     context.read<BillRemindersBloc>().add(const ResetBillRemindersEvent());
+    context.read<RecurringTransactionsBloc>().add(
+      const ResetRecurringTransactionsEvent(),
+    );
     getIt<AssociationContext>().clear();
     getIt<AssociationMemberNames>().clear();
     getIt<AppLockService>().onLoggedOut();
@@ -55,6 +62,7 @@ class UserSession {
     context.read<PlansTabBloc>().add(const ResetPlansTabEvent());
     context.read<LoansTabBloc>().add(const ResetLoansTabEvent());
     context.read<AuthBloc>().add(const ResetAuthEvent());
+    unawaited(PocketlyHomeWidget.clear());
   }
 
   /// Reloads all tabs after switching association ledger.
@@ -113,13 +121,6 @@ class UserSession {
     await getIt<OfflineTransactionSyncService>().flushIfOnline();
     if (!context.mounted) return;
     loadAll(context);
-  }
-
-  /// Reloads transaction tabs after background SMS auto-import.
-  static void refreshAfterAutoImport(BuildContext context) {
-    if (!SupabaseAuthHelper.isSignedIn) return;
-    context.read<IncomesTabBloc>().add(const LoadIncomesEvent(force: true));
-    context.read<ExpensesTabBloc>().add(const LoadExpensesEvent(force: true));
   }
 
   /// Reloads all tabs after the display currency changes.

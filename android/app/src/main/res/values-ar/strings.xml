@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="share_to_pocketly">استيراد إلى Pocketly</string>
+    <string name="home_widget_name">Pocketly</string>
+    <string name="home_widget_description">الرصيد ومصروف اليوم</string>
+    <string name="home_widget_placeholder">افتح Pocketly لعرض الرصيد</string>
+    <string name="home_widget_balance_preview">الرصيد</string>
+    <string name="home_widget_today_preview">مصروف اليوم</string>
+    <string name="home_widget_amount_preview">ج.م0</string>
+    <string name="home_widget_add_expense">ضيف مصروف</string>
+    <string name="home_widget_quick_name">مصروف سريع</string>
+    <string name="home_widget_quick_description">ضيف مصروف بضغطة واحدة</string>
+</resources>

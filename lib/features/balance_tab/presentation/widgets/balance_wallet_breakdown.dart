@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/features/balance_tab/domain/balance_source_constants.dart';
@@ -133,7 +134,9 @@ class _WalletFilterChip extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: selected ? Colors.white : AppColors.textColor,
+                  color: selected
+                      ? ColorContrast.onColor(color)
+                      : AppColors.textColor,
                 ),
               ),
               const SizedBox(height: 2),
@@ -143,8 +146,8 @@ class _WalletFilterChip extends StatelessWidget {
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: selected
-                      ? Colors.white.withValues(alpha: 0.92)
-                      : color,
+                      ? ColorContrast.onColor(color).withValues(alpha: 0.92)
+                      : AppColors.inkOf(color),
                 ),
               ),
             ],

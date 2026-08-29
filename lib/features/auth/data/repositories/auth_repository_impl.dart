@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:imrpo/core/helpers/error_helper.dart';
 import 'package:imrpo/features/auth/data/datasources/auth_datasource.dart';
+import 'package:imrpo/features/auth/domain/entities/social_auth_provider.dart';
 import 'package:imrpo/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
@@ -21,6 +22,18 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<Either<Failure, void>> login(String email, String password) async {
     try {
       await authDatasource.login(email, password);
+      return const Right(null);
+    } catch (e) {
+      return Left(ErrorHelper.handle(e));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> loginWithSocial(
+    SocialAuthProvider provider,
+  ) async {
+    try {
+      await authDatasource.loginWithSocial(provider);
       return const Right(null);
     } catch (e) {
       return Left(ErrorHelper.handle(e));

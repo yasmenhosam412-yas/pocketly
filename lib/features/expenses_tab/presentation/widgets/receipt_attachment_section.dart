@@ -13,6 +13,11 @@ class ReceiptAttachmentSection extends StatelessWidget {
   final Color accentColor;
   final ValueChanged<File?> onLocalFileChanged;
   final VoidCallback onRemove;
+  final String? label;
+  final String? attachLabel;
+  final String? replaceLabel;
+  final String? removeLabel;
+  final IconData attachIcon;
 
   const ReceiptAttachmentSection({
     super.key,
@@ -22,6 +27,11 @@ class ReceiptAttachmentSection extends StatelessWidget {
     required this.accentColor,
     required this.onLocalFileChanged,
     required this.onRemove,
+    this.label,
+    this.attachLabel,
+    this.replaceLabel,
+    this.removeLabel,
+    this.attachIcon = Icons.receipt_long_outlined,
   });
 
   bool get _hasPreview =>
@@ -35,7 +45,7 @@ class ReceiptAttachmentSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n.expenseReceiptLabel,
+          label ?? l10n.expenseReceiptLabel,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -69,7 +79,7 @@ class ReceiptAttachmentSection extends StatelessWidget {
               TextButton.icon(
                 onPressed: () => _pick(context),
                 icon: const Icon(Icons.photo_camera_outlined, size: 20),
-                label: Text(l10n.expenseReceiptReplace),
+                label: Text(replaceLabel ?? l10n.expenseReceiptReplace),
               ),
               TextButton.icon(
                 onPressed: onRemove,
@@ -79,7 +89,7 @@ class ReceiptAttachmentSection extends StatelessWidget {
                   color: AppColors.errorColor.withValues(alpha: 0.9),
                 ),
                 label: Text(
-                  l10n.expenseReceiptRemove,
+                  removeLabel ?? l10n.expenseReceiptRemove,
                   style: TextStyle(color: AppColors.errorColor),
                 ),
               ),
@@ -88,8 +98,8 @@ class ReceiptAttachmentSection extends StatelessWidget {
         ] else
           OutlinedButton.icon(
             onPressed: () => _pick(context),
-            icon: Icon(Icons.receipt_long_outlined, color: accentColor),
-            label: Text(l10n.expenseReceiptAttach),
+            icon: Icon(attachIcon, color: accentColor),
+            label: Text(attachLabel ?? l10n.expenseReceiptAttach),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size(double.infinity, 48),
               side: BorderSide(color: accentColor.withValues(alpha: 0.4)),

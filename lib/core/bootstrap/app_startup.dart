@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/services/app_lock_service.dart';
 import 'package:imrpo/core/services/association_context.dart';
-import 'package:imrpo/core/services/auto_sms_import_preferences.dart';
 import 'package:imrpo/core/services/bill_reminder_bootstrap.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/daily_digest_bootstrap.dart';
@@ -21,6 +20,7 @@ import 'package:imrpo/core/services/share_text_import_bridge.dart';
 import 'package:imrpo/core/services/sms_imported_registry.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/utils/locale_date_format.dart';
+import 'package:imrpo/features/recurring_transactions/data/recurring_transaction_post_service.dart';
 
 /// Route, theme, locale, and lock — must finish before [runApp].
 Future<void> loadCriticalAppStartup() {
@@ -42,7 +42,6 @@ Future<void> runDeferredAppStartup() async {
     getIt<ExpenseShortcutsStore>().load(),
     getIt<PaymentMethodsStore>().load(),
     getIt<SmsImportedRegistry>().load(),
-    getIt<AutoSmsImportPreferences>().load(),
     getIt<NotificationInboxStore>().load(),
   ]);
 
@@ -56,6 +55,10 @@ Future<void> runDeferredAppStartup() async {
   await getIt<AssociationContext>().load();
   await getIt<OfflineTransactionStore>().load();
   await getIt<InitialBalanceStore>().load();
+
+  try {
+    await getIt<RecurringTransactionPostService>().postDue();
+  } catch (_) {}
 
   final offline = getIt<AssociationContext>().isOffline;
   if (!offline) {

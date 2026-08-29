@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imrpo/core/config/app_router.dart';
 import 'package:imrpo/core/services/app_lock_service.dart';
-import 'package:imrpo/core/services/auto_sms_import_preferences.dart';
 import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/locale_preferences.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
-import 'package:imrpo/core/services/sms_import_service.dart';
+import 'package:imrpo/core/services/pocketly_home_widget.dart';
+import 'package:imrpo/core/widgets/app_toast.dart';
 import 'package:imrpo/features/home/presentation/widgets/appearance_settings_sheet.dart';
-import 'package:imrpo/features/home/presentation/widgets/auto_sms_import_settings.dart';
 import 'package:imrpo/features/home/presentation/widgets/app_lock_settings.dart';
 import 'package:imrpo/core/session/user_session.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
@@ -163,7 +162,7 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                       children: [
                         CircleAvatar(
                           radius: 28,
-                          backgroundColor: AppColors.primary.withValues(
+                          backgroundColor: AppColors.primaryInk.withValues(
                             alpha: 0.15,
                           ),
                           child: Text(
@@ -171,7 +170,7 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
+                              color: AppColors.primaryInk,
                             ),
                           ),
                         ),
@@ -327,6 +326,56 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                               await openNotificationsScreen();
                             },
                     ),
+                    if (PocketlyHomeWidget.isAndroid) ...[
+                      _SettingsTile(
+                        icon: Icons.widgets_outlined,
+                        label: l10n.homeWidgetSettingsTile,
+                        onTap: actionsLocked
+                            ? null
+                            : () async {
+                                final pinned =
+                                    await PocketlyHomeWidget.requestPin();
+                                if (!context.mounted) return;
+                                if (!pinned) {
+                                  AppToast.show(
+                                    context,
+                                    l10n.homeWidgetPinUnsupported,
+                                  );
+                                }
+                              },
+                      ),
+                      _SettingsTile(
+                        icon: Icons.add_card_outlined,
+                        label: l10n.homeWidgetQuickSettingsTile,
+                        onTap: actionsLocked
+                            ? null
+                            : () async {
+                                final pinned =
+                                    await PocketlyHomeWidget.requestPin(
+                                  quickExpense: true,
+                                );
+                                if (!context.mounted) return;
+                                if (!pinned) {
+                                  AppToast.show(
+                                    context,
+                                    l10n.homeWidgetPinUnsupported,
+                                  );
+                                }
+                              },
+                      ),
+                    ],
+                    _SettingsTile(
+                      icon: Icons.repeat_rounded,
+                      label: l10n.recurringTransactionsTitle,
+                      onTap: actionsLocked
+                          ? null
+                          : () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pushNamed(
+                                AppRoutes.recurring,
+                              );
+                            },
+                    ),
                     _SettingsTile(
                       icon: Icons.mosque_outlined,
                       label: l10n.zakatTitle,
@@ -349,64 +398,6 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                               );
                             },
                     ),
-                    if (getIt<SmsImportService>().isSupported)
-                      ListenableBuilder(
-                        listenable: getIt<AutoSmsImportPreferences>(),
-                        builder: (context, _) {
-                          final autoSms = getIt<AutoSmsImportPreferences>();
-
-                          return Column(
-                            children: [
-                              _SettingsTile(
-                                icon: Icons.sms_outlined,
-                                label: l10n.settingsAutoSmsImport,
-                                trailing: Switch.adaptive(
-                                  value: autoSms.enabled,
-                                  activeThumbColor: AppColors.primary,
-                                  onChanged: actionsLocked
-                                      ? null
-                                      : (enabled) => setAutoSmsImportEnabled(
-                                            context,
-                                            enabled: enabled,
-                                          ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 48,
-                                  right: 4,
-                                  bottom: 4,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    l10n.settingsAutoSmsImportSubtitle,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: AppColors.textColor.withValues(
-                                        alpha: 0.55,
-                                      ),
-                                      height: 1.35,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              if (autoSms.enabled)
-                                _SettingsTile(
-                                  icon: Icons.tune_rounded,
-                                  label: l10n.settingsAutoSmsImportDefaults,
-                                  onTap: actionsLocked
-                                      ? null
-                                      : () async {
-                                          await configureAutoSmsImportDefaults(
-                                            context,
-                                          );
-                                        },
-                                ),
-                            ],
-                          );
-                        },
-                      ),
                     ListenableBuilder(
                       listenable: getIt<AppLockService>(),
                       builder: (context, _) {
@@ -419,7 +410,7 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                               label: l10n.settingsAppLock,
                               trailing: Switch.adaptive(
                                 value: lock.isEnabled,
-                                activeThumbColor: AppColors.primary,
+                                activeThumbColor: AppColors.primaryInk,
                                 onChanged: actionsLocked
                                     ? null
                                     : (enabled) async {
@@ -440,7 +431,7 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                                 label: l10n.settingsAppLockBiometric,
                                 trailing: Switch.adaptive(
                                   value: lock.biometricEnabled,
-                                  activeThumbColor: AppColors.primary,
+                                  activeThumbColor: AppColors.primaryInk,
                                   onChanged: actionsLocked
                                       ? null
                                       : (enabled) => toggleAppLockBiometric(
@@ -557,12 +548,12 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                             }
                           },
                     child: isSaving
-                        ? const SizedBox(
+                        ? SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: Colors.white,
+                              color: AppColors.onPrimary,
                             ),
                           )
                         : Text(l10n.save),
@@ -731,7 +722,7 @@ class _SettingsTile extends StatelessWidget {
                   height: 22,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: AppColors.primary,
+                    color: AppColors.primaryInk,
                   ),
                 )
               else if (trailing == null)

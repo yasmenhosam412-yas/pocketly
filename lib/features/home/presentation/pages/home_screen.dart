@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -7,6 +9,7 @@ import 'package:imrpo/features/home/presentation/widgets/user_settings_sheet.dar
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
 import 'package:imrpo/core/services/initial_balance_store.dart';
+import 'package:imrpo/core/services/pocketly_home_widget.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
@@ -19,9 +22,12 @@ import 'package:imrpo/features/home/presentation/widgets/association_selector.da
 import 'package:imrpo/features/home/presentation/widgets/home_date_filter_sheet.dart';
 import 'package:imrpo/features/home/presentation/theme/home_header_theme.dart';
 import 'package:imrpo/features/home/presentation/widgets/home_wallet_header_chip.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/features/balance_tab/presentation/pages/balance_tab.dart';
 import 'package:imrpo/features/expenses_tab/presentation/pages/expenses_tab.dart';
+import 'package:imrpo/features/expenses_tab/presentation/utils/show_expense_sheet.dart';
+import 'package:imrpo/features/expenses_tab/presentation/widgets/add_expense_sheet.dart';
 import 'package:imrpo/features/incomes_tab/presentation/pages/incomes_tab.dart';
 import 'package:imrpo/features/plans_tab/presentation/pages/plans_tab.dart';
 import 'package:imrpo/features/loans_tab/presentation/pages/loans_tab.dart';
@@ -123,6 +129,7 @@ class _HomeTabBody extends StatefulWidget {
 
 class _HomeTabBodyState extends State<_HomeTabBody> {
   bool _showGuide = false;
+  bool _openingExpenseFromWidget = false;
 
   List<_HomeTabItem> _tabs(AppLocalizations l10n) => [
     _HomeTabItem(
@@ -156,7 +163,11 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
   void initState() {
     super.initState();
     widget.tabController.addListener(_onTabChanged);
-    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeStartGuide());
+    PocketlyHomeWidget.addExpenseLaunch.addListener(_onAddExpenseLaunch);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _maybeStartGuide();
+      _onAddExpenseLaunch();
+    });
   }
 
   Future<void> _maybeStartGuide() async {
@@ -170,10 +181,42 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
     await getIt<OnboardingPreferences>().setHomeGuideCompleted();
     if (!mounted) return;
     setState(() => _showGuide = false);
+    _onAddExpenseLaunch();
+  }
+
+  void _onAddExpenseLaunch() {
+    if (!PocketlyHomeWidget.addExpenseLaunch.value) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_openAddExpenseFromWidget());
+    });
+  }
+
+  Future<void> _openAddExpenseFromWidget() async {
+    if (!mounted) return;
+    if (!PocketlyHomeWidget.addExpenseLaunch.value) return;
+    if (_openingExpenseFromWidget) {
+      PocketlyHomeWidget.takeAddExpenseLaunch();
+      return;
+    }
+    if (_showGuide) return;
+
+    PocketlyHomeWidget.takeAddExpenseLaunch();
+    widget.tabController.animateTo(1);
+    if (!AssociationLedgerAccess.canEdit) return;
+
+    _openingExpenseFromWidget = true;
+    try {
+      await Future<void>.delayed(const Duration(milliseconds: 280));
+      if (!mounted) return;
+      await showExpenseSheet(context, sheet: const AddExpenseSheet());
+    } finally {
+      _openingExpenseFromWidget = false;
+    }
   }
 
   @override
   void dispose() {
+    PocketlyHomeWidget.addExpenseLaunch.removeListener(_onAddExpenseLaunch);
     widget.tabController.removeListener(_onTabChanged);
     super.dispose();
   }
@@ -210,7 +253,9 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
                       ),
                     ),
                     const SliverToBoxAdapter(child: OfflineBanner()),
-                    const SliverToBoxAdapter(child: PendingAssociationInvites()),
+                    const SliverToBoxAdapter(
+                      child: PendingAssociationInvites(),
+                    ),
                     const SliverToBoxAdapter(child: AssociationLedgerBanner()),
                     SliverToBoxAdapter(
                       child: Padding(
@@ -323,9 +368,7 @@ class _HomeHeader extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: headerTheme.isDark
-                    ? headerTheme.shadow
-                    : AppColors.primary.withValues(alpha: 0.22),
+                color: headerTheme.shadow,
                 blurRadius: 0,
                 offset: const Offset(0, 4),
               ),
@@ -338,8 +381,12 @@ class _HomeHeader extends StatelessWidget {
             ),
             child: HomeHeaderScope(
               theme: headerTheme,
-              child: Stack(
-                children: [
+              child: IconTheme(
+                data: IconThemeData(color: headerTheme.foreground),
+                child: DefaultTextStyle.merge(
+                  style: TextStyle(color: headerTheme.foreground),
+                  child: Stack(
+                    children: [
                   Positioned(
                     top: -40,
                     right: -20,
@@ -387,9 +434,9 @@ class _HomeHeader extends StatelessWidget {
                                       isInitialLoading,
                                     ),
                                     style: TextStyle(
-                                      color: headerTheme.foregroundMuted,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500,
+                                      color: headerTheme.foreground,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -407,11 +454,16 @@ class _HomeHeader extends StatelessWidget {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  const SizedBox(height: 6),
-                                  _ActiveTabBadge(tab: selectedTab),
                                 ],
                               ),
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            _ActiveTabBadge(tab: selectedTab),
+                            const Spacer(),
                             _HeaderIconButton(
                               icon: Icons.search_rounded,
                               tooltip: l10n.globalSearchTitle,
@@ -434,8 +486,8 @@ class _HomeHeader extends StatelessWidget {
                                 );
                               },
                             ),
-                            const SizedBox(width: 4),
-                            if (profile != null && !isInitialLoading)
+                            if (profile != null && !isInitialLoading) ...[
+                              const SizedBox(width: 4),
                               KeyedSubtree(
                                 key: HomeGuideTargets.settings,
                                 child: _HeaderIconButton(
@@ -445,6 +497,7 @@ class _HomeHeader extends StatelessWidget {
                                       showUserSettingsSheet(context, profile),
                                 ),
                               ),
+                            ],
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -498,13 +551,10 @@ class _HomeHeader extends StatelessWidget {
                                       ],
                                       KeyedSubtree(
                                         key: canEdit
-                                            ? const ValueKey(
-                                                'home-import-chip',
-                                              )
+                                            ? const ValueKey('home-import-chip')
                                             : HomeGuideTargets.smartImport,
                                         child: _HeaderActionChip(
-                                          icon:
-                                              Icons.document_scanner_outlined,
+                                          icon: Icons.document_scanner_outlined,
                                           label: l10n.smartImportShort,
                                           trailingIcon:
                                               Icons.arrow_forward_rounded,
@@ -545,7 +595,9 @@ class _HomeHeader extends StatelessWidget {
                         ),
                       ),
                     ),
-                ],
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -602,13 +654,13 @@ class _ActiveTabBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(tab.icon, size: 14, color: theme.foreground),
+          Icon(tab.icon, size: 16, color: theme.foreground),
           const SizedBox(width: 6),
           Text(
             tab.label,
             style: TextStyle(
               color: theme.foreground,
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -867,7 +919,13 @@ class _TabChip extends StatelessWidget {
               Icon(
                 tab.icon,
                 size: 20,
-                color: isSelected ? Colors.white : tab.color,
+                color: isSelected
+                    ? ColorContrast.onColor(tab.color)
+                    : ColorContrast.asInk(
+                        tab.color,
+                        onDarkSurface:
+                            Theme.of(context).brightness == Brightness.dark,
+                      ),
               ),
               const SizedBox(height: 6),
               Text(
@@ -877,7 +935,9 @@ class _TabChip extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: isSelected ? Colors.white : palette.textPrimary,
+                  color: isSelected
+                      ? ColorContrast.onColor(tab.color)
+                      : palette.textPrimary,
                 ),
               ),
             ],

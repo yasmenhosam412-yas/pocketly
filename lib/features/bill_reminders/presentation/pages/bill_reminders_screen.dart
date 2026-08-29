@@ -123,7 +123,7 @@ shape: const RoundedRectangleBorder(
         builder: (context, state) {
           if (state is BillRemindersLoading) {
             return Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
+              child: CircularProgressIndicator(color: AppColors.primaryInk),
             );
           }
           if (state is BillRemindersError) {
@@ -184,7 +184,7 @@ shape: const RoundedRectangleBorder(
                         Icon(
                           Icons.notifications_active_outlined,
                           color: reminder.isEnabled
-                              ? AppColors.primary
+                              ? AppColors.primaryInk
                               : AppColors.textSecondary,
                         ),
                         const SizedBox(width: 12),
@@ -215,7 +215,7 @@ shape: const RoundedRectangleBorder(
                         ),
                         Switch.adaptive(
                           value: reminder.isEnabled,
-                          activeThumbColor: AppColors.primary,
+                          activeThumbColor: AppColors.primaryInk,
                           onChanged: (enabled) {
                             context.read<BillRemindersBloc>().add(
                               ToggleBillReminderEvent(

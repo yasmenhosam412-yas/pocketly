@@ -276,7 +276,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                                   ? user.username[0].toUpperCase()
                                   : '?',
                               style: TextStyle(
-                                color: AppColors.primary,
+                                color: AppColors.primaryInk,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -298,7 +298,7 @@ class _InviteMembersScreenState extends State<InviteMembersScreen> {
                                   onPressed: () => _invite(user),
                                   style: FilledButton.styleFrom(
                                     backgroundColor: AppColors.primary,
-                                    foregroundColor: AppColors.onWarm,
+                                    foregroundColor: AppColors.onPrimary,
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16,
                                     ),

@@ -87,60 +87,65 @@ class _MockSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ThemedSummaryCard(
       accent: gradient.first,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      child: Builder(
+        builder: (context) {
+          final on = SummaryCardColors.of(context);
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  trendIcon,
-                  color: Colors.white.withValues(alpha: 0.95),
-                  size: 24,
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: on.overlayStrong,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      trendIcon,
+                      color: on.foreground,
+                      size: 24,
+                    ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: on.overlayStrong,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      periodLabel,
+                      style: TextStyle(
+                        color: on.foreground,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Text(
+                label,
+                style: TextStyle(
+                  color: on.muted,
+                  fontSize: 15,
                 ),
               ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  periodLabel,
-                  style: TextStyle(
-                    color: AppColors.card,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
+              const SizedBox(height: 6),
+              Text(
+                amountPreview,
+                style: TextStyle(
+                  color: on.foreground,
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -0.5,
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 20),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
-              fontSize: 15,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            amountPreview,
-            style: TextStyle(
-              color: AppColors.card,
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              letterSpacing: -0.5,
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

@@ -432,6 +432,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get billRemindersDeleted => 'اتمسح التذكير';
 
   @override
+  String get recurringTransactionsTitle => 'المعاملات المتكررة';
+
+  @override
+  String get recurringTransactionsSubtitle => 'هتتسجل المرتب والإيجار والفواتير لوحدها كل شهر في يوم الاستحقاق';
+
+  @override
+  String get recurringTransactionsEmpty => 'مفيش معاملات متكررة لسه. ضيف مرتب، إيجار، نت، وغيره.';
+
+  @override
+  String get recurringTransactionsAdd => 'معاملة متكررة';
+
+  @override
+  String get recurringTransactionsEdit => 'تعديل المعاملة';
+
+  @override
+  String get recurringTransactionsTitleHint => 'زي: مرتب، إيجار، نت';
+
+  @override
+  String get recurringTransactionsPostedThisMonth => 'اتنزلت الشهر ده';
+
+  @override
+  String get recurringTransactionsDeleted => 'اتمسحت المعاملة المتكررة';
+
+  @override
+  String get recurringTransactionsDeleteConfirmTitle => 'تمسح المعاملة المتكررة؟';
+
+  @override
   String get billRemindersTestNow => 'جرب دلوقتي';
 
   @override
@@ -1048,6 +1075,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orDivider => 'أو';
+
+  @override
+  String get continueWithGoogle => 'كمل بجوجل';
+
+  @override
+  String get continueWithFacebook => 'كمل بفيسبوك';
 
   @override
   String get noAccountPrompt => 'معندكش حساب؟';
@@ -1709,6 +1742,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get amountSavedLabel => 'اللي وفّرته';
 
   @override
+  String get amountSavedHint => 'تقدم مبدئي بس — مش بيتخصم من صافي الرصيد. استخدم «ضيف لهدف» من تبويب الرصيد عشان تحوّل من المحفظة.';
+
+  @override
   String get setDeadlineOptional => 'حدّد موعد (اختياري)';
 
   @override
@@ -1812,6 +1848,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get balanceAddToPlanSuccess => 'اتضاف المبلغ لهدف التوفير';
+
+  @override
+  String get balanceNoSurplusForPlan => 'مفيش صافي رصيد متاح عشان تضيفه لهدف.';
 
   @override
   String get balancePlanAllocationPaidFromHint => 'اختار المصدر اللي هيتخصم منه المبلغ ده (بيظهر في الرصيد مش كمصروف مش مربوط).';
@@ -2297,32 +2336,6 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get settingsAutoSmsImport => 'استيراد تلقائي من SMS';
-
-  @override
-  String get settingsAutoSmsImportSubtitle => 'لما تفتح التطبيق، بنكتشف رسائل البنك الجديدة ونضيفها دخل أو مصروف حسب التصنيف والمصدر اللي تختاره.';
-
-  @override
-  String get settingsAutoSmsImportDefaults => 'إعدادات الاستيراد التلقائي';
-
-  @override
-  String get settingsAutoSmsImportDefaultsTitle => 'افتراضيات الاستيراد التلقائي';
-
-  @override
-  String get settingsAutoSmsImportDefaultsHint => 'بتتستخدم في كل استيراد تلقائي. نص الرسالة للعنوان بس.';
-
-  @override
-  String get settingsAutoSmsImportPermissionDenied => 'محتاج إذن SMS للاستيراد التلقائي.';
-
-  @override
-  String get settingsAutoSmsImportEnabled => 'الاستيراد التلقائي شغّال. الرسائل الجديدة هتتضاف لما تفتح التطبيق.';
-
-  @override
-  String autoSmsImportAddedSnack(int incomes, int expenses) {
-    return 'اتستورد $incomes دخل و$expenses مصروف تلقائي.';
-  }
-
-  @override
   String get settingsAppLock => 'قفل التطبيق';
 
   @override
@@ -2634,4 +2647,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get zakatRateNote => 'يُفترض حولان الحول على المال. عدّل الأرقام حسب حالتك.';
+
+  @override
+  String get homeWidgetTodayExpenses => 'مصروف اليوم';
+
+  @override
+  String get homeWidgetSettingsTile => 'ويدجت الشاشة الرئيسية';
+
+  @override
+  String get homeWidgetQuickName => 'مصروف سريع';
+
+  @override
+  String get homeWidgetQuickSettingsTile => 'ويدجت المصروف السريع';
+
+  @override
+  String get homeWidgetPinUnsupported => 'مشغّل الشاشة لا يدعم تثبيت الويدجت. اضغط مطولًا على الشاشة الرئيسية واختر ويدجت، ثم أضف Pocketly.';
+
+  @override
+  String get planImageLabel => 'صورة الهدف';
+
+  @override
+  String get planImageAttach => 'أضف صورة';
+
+  @override
+  String get planImageReplace => 'تغيير الصورة';
+
+  @override
+  String get planImageRemove => 'حذف الصورة';
+
+  @override
+  String get planImageUploadFailed => 'تعذر رفع الصورة. حاول مرة أخرى.';
 }

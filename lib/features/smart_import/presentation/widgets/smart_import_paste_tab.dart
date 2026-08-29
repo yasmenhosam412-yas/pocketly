@@ -342,7 +342,7 @@ class _SmartImportPasteTabState extends State<SmartImportPasteTab> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
+                  foregroundColor: AppColors.primaryInk,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -393,7 +393,7 @@ class _SmartImportPasteTabState extends State<SmartImportPasteTab> {
             decoration: AppDecorations.card(),
             child: Column(
               children: [
-                CircularProgressIndicator(color: AppColors.primary),
+                CircularProgressIndicator(color: AppColors.primaryInk),
                 const SizedBox(height: 14),
                 Text(
                   l10n.smartImportPasteProcessing,
@@ -490,7 +490,7 @@ class _PasteHintCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: AppDecorations.card(
-        borderColor: AppColors.primary.withValues(alpha: 0.2),
+        borderColor: AppColors.primaryInk.withValues(alpha: 0.2),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -498,12 +498,12 @@ class _PasteHintCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.12),
+              color: AppColors.primaryInk.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               Icons.content_paste_search_rounded,
-              color: AppColors.primary,
+              color: AppColors.primaryInk,
               size: 24,
             ),
           ),
@@ -535,10 +535,10 @@ class _PasteShareTip extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.08),
+        color: AppColors.primaryInk.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.2),
+          color: AppColors.primaryInk.withValues(alpha: 0.2),
         ),
       ),
       child: Row(
@@ -547,7 +547,7 @@ class _PasteShareTip extends StatelessWidget {
           Icon(
             Icons.ios_share_rounded,
             size: 18,
-            color: AppColors.primary.withValues(alpha: 0.85),
+            color: AppColors.primaryInk.withValues(alpha: 0.85),
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -600,7 +600,7 @@ class _PasteResultListTile extends StatelessWidget {
           padding: const EdgeInsets.all(14),
           decoration: AppDecorations.card(
             borderColor: selected
-                ? AppColors.primary.withValues(alpha: 0.45)
+                ? AppColors.primaryInk.withValues(alpha: 0.45)
                 : accent.withValues(alpha: 0.2),
           ),
           child: Column(
@@ -612,7 +612,7 @@ class _PasteResultListTile extends StatelessWidget {
                   Checkbox(
                     value: selected,
                     onChanged: disabled ? null : (_) => onToggleSelect(),
-                    activeColor: AppColors.primary,
+                    activeColor: AppColors.primaryInk,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   ),
                   Expanded(

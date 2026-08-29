@@ -14,6 +14,7 @@ import 'package:imrpo/features/plans_tab/domain/entities/plan.dart';
 import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
 import 'package:imrpo/features/plans_tab/presentation/widgets/add_plan_sheet.dart';
+import 'package:imrpo/features/plans_tab/presentation/widgets/add_to_plan_from_balance_sheet.dart';
 import 'package:imrpo/features/plans_tab/presentation/widgets/plan_list_tile.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
@@ -272,6 +273,12 @@ class _PlansTabState extends State<PlansTab> with AutomaticKeepAliveClientMixin 
                             plan: plan,
                             isDeleting: state.deletingPlanId == plan.id,
                             onTap: canEdit ? () => _openEditSheet(plan) : null,
+                            onAddFromBalance: canEdit && !plan.isCompleted
+                                ? () => showAddToPlanFromBalanceSheet(
+                                      context,
+                                      lockedPlan: plan,
+                                    )
+                                : null,
                             onDelete: canEdit
                                 ? () {
                                     context.read<PlansTabBloc>().add(
@@ -351,7 +358,10 @@ class _DashboardCard extends StatelessWidget {
     return ThemedSummaryCard(
       accent: AppColors.plans,
       padding: const EdgeInsets.all(22),
-      child: Column(
+      child: Builder(
+        builder: (context) {
+          final on = SummaryCardColors.of(context);
+          return Column(
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -363,7 +373,7 @@ class _DashboardCard extends StatelessWidget {
                     Text(
                       l10n.plansGoalsOverview,
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.85),
+                        color: on.foreground.withValues(alpha: 0.85),
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -372,7 +382,7 @@ class _DashboardCard extends StatelessWidget {
                     Text(
                       Money.format(totalSaved),
                       style: TextStyle(
-                        color: Colors.white,
+                        color: on.foreground,
                         fontSize: 34,
                         fontWeight: FontWeight.bold,
                         letterSpacing: -0.8,
@@ -383,7 +393,7 @@ class _DashboardCard extends StatelessWidget {
                     Text(
                       l10n.plansSavedOfTarget(Money.format(totalTarget)),
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.8),
+                        color: on.foreground.withValues(alpha: 0.8),
                         fontSize: 14,
                       ),
                     ),
@@ -403,9 +413,9 @@ class _DashboardCard extends StatelessWidget {
                       child: CircularProgressIndicator(
                         value: overallProgress,
                         strokeWidth: 8,
-                        backgroundColor: Colors.white.withValues(alpha: 0.2),
-                        valueColor: const AlwaysStoppedAnimation<Color>(
-                          Colors.white,
+                        backgroundColor: on.foreground.withValues(alpha: 0.2),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          on.foreground,
                         ),
                       ),
                     ),
@@ -415,7 +425,7 @@ class _DashboardCard extends StatelessWidget {
                         Text(
                           '$progressPercent%',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: on.foreground,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -423,7 +433,7 @@ class _DashboardCard extends StatelessWidget {
                         Text(
                           l10n.plansDonePercentLabel,
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.75),
+                            color: on.foreground.withValues(alpha: 0.75),
                             fontSize: 11,
                           ),
                         ),
@@ -439,10 +449,10 @@ class _DashboardCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.14),
+              color: on.foreground.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
+                color: on.foreground.withValues(alpha: 0.2),
               ),
             ),
             child: Row(
@@ -450,14 +460,14 @@ class _DashboardCard extends StatelessWidget {
                 Icon(
                   Icons.emoji_events_outlined,
                   size: 18,
-                  color: Colors.white.withValues(alpha: 0.9),
+                  color: on.foreground.withValues(alpha: 0.9),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     l10n.plansGoalsCompletedSummary(completedCount, planCount),
                     style: TextStyle(
-                      color: Colors.white,
+                      color: on.foreground,
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
@@ -466,7 +476,7 @@ class _DashboardCard extends StatelessWidget {
                 Text(
                   l10n.plansMoneyLeft(Money.format(remaining)),
                   style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.85),
+                    color: on.foreground.withValues(alpha: 0.85),
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -475,6 +485,8 @@ class _DashboardCard extends StatelessWidget {
             ),
           ),
         ],
+          );
+        },
       ),
     );
   }

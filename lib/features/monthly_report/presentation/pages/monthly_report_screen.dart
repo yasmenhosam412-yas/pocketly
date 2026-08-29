@@ -129,7 +129,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                       ),
                       Expanded(
                         child: RefreshIndicator(
-                          color: AppColors.primary,
+                          color: AppColors.primaryInk,
                           onRefresh: _refresh,
                           child: ListView(
                             physics: const AlwaysScrollableScrollPhysics(),
@@ -140,7 +140,7 @@ class _MonthlyReportScreenState extends State<MonthlyReportScreen> {
                                   padding: const EdgeInsets.symmetric(vertical: 24),
                                   child: Center(
                                     child: CircularProgressIndicator(
-                                      color: AppColors.primary,
+                                      color: AppColors.primaryInk,
                                     ),
                                   ),
                                 ),
@@ -268,7 +268,7 @@ class _MonthSelectorBar extends StatelessWidget {
                       Icon(
                         Icons.calendar_month_outlined,
                         size: 20,
-                        color: AppColors.primary,
+                        color: AppColors.primaryInk,
                       ),
                       const SizedBox(width: 8),
                       Text(

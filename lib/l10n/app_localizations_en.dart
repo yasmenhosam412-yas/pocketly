@@ -432,6 +432,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get billRemindersDeleted => 'Reminder deleted';
 
   @override
+  String get recurringTransactionsTitle => 'Recurring transactions';
+
+  @override
+  String get recurringTransactionsSubtitle => 'Auto-add salary, rent, and bills on the due day each month';
+
+  @override
+  String get recurringTransactionsEmpty => 'No recurring transactions yet. Add salary, rent, internet, and more.';
+
+  @override
+  String get recurringTransactionsAdd => 'Add recurring';
+
+  @override
+  String get recurringTransactionsEdit => 'Edit recurring';
+
+  @override
+  String get recurringTransactionsTitleHint => 'e.g. Salary, Rent, Internet';
+
+  @override
+  String get recurringTransactionsPostedThisMonth => 'Posted this month';
+
+  @override
+  String get recurringTransactionsDeleted => 'Recurring transaction deleted';
+
+  @override
+  String get recurringTransactionsDeleteConfirmTitle => 'Delete this recurring transaction?';
+
+  @override
   String get billRemindersTestNow => 'Test now';
 
   @override
@@ -1048,6 +1075,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orDivider => 'OR';
+
+  @override
+  String get continueWithGoogle => 'Continue with Google';
+
+  @override
+  String get continueWithFacebook => 'Continue with Facebook';
 
   @override
   String get noAccountPrompt => 'Don\'t have an account?';
@@ -1709,6 +1742,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get amountSavedLabel => 'Amount saved';
 
   @override
+  String get amountSavedHint => 'Starting progress only — it does not come out of net balance. Use Add to goal on the Balance tab to move money from your wallet.';
+
+  @override
   String get setDeadlineOptional => 'Set deadline (optional)';
 
   @override
@@ -1812,6 +1848,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get balanceAddToPlanSuccess => 'Amount added to your savings goal';
+
+  @override
+  String get balanceNoSurplusForPlan => 'No available net balance to add to a goal.';
 
   @override
   String get balancePlanAllocationPaidFromHint => 'Choose which source this allocation is paid from (shown on Balance, not unassigned).';
@@ -2297,32 +2336,6 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get settingsAutoSmsImport => 'Auto-import from SMS';
-
-  @override
-  String get settingsAutoSmsImportSubtitle => 'When the app opens, new bank SMS are detected and added as income or expense using your chosen category and source.';
-
-  @override
-  String get settingsAutoSmsImportDefaults => 'Auto-import categories';
-
-  @override
-  String get settingsAutoSmsImportDefaultsTitle => 'Defaults for auto-import';
-
-  @override
-  String get settingsAutoSmsImportDefaultsHint => 'Used for every automatic import. SMS text is only used for titles.';
-
-  @override
-  String get settingsAutoSmsImportPermissionDenied => 'SMS permission is required for auto-import.';
-
-  @override
-  String get settingsAutoSmsImportEnabled => 'Auto-import is on. New financial SMS will be added when you open the app.';
-
-  @override
-  String autoSmsImportAddedSnack(int incomes, int expenses) {
-    return 'Auto-imported $incomes incomes and $expenses expenses.';
-  }
-
-  @override
   String get settingsAppLock => 'App lock';
 
   @override
@@ -2634,4 +2647,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get zakatRateNote => 'Hawl (one lunar year) on wealth is assumed. Adjust inputs for your case.';
+
+  @override
+  String get homeWidgetTodayExpenses => 'Today\'s expenses';
+
+  @override
+  String get homeWidgetSettingsTile => 'Home screen widget';
+
+  @override
+  String get homeWidgetQuickName => 'Quick expense';
+
+  @override
+  String get homeWidgetQuickSettingsTile => 'Quick expense widget';
+
+  @override
+  String get homeWidgetPinUnsupported => 'Your launcher can\'t pin widgets. Long-press the home screen and choose Widgets, then add Pocketly.';
+
+  @override
+  String get planImageLabel => 'Goal photo';
+
+  @override
+  String get planImageAttach => 'Add a photo';
+
+  @override
+  String get planImageReplace => 'Change photo';
+
+  @override
+  String get planImageRemove => 'Remove photo';
+
+  @override
+  String get planImageUploadFailed => 'Couldn\'t upload the photo. Try again.';
 }

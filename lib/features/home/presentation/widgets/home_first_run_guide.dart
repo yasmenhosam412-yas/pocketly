@@ -269,7 +269,7 @@ class _GuideCard extends StatelessWidget {
               onPressed: onPrimary,
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.onWarm,
+                foregroundColor: AppColors.onPrimary,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
@@ -331,7 +331,7 @@ class _SpotlightPainter extends CustomPainter {
       canvas.drawRRect(
         RRect.fromRectAndRadius(hole!, const Radius.circular(18)),
         Paint()
-          ..color = AppColors.primary
+          ..color = AppColors.primaryInk
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2.5,
       );

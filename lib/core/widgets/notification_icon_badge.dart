@@ -21,7 +21,10 @@ class NotificationIconBadge extends StatelessWidget {
         decoration: BoxDecoration(
           color: const Color(0xFFE53935),
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.white, width: 1.5),
+          border: Border.all(
+            color: IconTheme.of(context).color ?? Colors.white,
+            width: 1.5,
+          ),
         ),
         alignment: Alignment.center,
         child: Text(

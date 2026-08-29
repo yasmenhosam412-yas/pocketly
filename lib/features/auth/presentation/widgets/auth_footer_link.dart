@@ -32,7 +32,7 @@ class AuthFooterLink extends StatelessWidget {
           child: Text(
             actionLabel,
             style: TextStyle(
-              color: AppColors.primary,
+              color: AppColors.primaryInk,
               fontWeight: FontWeight.w700,
             ),
           ),

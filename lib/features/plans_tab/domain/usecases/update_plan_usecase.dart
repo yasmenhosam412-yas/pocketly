@@ -13,8 +13,9 @@ class UpdatePlanUsecase {
     String category,
     double targetAmount,
     double savedAmount,
-    DateTime? deadline,
-  ) {
+    DateTime? deadline, {
+    String? imageUrl,
+  }) {
     return planRepository.updatePlan(
       planId,
       title,
@@ -22,6 +23,7 @@ class UpdatePlanUsecase {
       targetAmount,
       savedAmount,
       deadline,
+      imageUrl: imageUrl,
     );
   }
 }

@@ -15,8 +15,9 @@ class PlanRepositoryImpl implements PlanRepository {
     String category,
     double targetAmount,
     double savedAmount,
-    DateTime? deadline,
-  ) async {
+    DateTime? deadline, {
+    String? imageUrl,
+  }) async {
     try {
       final planId = await plansDatasource.addPlan(
         title,
@@ -24,6 +25,7 @@ class PlanRepositoryImpl implements PlanRepository {
         targetAmount,
         savedAmount,
         deadline,
+        imageUrl: imageUrl,
       );
       return Right(planId);
     } catch (e) {
@@ -58,8 +60,9 @@ class PlanRepositoryImpl implements PlanRepository {
     String category,
     double targetAmount,
     double savedAmount,
-    DateTime? deadline,
-  ) async {
+    DateTime? deadline, {
+    String? imageUrl,
+  }) async {
     try {
       await plansDatasource.updatePlan(
         planId,
@@ -68,6 +71,7 @@ class PlanRepositoryImpl implements PlanRepository {
         targetAmount,
         savedAmount,
         deadline,
+        imageUrl: imageUrl,
       );
       return const Right(null);
     } catch (e) {

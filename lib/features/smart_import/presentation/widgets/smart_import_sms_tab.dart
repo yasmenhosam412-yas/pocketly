@@ -466,9 +466,9 @@ class _SmartImportSmsTabState extends State<SmartImportSmsTab> {
       children: [
         TabRefreshOverlay(
           isRefreshing: isRefreshing,
-          indicatorColor: AppColors.primary,
+          indicatorColor: AppColors.primaryInk,
           child: RefreshIndicator(
-            color: AppColors.primary,
+            color: AppColors.primaryInk,
             onRefresh: disabled
                 ? () async {}
                 : () async {
@@ -510,7 +510,7 @@ class _BulkImportProgressCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.12),
+              color: AppColors.primaryInk.withValues(alpha: 0.12),
               shape: BoxShape.circle,
             ),
             child: SizedBox(
@@ -518,7 +518,7 @@ class _BulkImportProgressCard extends StatelessWidget {
               height: 32,
               child: CircularProgressIndicator(
                 strokeWidth: 2.5,
-                color: AppColors.primary,
+                color: AppColors.primaryInk,
               ),
             ),
           ),
@@ -556,14 +556,14 @@ class _SmsLoadingList extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               decoration: AppDecorations.card(
-                borderColor: AppColors.primary.withValues(alpha: 0.2),
+                borderColor: AppColors.primaryInk.withValues(alpha: 0.2),
               ),
               child: Column(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: AppColors.primaryInk.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
                     child: SizedBox(
@@ -571,7 +571,7 @@ class _SmsLoadingList extends StatelessWidget {
                       height: 28,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.5,
-                        color: AppColors.primary,
+                        color: AppColors.primaryInk,
                       ),
                     ),
                   ),
@@ -682,10 +682,10 @@ class _SmsListCapBanner extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.08),
+        color: AppColors.primaryInk.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppColors.primary.withValues(alpha: 0.2),
+          color: AppColors.primaryInk.withValues(alpha: 0.2),
         ),
       ),
       child: Text(
@@ -723,7 +723,7 @@ class _SmsPaginationFooter extends StatelessWidget {
               height: 20,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: AppColors.primary,
+                color: AppColors.primaryInk,
               ),
             ),
             const SizedBox(width: 10),
@@ -745,9 +745,9 @@ class _SmsPaginationFooter extends StatelessWidget {
       icon: const Icon(Icons.expand_more_rounded),
       label: Text(l10n.smartImportSmsLoadMore),
       style: OutlinedButton.styleFrom(
-        foregroundColor: AppColors.primary,
+        foregroundColor: AppColors.primaryInk,
         padding: const EdgeInsets.symmetric(vertical: 14),
-        side: BorderSide(color: AppColors.primary),
+        side: BorderSide(color: AppColors.primaryInk),
       ),
     );
   }
@@ -804,7 +804,7 @@ class _SmsListTile extends StatelessWidget {
             color: isImported
                 ? AppColors.surface
                 : selected
-                    ? AppColors.primary.withValues(alpha: 0.05)
+                    ? AppColors.primaryInk.withValues(alpha: 0.05)
                     : AppColors.card,
           ),
           child: Column(
@@ -819,7 +819,7 @@ class _SmsListTile extends StatelessWidget {
                       onChanged: disabled
                           ? null
                           : (_) => onToggleSelect?.call(),
-                      activeColor: AppColors.primary,
+                      activeColor: AppColors.primaryInk,
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       visualDensity: VisualDensity.compact,
                     )
@@ -900,7 +900,7 @@ class _SmsListTile extends StatelessWidget {
                     IconButton(
                       onPressed: onAdd,
                       icon: const Icon(Icons.open_in_new_rounded),
-                      color: AppColors.primary,
+                      color: AppColors.primaryInk,
                       tooltip: l10n.smartImportTapToImport,
                       visualDensity: VisualDensity.compact,
                       constraints: const BoxConstraints(
@@ -937,7 +937,7 @@ class _SmsListTile extends StatelessWidget {
                         TextButton(
                           onPressed: onAddAgain,
                           style: TextButton.styleFrom(
-                            foregroundColor: AppColors.primary,
+                            foregroundColor: AppColors.primaryInk,
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,

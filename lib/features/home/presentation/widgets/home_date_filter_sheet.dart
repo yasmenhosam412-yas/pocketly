@@ -95,7 +95,7 @@ shape: const RoundedRectangleBorder(
                           : l10n.homeFilterPickDay,
                     ),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColors.primary,
+                      foregroundColor: AppColors.primaryInk,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),

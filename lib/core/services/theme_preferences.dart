@@ -47,13 +47,7 @@ class ThemePreferences extends ChangeNotifier {
 
   AppAccentPalette get activePalette {
     if (isCustomPalette) {
-      return AppAccentPalette(
-        id: AppAccentPalette.customId,
-        primary: _customPrimary,
-        secondary: _customSecondary,
-        primaryLight: Color.lerp(_customPrimary, Colors.white, 0.28)!,
-        primaryDark: Color.lerp(_customPrimary, Colors.black, 0.22)!,
-      );
+      return AppAccentPalette.customFrom(_customPrimary, _customSecondary);
     }
     return AppAccentPalette.byId(_paletteId);
   }

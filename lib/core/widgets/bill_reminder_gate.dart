@@ -13,6 +13,7 @@ import 'package:imrpo/core/services/daily_digest_notification_service.dart';
 import 'package:imrpo/core/services/daily_digest_preferences.dart';
 import 'package:imrpo/core/services/association_context.dart';
 import 'package:imrpo/core/services/notification_inbox_sync_service.dart';
+import 'package:imrpo/features/recurring_transactions/data/recurring_transaction_post_service.dart';
 
 /// Re-syncs scheduled bill notifications when the app resumes.
 class BillReminderGate extends StatefulWidget {
@@ -55,6 +56,7 @@ class _BillReminderGateState extends State<BillReminderGate>
       if (!mounted) return;
       _syncNotifications();
       _syncInbox();
+      _postRecurringTransactions();
     });
   }
 
@@ -111,6 +113,19 @@ class _BillReminderGateState extends State<BillReminderGate>
       );
     } catch (e, st) {
       billReminderLogError('gate: daily digest sync failed', e, st);
+    }
+  }
+
+  Future<void> _postRecurringTransactions() async {
+    if (!SupabaseAuthHelper.isSignedIn) return;
+
+    final lock = getIt<AppLockService>();
+    if (lock.isEnabled && lock.isLocked) return;
+
+    try {
+      await getIt<RecurringTransactionPostService>().postDue();
+    } catch (e, st) {
+      billReminderLogError('gate: recurring post failed', e, st);
     }
   }
 

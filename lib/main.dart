@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imrpo/core/config/app_router.dart';
-import 'package:imrpo/core/widgets/auto_sms_import_gate.dart';
 import 'package:imrpo/core/widgets/shared_text_import_gate.dart';
 import 'package:imrpo/core/widgets/app_lock_gate.dart';
 import 'package:imrpo/core/bootstrap/app_startup.dart';
 import 'package:imrpo/core/widgets/bill_reminder_gate.dart';
+import 'package:imrpo/core/services/pocketly_home_widget.dart';
 import 'package:imrpo/features/bill_reminders/presentation/bloc/bill_reminders_bloc.dart';
+import 'package:imrpo/features/recurring_transactions/presentation/bloc/recurring_transactions_bloc.dart';
 import 'package:imrpo/core/services/locale_preferences.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
@@ -41,9 +42,7 @@ Future<void> main() async {
     Supabase.initialize(
       url: 'https://xtilikvogevzshsliwzp.supabase.co',
       anonKey: 'sb_publishable_hhAelFYJErvvdq9_HAkHgw_bwLBSG1K',
-      authOptions: const FlutterAuthClientOptions(
-        detectSessionInUri: false,
-      ),
+      authOptions: const FlutterAuthClientOptions(detectSessionInUri: true),
     ),
     loadCriticalAppStartup(),
   ]);
@@ -63,6 +62,7 @@ Future<void> main() async {
         BlocProvider(create: (_) => getIt<PlansTabBloc>()),
         BlocProvider(create: (_) => getIt<LoansTabBloc>()),
         BlocProvider(create: (_) => getIt<BillRemindersBloc>()),
+        BlocProvider(create: (_) => getIt<RecurringTransactionsBloc>()),
       ],
       child: const MainApp(),
     ),
@@ -163,8 +163,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
                 appUpgrader: _upgraderFor(locale.languageCode),
                 child: AppLockGate(
                   child: SharedTextImportGate(
-                    child: AutoSmsImportGate(
-                      child: BillReminderGate(child: child!),
+                    child: BillReminderGate(
+                      child: HomeWidgetSyncGate(child: child!),
                     ),
                   ),
                 ),

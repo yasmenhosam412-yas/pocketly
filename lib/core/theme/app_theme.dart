@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:imrpo/core/theme/app_color_scheme.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 
 class AppTheme {
@@ -29,9 +30,9 @@ class AppTheme {
       colorScheme: ColorScheme(
         brightness: brightness,
         primary: AppColors.primary,
-        onPrimary: AppColors.onWarm,
+        onPrimary: AppColors.onPrimary,
         secondary: AppColors.secondary,
-        onSecondary: AppColors.onWarm,
+        onSecondary: AppColors.onSecondary,
         tertiary: AppColors.plans,
         surface: scheme.card,
         onSurface: scheme.textPrimary,
@@ -48,17 +49,17 @@ class AppTheme {
       textTheme: textTheme,
       primaryTextTheme: _textTheme(base.primaryTextTheme, scheme),
       textSelectionTheme: TextSelectionThemeData(
-        cursorColor: AppColors.primary,
-        selectionColor: AppColors.primary.withValues(alpha: 0.22),
-        selectionHandleColor: AppColors.primary,
+        cursorColor: AppColors.primaryInk,
+        selectionColor: AppColors.primaryInk.withValues(alpha: 0.22),
+        selectionHandleColor: AppColors.primaryInk,
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onWarm,
+        foregroundColor: AppColors.onPrimary,
         elevation: 0,
         centerTitle: true,
         titleTextStyle: textTheme.titleLarge?.copyWith(
-          color: AppColors.onWarm,
+          color: AppColors.onPrimary,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -75,7 +76,7 @@ class AppTheme {
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.onWarm,
+        foregroundColor: AppColors.onPrimary,
         elevation: 0,
         highlightElevation: 0,
         shape: RoundedRectangleBorder(
@@ -89,7 +90,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.onWarm,
+          foregroundColor: AppColors.onPrimary,
           elevation: 0,
           shadowColor: Colors.transparent,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -107,7 +108,7 @@ class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primary,
+          foregroundColor: AppColors.primaryInk,
           side: BorderSide(
             color: scheme.stroke.withValues(alpha: isDark ? 0.24 : 0.2),
             width: AppDecorations.outlineWidth,
@@ -139,7 +140,7 @@ class AppTheme {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppDecorations.buttonRadius),
           borderSide: BorderSide(
-            color: AppColors.primary,
+            color: AppColors.primaryInk,
             width: 2,
           ),
         ),
@@ -149,7 +150,9 @@ class AppTheme {
         behavior: SnackBarBehavior.floating,
         backgroundColor: isDark ? scheme.surface : scheme.stroke,
         contentTextStyle: textTheme.bodyMedium?.copyWith(
-          color: isDark ? scheme.textPrimary : AppColors.onWarm,
+          color: isDark
+              ? scheme.textPrimary
+              : ColorContrast.onColor(scheme.stroke),
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppDecorations.buttonRadius),
@@ -161,7 +164,7 @@ class AppTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: scheme.surface,
-        selectedColor: AppColors.primary.withValues(alpha: 0.22),
+        selectedColor: AppColors.primaryInk.withValues(alpha: 0.22),
         labelStyle: textTheme.labelMedium,
         side: BorderSide(
           color: scheme.stroke.withValues(alpha: isDark ? 0.16 : 0.12),
@@ -172,7 +175,7 @@ class AppTheme {
         ),
       ),
       progressIndicatorTheme: ProgressIndicatorThemeData(
-        color: AppColors.primary,
+        color: AppColors.primaryInk,
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: scheme.card,

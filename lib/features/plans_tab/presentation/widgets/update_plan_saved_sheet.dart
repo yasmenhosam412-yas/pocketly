@@ -7,10 +7,8 @@ import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/widgets/app_toast.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/core/widgets/currency_amount_field.dart';
-import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
 import 'package:imrpo/features/plans_tab/domain/entities/plan.dart';
 import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
-import 'package:imrpo/features/plans_tab/presentation/widgets/plan_allocation_paid_from_section.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 
@@ -28,7 +26,6 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
 
   late final TextEditingController _savedController;
   late String _currencyCode;
-  String _paidFromSource = 'Cash';
   bool _awaitingSubmit = false;
 
   @override
@@ -44,30 +41,12 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
           ? displaySaved.toInt().toString()
           : displaySaved.toStringAsFixed(2),
     );
-    _savedController.addListener(_onSavedTextChanged);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      context.read<IncomesTabBloc>().add(const LoadIncomesEvent());
-    });
-  }
-
-  void _onSavedTextChanged() {
-    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
-    _savedController
-      ..removeListener(_onSavedTextChanged)
-      ..dispose();
+    _savedController.dispose();
     super.dispose();
-  }
-
-  bool get _requiresPaidFrom {
-    final saved = double.tryParse(_savedController.text.trim());
-    if (saved == null) return false;
-    final baseSaved = CurrencyConverter.toBase(saved, _currencyCode);
-    return baseSaved > widget.plan.savedAmount;
   }
 
   @override
@@ -182,14 +161,6 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
                   initialCurrencyCode: _currencyCode,
                   onCurrencyChanged: (c) => _currencyCode = c.code,
                 ),
-                if (_requiresPaidFrom) ...[
-                  const SizedBox(height: 20),
-                  PlanAllocationPaidFromSection(
-                    selectedSource: _paidFromSource,
-                    onSelected: (src) => setState(() => _paidFromSource = src),
-                    accentColor: _planColor,
-                  ),
-                ],
                 const SizedBox(height: 28),
                 SizedBox(
                   width: double.infinity,
@@ -239,40 +210,25 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
       return;
     }
 
-    final baseSaved = CurrencyConverter.toBase(saved, _currencyCode);
-
-    if (baseSaved > widget.plan.targetAmount) {
+    if (CurrencyConverter.exceedsCap(
+      CurrencyConverter.toBase(saved, _currencyCode),
+      widget.plan.targetAmount,
+      currencyCode: _currencyCode,
+    )) {
       _showError(l10n.errorSavedExceedsTarget);
       return;
     }
 
-    final plan = widget.plan;
-    final delta = baseSaved - plan.savedAmount;
-
-    if (delta > 0) {
-      final paidFrom = _paidFromSource.trim();
-      if (paidFrom.isEmpty) {
-        _showError(l10n.planAllocationSelectPaidFrom);
-        return;
-      }
-      setState(() => _awaitingSubmit = true);
-      context.read<PlansTabBloc>().add(
-            AddAmountToPlanEvent(
-              id: plan.id,
-              amountToAdd: delta,
-              expenseTitle: l10n.balancePlanAllocationExpenseTitle(
-                localizeDemoTitle(l10n, plan.title),
-              ),
-              expensePaidFrom: paidFrom,
-            ),
-          );
-      return;
-    }
+    final baseSaved = CurrencyConverter.toBaseAtMost(
+      saved,
+      _currencyCode,
+      widget.plan.targetAmount,
+    );
 
     setState(() => _awaitingSubmit = true);
     context.read<PlansTabBloc>().add(
           UpdatePlanSavedEvent(
-            id: plan.id,
+            id: widget.plan.id,
             savedAmount: baseSaved,
           ),
         );

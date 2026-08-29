@@ -417,13 +417,16 @@ class _DashboardCard extends StatelessWidget {
     return ThemedSummaryCard(
       accent: AppColors.loans,
       padding: const EdgeInsets.all(22),
-      child: Column(
+      child: Builder(
+        builder: (context) {
+          final on = SummaryCardColors.of(context);
+          return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             l10n.loanOverview,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
+              color: on.foreground.withValues(alpha: 0.85),
               fontSize: 14,
               fontWeight: FontWeight.w500,
             ),
@@ -431,8 +434,8 @@ class _DashboardCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             Money.format(netPosition.abs()),
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: on.foreground,
               fontSize: 34,
               fontWeight: FontWeight.bold,
               letterSpacing: -0.8,
@@ -443,7 +446,7 @@ class _DashboardCard extends StatelessWidget {
           Text(
             netPosition >= 0 ? l10n.loanNetPositive : l10n.loanNetNegative,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.8),
+              color: on.foreground.withValues(alpha: 0.8),
               fontSize: 14,
             ),
           ),
@@ -452,10 +455,10 @@ class _DashboardCard extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.14),
+              color: on.foreground.withValues(alpha: 0.14),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
+                color: on.foreground.withValues(alpha: 0.2),
               ),
             ),
             child: Row(
@@ -467,15 +470,15 @@ class _DashboardCard extends StatelessWidget {
                       Text(
                         l10n.loanOwedToYou,
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: on.foreground.withValues(alpha: 0.8),
                           fontSize: 12,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         Money.format(owedToYou),
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: on.foreground,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -489,15 +492,15 @@ class _DashboardCard extends StatelessWidget {
                       Text(
                         l10n.loanYouOwe,
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: on.foreground.withValues(alpha: 0.8),
                           fontSize: 12,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         Money.format(youOwe),
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: on.foreground,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -508,6 +511,8 @@ class _DashboardCard extends StatelessWidget {
             ),
           ),
         ],
+          );
+        },
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 
 class AppAccentPalette {
   const AppAccentPalette({
@@ -82,6 +83,21 @@ class AppAccentPalette {
   ];
 
   static const customId = 'custom';
+
+  static AppAccentPalette customFrom(Color primary, Color secondary) {
+    final light = ColorContrast.isLight(primary);
+    return AppAccentPalette(
+      id: customId,
+      primary: primary,
+      secondary: secondary,
+      primaryLight: Color.lerp(
+        primary,
+        light ? Colors.black : Colors.white,
+        light ? 0.08 : 0.28,
+      )!,
+      primaryDark: Color.lerp(primary, Colors.black, light ? 0.28 : 0.22)!,
+    );
+  }
 
   static AppAccentPalette byId(String id) {
     for (final palette in presets) {

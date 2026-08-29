@@ -110,7 +110,7 @@ class _SmartImportScreenState extends State<SmartImportScreen>
           ? FloatingActionButton.small(
               onPressed: _scrollToTop,
               backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
+              foregroundColor: AppColors.onPrimary,
               tooltip: l10n.smartImportScrollToTop,
               child: const Icon(Icons.keyboard_arrow_up_rounded),
             )

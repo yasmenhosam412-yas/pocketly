@@ -4,9 +4,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:imrpo/features/auth/domain/usecases/delete_account_usecase.dart';
 import 'package:imrpo/features/auth/domain/usecases/forget_password_usecase.dart';
+import 'package:imrpo/core/l10n/l10n_error_tokens.dart';
+import 'package:imrpo/features/auth/domain/entities/social_auth_provider.dart';
 import 'package:imrpo/features/auth/domain/usecases/login_usecase.dart';
 import 'package:imrpo/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:imrpo/features/auth/domain/usecases/signup_usecase.dart';
+import 'package:imrpo/features/auth/domain/usecases/social_login_usecase.dart';
 import 'package:imrpo/features/auth/domain/usecases/verify_set_new_pass_usecase.dart';
 
 part 'auth_event.dart';
@@ -14,6 +17,7 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUsecase loginUsecase;
+  final SocialLoginUsecase socialLoginUsecase;
   final SignupUsecase signupUsecase;
   final ForgetPasswordUsecase forgetPasswordUsecase;
   final VerifySetNewPassUsecase verifySetNewPassUsecase;
@@ -22,6 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc({
     required this.loginUsecase,
+    required this.socialLoginUsecase,
     required this.signupUsecase,
     required this.forgetPasswordUsecase,
     required this.verifySetNewPassUsecase,
@@ -29,6 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.deleteAccountUsecase,
   }) : super(AuthState()) {
     on<LoginEvent>(_handleLogin);
+    on<SocialLoginEvent>(_handleSocialLogin);
     on<SignupEvent>(_handleSignup);
     on<ForgetPasswordEvent>(_handleForgetPassword);
     on<VerifySetNewPassEvent>(_handleVerifySetNewPass);
@@ -54,6 +60,48 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       ),
       (_) => emit(state.copyWith(status: AuthStatus.successLogin)),
+    );
+  }
+
+  Future<void> _handleSocialLogin(
+    SocialLoginEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(
+      state.copyWith(
+        status: AuthStatus.loadingLogin,
+        socialProvider: event.provider,
+      ),
+    );
+
+    final result = await socialLoginUsecase(event.provider);
+
+    if (emit.isDone) return;
+
+    result.fold(
+      (failure) {
+        if (state.status != AuthStatus.loadingLogin) return;
+        if (failure.error == l10nSocialAuthCancelledToken) {
+          emit(const AuthState());
+          return;
+        }
+        emit(
+          state.copyWith(
+            status: AuthStatus.errorLogin,
+            errorMessage: failure.error,
+            clearSocialProvider: true,
+          ),
+        );
+      },
+      (_) {
+        if (emit.isDone) return;
+        emit(
+          state.copyWith(
+            status: AuthStatus.successLogin,
+            clearSocialProvider: true,
+          ),
+        );
+      },
     );
   }
 

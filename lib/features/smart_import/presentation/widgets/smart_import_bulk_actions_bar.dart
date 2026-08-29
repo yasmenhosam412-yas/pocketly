@@ -82,6 +82,7 @@ class SmartImportBulkActionsBar extends StatelessWidget {
                   label: Text(l10n.smartImportAddSelected(selectedCount)),
                   style: FilledButton.styleFrom(
                     backgroundColor: AppColors.primary,
+                    foregroundColor: AppColors.onPrimary,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),

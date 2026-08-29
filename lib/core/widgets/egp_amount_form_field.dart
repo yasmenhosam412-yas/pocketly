@@ -59,7 +59,7 @@ class EgpAmountFormField extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 15,
-                  color: AppColors.primary,
+                  color: AppColors.primaryInk,
                 ),
               ),
             ),
@@ -100,7 +100,7 @@ class EgpAmountFormField extends StatelessWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(14),
                     borderSide: BorderSide(
-                      color: AppColors.primary,
+                      color: AppColors.primaryInk,
                       width: 1.5,
                     ),
                   ),

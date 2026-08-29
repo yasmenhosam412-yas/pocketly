@@ -303,7 +303,7 @@ class _MagicAddPanelState extends State<MagicAddPanel> {
           width: double.infinity,
           padding: const EdgeInsets.all(18),
           decoration: AppDecorations.card(
-            borderColor: AppColors.primary.withValues(alpha: 0.22),
+            borderColor: AppColors.primaryInk.withValues(alpha: 0.22),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,12 +311,12 @@ class _MagicAddPanelState extends State<MagicAddPanel> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.12),
+                  color: AppColors.primaryInk.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   Icons.auto_awesome_rounded,
-                  color: AppColors.primary,
+                  color: AppColors.primaryInk,
                   size: 24,
                 ),
               ),
@@ -358,14 +358,14 @@ class _MagicAddPanelState extends State<MagicAddPanel> {
             fillColor: AppColors.surface,
             prefixIcon: Icon(
               Icons.edit_note_rounded,
-              color: AppColors.primary,
+              color: AppColors.primaryInk,
             ),
             suffixIcon: IconButton(
               tooltip: _listening ? l10n.magicAddListening : l10n.magicAddListen,
               onPressed: _saving ? null : _toggleListen,
               icon: Icon(
                 _listening ? Icons.mic_rounded : Icons.mic_none_rounded,
-                color: _listening ? AppColors.expense : AppColors.primary,
+                color: _listening ? AppColors.expense : AppColors.primaryInk,
               ),
             ),
             border: OutlineInputBorder(
@@ -378,7 +378,7 @@ class _MagicAddPanelState extends State<MagicAddPanel> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+              borderSide: BorderSide(color: AppColors.primaryInk, width: 1.5),
             ),
           ),
         ),
@@ -455,6 +455,7 @@ class _MagicAddPanelState extends State<MagicAddPanel> {
           ),
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.primary,
+            foregroundColor: AppColors.onPrimary,
             padding: const EdgeInsets.symmetric(vertical: 14),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),

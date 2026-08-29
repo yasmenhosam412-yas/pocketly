@@ -6,6 +6,8 @@ import 'package:imrpo/features/plans_tab/domain/usecases/delete_plan_usecase.dar
 import 'package:imrpo/features/plans_tab/domain/usecases/get_all_plans_usecase.dart';
 import 'package:imrpo/features/plans_tab/domain/usecases/update_plan_saved_usecase.dart';
 import 'package:imrpo/features/plans_tab/domain/usecases/update_plan_usecase.dart';
+import 'package:imrpo/core/services/receipt_storage_service.dart';
+import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/features/expenses_tab/domain/usecases/add_expense_usecase.dart';
 
 part 'plans_tab_event.dart';
@@ -113,31 +115,17 @@ class PlansTabBloc extends Bloc<PlansTabEvent, PlansTabState> {
       emit(current.copyWith(status: PlansTabStatus.loadingAdd, error: ''));
     }
 
-    final initialSaved = event.savedAmount;
-    final paidFrom = event.expensePaidFrom?.trim();
-    if (initialSaved > 0 && (paidFrom == null || paidFrom.isEmpty)) {
-      final previous = state;
-      if (previous is PlansTabLoaded) {
-        emit(
-          previous.copyWith(
-            status: PlansTabStatus.errorAdd,
-            error: 'Select paid from',
-          ),
-        );
-      }
-      return;
-    }
-
     final result = await addPlanUsecase(
       event.title,
       event.category,
       event.targetAmount,
-      initialSaved > 0 ? 0 : initialSaved,
+      event.savedAmount,
       event.deadline,
+      imageUrl: event.imageUrl,
     );
 
-    final planId = await result.fold(
-      (failure) async {
+    result.fold(
+      (failure) {
         final previous = state;
         if (previous is PlansTabLoaded) {
           emit(
@@ -147,57 +135,9 @@ class PlansTabBloc extends Bloc<PlansTabEvent, PlansTabState> {
             ),
           );
         }
-        return null;
       },
-      (id) async => id,
+      (_) => add(const LoadPlansEvent()),
     );
-    if (planId == null) return;
-
-    if (initialSaved > 0 && paidFrom != null) {
-      final title = event.expenseTitle ?? event.title;
-      final expenseResult = await addExpenseUsecase(
-        title,
-        planAllocationCategory,
-        initialSaved,
-        DateTime.now(),
-        incomeSource: paidFrom,
-      );
-      final expenseFailed = expenseResult.fold(
-        (failure) {
-          final previous = state;
-          if (previous is PlansTabLoaded) {
-            emit(
-              previous.copyWith(
-                status: PlansTabStatus.errorAdd,
-                error: failure.error,
-              ),
-            );
-          }
-          return true;
-        },
-        (_) => false,
-      );
-      if (expenseFailed) return;
-
-      final savedResult = await updatePlanSavedUsecase(planId, initialSaved);
-      savedResult.fold(
-        (failure) {
-          final previous = state;
-          if (previous is PlansTabLoaded) {
-            emit(
-              previous.copyWith(
-                status: PlansTabStatus.errorAdd,
-                error: failure.error,
-              ),
-            );
-          }
-        },
-        (_) => add(const LoadPlansEvent()),
-      );
-      return;
-    }
-
-    add(const LoadPlansEvent());
   }
 
   Future<void> _onUpdate(
@@ -218,44 +158,6 @@ class PlansTabBloc extends Bloc<PlansTabEvent, PlansTabState> {
 
     emit(current.copyWith(status: PlansTabStatus.loadingUpdate, error: ''));
 
-    final savedDelta = event.savedAmount - existing.savedAmount;
-    if (savedDelta > 0) {
-      final paidFrom = event.expensePaidFrom?.trim();
-      if (paidFrom == null || paidFrom.isEmpty) {
-        emit(
-          current.copyWith(
-            status: PlansTabStatus.errorUpdate,
-            error: 'Select paid from',
-          ),
-        );
-        return;
-      }
-
-      final expenseResult = await addExpenseUsecase(
-        event.expenseTitle ?? event.title,
-        planAllocationCategory,
-        savedDelta,
-        DateTime.now(),
-        incomeSource: paidFrom,
-      );
-      final expenseFailed = expenseResult.fold(
-        (failure) {
-          final previous = state;
-          if (previous is PlansTabLoaded) {
-            emit(
-              previous.copyWith(
-                status: PlansTabStatus.errorUpdate,
-                error: failure.error,
-              ),
-            );
-          }
-          return true;
-        },
-        (_) => false,
-      );
-      if (expenseFailed) return;
-    }
-
     final result = await updatePlanUsecase(
       event.id,
       event.title,
@@ -263,6 +165,7 @@ class PlansTabBloc extends Bloc<PlansTabEvent, PlansTabState> {
       event.targetAmount,
       event.savedAmount,
       event.deadline,
+      imageUrl: event.imageUrl,
     );
 
     result.fold(
@@ -400,6 +303,8 @@ class PlansTabBloc extends Bloc<PlansTabEvent, PlansTabState> {
                       targetAmount: p.targetAmount,
                       savedAmount: newSaved,
                       deadline: p.deadline,
+                      userId: p.userId,
+                      imageUrl: p.imageUrl,
                     )
                   : p,
             )
@@ -419,7 +324,14 @@ class PlansTabBloc extends Bloc<PlansTabEvent, PlansTabState> {
     Emitter<PlansTabState> emit,
   ) async {
     final current = state;
+    String? imageUrl;
     if (current is PlansTabLoaded) {
+      for (final plan in current.plans) {
+        if (plan.id == event.id) {
+          imageUrl = plan.imageUrl;
+          break;
+        }
+      }
       emit(
         current.copyWith(
           status: PlansTabStatus.loadingDelete,
@@ -445,6 +357,10 @@ class PlansTabBloc extends Bloc<PlansTabEvent, PlansTabState> {
         );
       }
       return;
+    }
+
+    if (imageUrl != null && imageUrl.trim().isNotEmpty) {
+      await getIt<ReceiptStorageService>().deleteByPublicUrl(imageUrl);
     }
 
     if (current is PlansTabLoaded) {

@@ -12,14 +12,16 @@ class AddPlanUsecase {
     String category,
     double targetAmount,
     double savedAmount,
-    DateTime? deadline,
-  ) {
+    DateTime? deadline, {
+    String? imageUrl,
+  }) {
     return planRepository.addPlan(
       title,
       category,
       targetAmount,
       savedAmount,
       deadline,
+      imageUrl: imageUrl,
     );
   }
 }

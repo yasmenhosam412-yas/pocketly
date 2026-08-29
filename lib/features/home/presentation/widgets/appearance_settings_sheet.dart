@@ -3,6 +3,7 @@ import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/theme/app_appearance.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/widgets/show_app_bottom_sheet.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
@@ -195,12 +196,12 @@ class _ModeChip extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
               color: selected
-                  ? AppColors.primary.withValues(alpha: 0.12)
+                  ? AppColors.primaryInk.withValues(alpha: 0.12)
                   : AppColors.surface,
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
                 color: selected
-                    ? AppColors.primary.withValues(alpha: 0.55)
+                    ? AppColors.primaryInk.withValues(alpha: 0.55)
                     : AppColors.stroke.withValues(alpha: 0.12),
                 width: 1.5,
               ),
@@ -210,7 +211,7 @@ class _ModeChip extends StatelessWidget {
                 Icon(
                   icon,
                   size: 20,
-                  color: selected ? AppColors.primary : AppColors.textSecondary,
+                  color: selected ? AppColors.primaryInk : AppColors.textSecondary,
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -221,7 +222,7 @@ class _ModeChip extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
-                    color: selected ? AppColors.primary : AppColors.textColor,
+                    color: selected ? AppColors.primaryInk : AppColors.textColor,
                   ),
                 ),
               ],
@@ -243,13 +244,7 @@ class _PaletteGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final items = [
       ...AppAccentPalette.presets,
-      AppAccentPalette(
-        id: AppAccentPalette.customId,
-        primary: prefs.customPrimary,
-        secondary: prefs.customSecondary,
-        primaryLight: Color.lerp(prefs.customPrimary, Colors.white, 0.28)!,
-        primaryDark: Color.lerp(prefs.customPrimary, Colors.black, 0.22)!,
-      ),
+      AppAccentPalette.customFrom(prefs.customPrimary, prefs.customSecondary),
     ];
 
     return Wrap(
@@ -304,7 +299,14 @@ class _PaletteDot extends StatelessWidget {
                     end: Alignment.bottomRight,
                   ),
                   border: Border.all(
-                    color: selected ? AppColors.textColor : Colors.transparent,
+                    color: selected
+                        ? AppColors.textColor
+                        : ColorContrast.isLightAverage([
+                            palette.primary,
+                            palette.secondary,
+                          ])
+                            ? AppColors.stroke.withValues(alpha: 0.35)
+                            : Colors.transparent,
                     width: 2.5,
                   ),
                   boxShadow: [
@@ -316,11 +318,21 @@ class _PaletteDot extends StatelessWidget {
                   ],
                 ),
                 child: selected
-                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 20)
+                    ? Icon(
+                        Icons.check_rounded,
+                        color: ColorContrast.onColors([
+                          palette.primary,
+                          palette.secondary,
+                        ]),
+                        size: 20,
+                      )
                     : palette.id == AppAccentPalette.customId
-                        ? const Icon(
+                        ? Icon(
                             Icons.tune_rounded,
-                            color: Colors.white,
+                            color: ColorContrast.onColors([
+                              palette.primary,
+                              palette.secondary,
+                            ]),
                             size: 18,
                           )
                         : null,
@@ -404,7 +416,7 @@ class _GradientPreviewTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: selected
-                  ? AppColors.primary.withValues(alpha: 0.65)
+                  ? AppColors.primaryInk.withValues(alpha: 0.65)
                   : AppColors.stroke.withValues(alpha: 0.12),
               width: selected ? 2 : 1.5,
             ),
@@ -431,7 +443,7 @@ class _GradientPreviewTile extends StatelessWidget {
                 ),
               ),
               if (selected)
-                Icon(Icons.check_circle_rounded, color: AppColors.primary),
+                Icon(Icons.check_circle_rounded, color: AppColors.primaryInk),
             ],
           ),
         ),
@@ -470,7 +482,9 @@ class _CustomColorRow extends StatelessWidget {
                   color: color,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.stroke.withValues(alpha: 0.2),
+                    color: ColorContrast.isLight(color)
+                        ? AppColors.stroke.withValues(alpha: 0.45)
+                        : AppColors.stroke.withValues(alpha: 0.2),
                   ),
                 ),
               ),
@@ -515,10 +529,12 @@ class _GradientStopWell extends StatelessWidget {
           decoration: BoxDecoration(
             color: color,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: AppColors.stroke.withValues(alpha: 0.18),
-              width: 1.5,
-            ),
+                  border: Border.all(
+                    color: ColorContrast.isLight(color)
+                        ? AppColors.stroke.withValues(alpha: 0.45)
+                        : AppColors.stroke.withValues(alpha: 0.18),
+                    width: 1.5,
+                  ),
           ),
         ),
       ),
@@ -555,10 +571,19 @@ Future<void> _pickColor(
                       border: Border.all(
                         color: color.toARGB32() == current.toARGB32()
                             ? AppColors.textColor
-                            : AppColors.stroke.withValues(alpha: 0.2),
+                            : ColorContrast.isLight(color)
+                                ? AppColors.stroke.withValues(alpha: 0.45)
+                                : AppColors.stroke.withValues(alpha: 0.2),
                         width: color.toARGB32() == current.toARGB32() ? 2.5 : 1,
                       ),
                     ),
+                    child: color.toARGB32() == current.toARGB32()
+                        ? Icon(
+                            Icons.check_rounded,
+                            size: 18,
+                            color: ColorContrast.onColor(color),
+                          )
+                        : null,
                   ),
                 ),
             ],

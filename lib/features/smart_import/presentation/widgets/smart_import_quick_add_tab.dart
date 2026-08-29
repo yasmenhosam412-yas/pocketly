@@ -230,7 +230,7 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
           width: double.infinity,
           padding: const EdgeInsets.all(18),
           decoration: AppDecorations.card(
-            borderColor: AppColors.primary.withValues(alpha: 0.2),
+            borderColor: AppColors.primaryInk.withValues(alpha: 0.2),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,12 +238,12 @@ class _SmartImportQuickAddTabState extends State<SmartImportQuickAddTab> {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.12),
+                  color: AppColors.primaryInk.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
                   Icons.bolt_rounded,
-                  color: AppColors.primary,
+                  color: AppColors.primaryInk,
                   size: 24,
                 ),
               ),

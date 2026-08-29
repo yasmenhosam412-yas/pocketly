@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:imrpo/features/auth/presentation/widgets/auth_footer_link.dart';
 import 'package:imrpo/features/auth/presentation/widgets/auth_primary_button.dart';
 import 'package:imrpo/features/auth/presentation/widgets/auth_screen_layout.dart';
+import 'package:imrpo/features/auth/presentation/widgets/auth_social_buttons.dart';
 import 'package:imrpo/features/auth/presentation/widgets/custom_text_field.dart';
+import 'package:imrpo/core/services/app_lock_service.dart';
+import 'package:imrpo/core/services/service_locator.dart';
+import 'package:imrpo/features/home/presentation/pages/home_screen.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -16,7 +21,8 @@ class SignupScreen extends StatefulWidget {
   State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _SignupScreenState extends State<SignupScreen>
+    with WidgetsBindingObserver {
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
   late final TextEditingController _passController;
@@ -32,6 +38,7 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _nameController = TextEditingController();
     _emailController = TextEditingController();
     _passController = TextEditingController();
@@ -44,6 +51,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _nameController.dispose();
     _emailController.dispose();
     _passController.dispose();
@@ -53,6 +61,23 @@ class _SignupScreenState extends State<SignupScreen> {
     _passwordFocus.dispose();
     _confirmPasswordFocus.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    if (ModalRoute.of(context)?.isCurrent != true) return;
+    final auth = context.read<AuthBloc>().state;
+    if (auth.status != AuthStatus.loadingLogin || auth.socialProvider == null) {
+      return;
+    }
+    Future<void>.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
+      final bloc = context.read<AuthBloc>();
+      if (bloc.state.status != AuthStatus.loadingLogin) return;
+      if (SupabaseAuthHelper.isSignedIn) return;
+      bloc.add(const ResetAuthEvent());
+    });
   }
 
   @override
@@ -71,6 +96,7 @@ class _SignupScreenState extends State<SignupScreen> {
       ),
       child: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
+          if (ModalRoute.of(context)?.isCurrent != true) return;
           if (state.status == AuthStatus.errorSignup) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -78,6 +104,18 @@ class _SignupScreenState extends State<SignupScreen> {
                   state.errorMessage != null
                       ? localizeApiError(l10n, state.errorMessage)
                       : l10n.signupErrorGeneric,
+                ),
+                backgroundColor: AppColors.error,
+              ),
+            );
+          }
+          if (state.status == AuthStatus.errorLogin) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  state.errorMessage != null
+                      ? localizeApiError(l10n, state.errorMessage)
+                      : l10n.messageLoginFailed,
                 ),
                 backgroundColor: AppColors.error,
               ),
@@ -92,8 +130,23 @@ class _SignupScreenState extends State<SignupScreen> {
             );
             Navigator.pop(context);
           }
+          if (state.status == AuthStatus.successLogin) {
+            getIt<AppLockService>().onAuthenticated();
+            if (!context.mounted) return;
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+              (route) => false,
+            );
+          }
         },
         builder: (context, state) {
+          final socialBusy =
+              state.status == AuthStatus.loadingLogin ||
+              state.status == AuthStatus.successLogin;
+          final signupBusy = state.status == AuthStatus.loadingSignup;
+          final isBusy = socialBusy || signupBusy;
+
           return AutofillGroup(
             child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -167,8 +220,16 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(height: 24),
               AuthPrimaryButton(
                 label: l10n.createAccountButton,
-                isLoading: state.status == AuthStatus.loadingSignup,
-                onPressed: _onSignup,
+                isLoading: signupBusy,
+                onPressed: isBusy ? null : _onSignup,
+              ),
+              const SizedBox(height: 20),
+              AuthSocialButtons(
+                isBusy: isBusy,
+                loadingProvider: state.socialProvider,
+                onPressed: (provider) => context.read<AuthBloc>().add(
+                  SocialLoginEvent(provider: provider),
+                ),
               ),
             ],
             ),

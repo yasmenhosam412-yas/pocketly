@@ -26,7 +26,6 @@ import 'package:imrpo/features/balance_tab/domain/balance_source_constants.dart'
 import 'package:imrpo/features/budgets/domain/services/budget_calculator.dart';
 import 'package:imrpo/features/expenses_tab/presentation/bloc/expenses_tab_bloc.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
-import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
 import 'package:imrpo/features/plans_tab/presentation/widgets/add_to_plan_from_balance_sheet.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
@@ -305,12 +304,8 @@ class _BalanceTabState extends State<BalanceTab>
                                 periodLabel: periodLabel,
                                 onEditInitialBalance: () =>
                                     showEditInitialBalanceSheet(context),
-                                onAddToPlan: netBalance > 0
-                                    ? () => _openAddToPlanSheet(
-                                          context,
-                                          netBalance,
-                                        )
-                                    : null,
+                                onAddToPlan: () =>
+                                    showAddToPlanFromBalanceSheet(context),
                               ),
                             ),
                           ),
@@ -520,49 +515,6 @@ class _BalanceTabState extends State<BalanceTab>
       ),
     );
   }
-
-  Future<void> _openAddToPlanSheet(
-    BuildContext context,
-    double availableBalance,
-  ) async {
-    context.read<PlansTabBloc>().add(const LoadPlansEvent());
-    final added = await showModalBottomSheet<bool>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (sheetContext) {
-        final bottomInset = MediaQuery.viewInsetsOf(sheetContext).bottom;
-        return Padding(
-          padding: EdgeInsets.only(bottom: bottomInset),
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: context.read<PlansTabBloc>()),
-              BlocProvider.value(value: context.read<IncomesTabBloc>()),
-            ],
-            child: AddToPlanFromBalanceSheet(
-              availableBalanceBase: availableBalance,
-            ),
-          ),
-        );
-      },
-    );
-
-    if (!context.mounted) return;
-    if (added == true) {
-      context.read<ExpensesTabBloc>().add(const LoadExpensesEvent(force: true));
-      final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.balanceAddToPlanSuccess),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
-  }
 }
 
 class _NetBalanceCard extends StatelessWidget {
@@ -591,7 +543,10 @@ class _NetBalanceCard extends StatelessWidget {
 
     return ThemedSummaryCard(
       accent: isPositive ? AppColors.balance : AppColors.expense,
-      child: Column(
+      child: Builder(
+        builder: (context) {
+          final on = SummaryCardColors.of(context);
+          return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -599,12 +554,12 @@ class _NetBalanceCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: on.foreground.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.account_balance_wallet_rounded,
-                  color: Colors.white,
+                  color: on.foreground,
                   size: 24,
                 ),
               ),
@@ -612,13 +567,13 @@ class _NetBalanceCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: on.foreground.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   periodLabel,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: on.foreground,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
@@ -630,7 +585,7 @@ class _NetBalanceCard extends StatelessWidget {
           Text(
             l10n.balanceNetBalance,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
+              color: on.foreground.withValues(alpha: 0.85),
               fontSize: 15,
             ),
           ),
@@ -638,7 +593,7 @@ class _NetBalanceCard extends StatelessWidget {
           Text(
             '${isPositive ? '' : '-'}${Money.format(balance.abs())}',
             style: TextStyle(
-              color: Colors.white,
+              color: on.foreground,
               fontSize: 36,
               fontWeight: FontWeight.bold,
               letterSpacing: -0.5,
@@ -655,10 +610,10 @@ class _NetBalanceCard extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.16),
+                  color: on.foreground.withValues(alpha: 0.16),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.22),
+                    color: on.foreground.withValues(alpha: 0.22),
                   ),
                 ),
                 child: Column(
@@ -670,7 +625,7 @@ class _NetBalanceCard extends StatelessWidget {
                           child: Text(
                             l10n.balanceInitialBalanceTitle,
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.9),
+                              color: on.foreground.withValues(alpha: 0.9),
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                             ),
@@ -679,7 +634,7 @@ class _NetBalanceCard extends StatelessWidget {
                         Text(
                           Money.format(initialBalance),
                           style: TextStyle(
-                            color: Colors.white,
+                            color: on.foreground,
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                           ),
@@ -688,7 +643,7 @@ class _NetBalanceCard extends StatelessWidget {
                         Icon(
                           Icons.edit_outlined,
                           size: 18,
-                          color: Colors.white.withValues(alpha: 0.85),
+                          color: on.foreground.withValues(alpha: 0.85),
                         ),
                       ],
                     ),
@@ -704,7 +659,7 @@ class _NetBalanceCard extends StatelessWidget {
                                   localizeIncomeCategory(l10n, entry.key),
                                   style: TextStyle(
                                     color:
-                                        Colors.white.withValues(alpha: 0.82),
+                                        on.foreground.withValues(alpha: 0.82),
                                     fontSize: 13,
                                   ),
                                 ),
@@ -712,7 +667,7 @@ class _NetBalanceCard extends StatelessWidget {
                               Text(
                                 Money.format(entry.value),
                                 style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.95),
+                                  color: on.foreground.withValues(alpha: 0.95),
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -733,15 +688,15 @@ class _NetBalanceCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: savingsRate,
               minHeight: 6,
-              backgroundColor: Colors.white.withValues(alpha: 0.25),
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+              backgroundColor: on.foreground.withValues(alpha: 0.25),
+              valueColor: AlwaysStoppedAnimation<Color>(on.foreground),
             ),
           ),
           const SizedBox(height: 8),
           Text(
             l10n.balanceSavedPercent((savingsRate * 100).round()),
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
+              color: on.foreground.withValues(alpha: 0.85),
               fontSize: 13,
             ),
           ),
@@ -752,8 +707,8 @@ class _NetBalanceCard extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: onAddToPlan,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: BorderSide(color: Colors.white.withValues(alpha: 0.5)),
+                  foregroundColor: on.foreground,
+                  side: BorderSide(color: on.foreground.withValues(alpha: 0.5)),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -768,6 +723,8 @@ class _NetBalanceCard extends StatelessWidget {
             ),
           ],
         ],
+          );
+        },
       ),
     );
   }

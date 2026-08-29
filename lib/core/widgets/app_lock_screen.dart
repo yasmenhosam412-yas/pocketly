@@ -101,13 +101,13 @@ class _AppLockScreenState extends State<AppLockScreen> {
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.15),
+                  color: AppColors.primaryInk.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child:  Icon(
                   Icons.lock_rounded,
                   size: 36,
-                  color: AppColors.primary,
+                  color: AppColors.primaryInk,
                 ),
               ),
               const SizedBox(height: 24),
@@ -150,7 +150,7 @@ class _AppLockScreenState extends State<AppLockScreen> {
               if (_isVerifying)
                  Padding(
                   padding: EdgeInsets.only(bottom: 24),
-                  child: CircularProgressIndicator(color: AppColors.primary),
+                  child: CircularProgressIndicator(color: AppColors.primaryInk),
                 )
               else
                 _PinKeypad(
@@ -195,7 +195,7 @@ class _PinDots extends StatelessWidget {
         final color = showError
             ? AppColors.errorColor
             : isFilled
-                ? AppColors.primary
+                ? AppColors.primaryInk
                 : AppColors.border;
 
         return Container(

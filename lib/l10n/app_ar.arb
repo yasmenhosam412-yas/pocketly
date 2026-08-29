@@ -180,6 +180,15 @@
   "billRemindersPermissionDenied": "فعّل الإشعارات من إعدادات الموبايل عشان التذكيرات تشتغل.",
   "billRemindersSaved": "اتحفظ التذكير",
   "billRemindersDeleted": "اتمسح التذكير",
+  "recurringTransactionsTitle": "المعاملات المتكررة",
+  "recurringTransactionsSubtitle": "هتتسجل المرتب والإيجار والفواتير لوحدها كل شهر في يوم الاستحقاق",
+  "recurringTransactionsEmpty": "مفيش معاملات متكررة لسه. ضيف مرتب، إيجار، نت، وغيره.",
+  "recurringTransactionsAdd": "معاملة متكررة",
+  "recurringTransactionsEdit": "تعديل المعاملة",
+  "recurringTransactionsTitleHint": "زي: مرتب، إيجار، نت",
+  "recurringTransactionsPostedThisMonth": "اتنزلت الشهر ده",
+  "recurringTransactionsDeleted": "اتمسحت المعاملة المتكررة",
+  "recurringTransactionsDeleteConfirmTitle": "تمسح المعاملة المتكررة؟",
   "billRemindersTestNow": "جرب دلوقتي",
   "billRemindersTestNowSent": "اتبعت إشعار تجربة — شوف شريط الإشعارات",
   "billReminderNotificationTitle": "فاتورة: {title}",
@@ -468,6 +477,8 @@
   "forgotPasswordQuestion": "نسيت الباسورد؟",
   "loginButton": "دخول",
   "orDivider": "أو",
+  "continueWithGoogle": "كمل بجوجل",
+  "continueWithFacebook": "كمل بفيسبوك",
   "noAccountPrompt": "معندكش حساب؟",
   "signUpLink": "اعمل حساب",
   "messageEnterEmailPassword": "اكتب الإيميل والباسورد",
@@ -773,6 +784,7 @@
   "goalTitleHint": "مثال: فلوس طوارئ",
   "targetAmountLabel": "المبلغ اللي عايزه",
   "amountSavedLabel": "اللي وفّرته",
+  "amountSavedHint": "تقدم مبدئي بس — مش بيتخصم من صافي الرصيد. استخدم «ضيف لهدف» من تبويب الرصيد عشان تحوّل من المحفظة.",
   "setDeadlineOptional": "حدّد موعد (اختياري)",
   "savePlan": "احفظ الخطة",
   "updateGoal": "حدّث الهدف",
@@ -838,6 +850,7 @@
     }
   },
   "balanceAddToPlanSuccess": "اتضاف المبلغ لهدف التوفير",
+  "balanceNoSurplusForPlan": "مفيش صافي رصيد متاح عشان تضيفه لهدف.",
   "balancePlanAllocationPaidFromHint": "اختار المصدر اللي هيتخصم منه المبلغ ده (بيظهر في الرصيد مش كمصروف مش مربوط).",
   "planAllocationSelectPaidFrom": "اختار «دفعت من» عشان تخصّص للهدف",
   "balancePlanAllocationExpenseTitle": "هدف توفير: {planTitle}",
@@ -1104,20 +1117,6 @@
       "failed": { "type": "int" }
     }
   },
-  "settingsAutoSmsImport": "استيراد تلقائي من SMS",
-  "settingsAutoSmsImportSubtitle": "لما تفتح التطبيق، بنكتشف رسائل البنك الجديدة ونضيفها دخل أو مصروف حسب التصنيف والمصدر اللي تختاره.",
-  "settingsAutoSmsImportDefaults": "إعدادات الاستيراد التلقائي",
-  "settingsAutoSmsImportDefaultsTitle": "افتراضيات الاستيراد التلقائي",
-  "settingsAutoSmsImportDefaultsHint": "بتتستخدم في كل استيراد تلقائي. نص الرسالة للعنوان بس.",
-  "settingsAutoSmsImportPermissionDenied": "محتاج إذن SMS للاستيراد التلقائي.",
-  "settingsAutoSmsImportEnabled": "الاستيراد التلقائي شغّال. الرسائل الجديدة هتتضاف لما تفتح التطبيق.",
-  "autoSmsImportAddedSnack": "اتستورد {incomes} دخل و{expenses} مصروف تلقائي.",
-  "@autoSmsImportAddedSnack": {
-    "placeholders": {
-      "incomes": { "type": "int" },
-      "expenses": { "type": "int" }
-    }
-  },
   "settingsAppLock": "قفل التطبيق",
   "settingsAppLockBiometric": "Face ID / بصمة",
   "settingsAppLockChangePin": "غيّر رمز PIN",
@@ -1253,5 +1252,15 @@
   "zakatMeetsNisab": "بلغت النصاب — الزكاة التقديرية:",
   "zakatBelowNisab": "أقل من النصاب — لا زكاة:",
   "zakatDueLabel": "الزكاة التقديرية (٢٫٥٪)",
-  "zakatRateNote": "يُفترض حولان الحول على المال. عدّل الأرقام حسب حالتك."
+  "zakatRateNote": "يُفترض حولان الحول على المال. عدّل الأرقام حسب حالتك.",
+  "homeWidgetTodayExpenses": "مصروف اليوم",
+  "homeWidgetSettingsTile": "ويدجت الشاشة الرئيسية",
+  "homeWidgetQuickName": "مصروف سريع",
+  "homeWidgetQuickSettingsTile": "ويدجت المصروف السريع",
+  "homeWidgetPinUnsupported": "مشغّل الشاشة لا يدعم تثبيت الويدجت. اضغط مطولًا على الشاشة الرئيسية واختر ويدجت، ثم أضف Pocketly.",
+  "planImageLabel": "صورة الهدف",
+  "planImageAttach": "أضف صورة",
+  "planImageReplace": "تغيير الصورة",
+  "planImageRemove": "حذف الصورة",
+  "planImageUploadFailed": "تعذر رفع الصورة. حاول مرة أخرى."
 }

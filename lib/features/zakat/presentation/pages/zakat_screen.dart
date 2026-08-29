@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/zakat_preferences.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/features/zakat/domain/entities/zakat_input.dart';
@@ -318,14 +319,14 @@ class _InfoCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.08),
+        color: AppColors.primaryInk.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.primaryInk.withValues(alpha: 0.2)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.info_outline_rounded, color: AppColors.primary),
+          Icon(Icons.info_outline_rounded, color: AppColors.primaryInk),
           const SizedBox(width: 10),
           Expanded(
             child: Text(text, style: TextStyle(fontSize: 13, height: 1.45)),
@@ -456,15 +457,21 @@ class _ResultCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final meets = result.meetsNisab;
+    final gradientColors = [
+      AppColors.primary,
+      Color.lerp(AppColors.primary, AppColors.secondary, 0.5)!,
+    ];
+    final on = OnSurfaceColors.fromColors(
+      gradientColors,
+      isDark: Theme.of(context).brightness == Brightness.dark,
+      palette: context.appPalette,
+    );
 
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColors.primary,
-            Color.lerp(AppColors.primary, AppColors.secondary, 0.5)!,
-          ],
+          colors: gradientColors,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -476,7 +483,7 @@ class _ResultCard extends StatelessWidget {
           Text(
             l10n.zakatResultTitle,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.9),
+              color: on.muted,
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
@@ -485,22 +492,25 @@ class _ResultCard extends StatelessWidget {
           _ResultRow(
             label: l10n.zakatTotalAssets,
             value: Money.formatEgp(result.totalAssets),
+            on: on,
           ),
           _ResultRow(
             label: l10n.zakatNetWealth,
             value: Money.formatEgp(result.netWealth),
+            on: on,
           ),
           _ResultRow(
             label: l10n.zakatNisabThreshold,
             value: result.nisabThreshold > 0
                 ? Money.formatEgp(result.nisabThreshold)
                 : '—',
+            on: on,
           ),
-          Divider(color: Colors.white24, height: 24),
+          Divider(color: on.foreground.withValues(alpha: 0.24), height: 24),
           Text(
             meets ? l10n.zakatMeetsNisab : l10n.zakatBelowNisab,
             style: TextStyle(
-              color: Colors.white,
+              color: on.foreground,
               fontSize: 13,
               fontWeight: FontWeight.w500,
             ),
@@ -509,7 +519,7 @@ class _ResultCard extends StatelessWidget {
           Text(
             Money.formatEgp(result.zakatDue),
             style: TextStyle(
-              color: Colors.white,
+              color: on.foreground,
               fontSize: 32,
               fontWeight: FontWeight.bold,
               letterSpacing: -0.5,
@@ -518,7 +528,7 @@ class _ResultCard extends StatelessWidget {
           Text(
             l10n.zakatDueLabel,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
+              color: on.muted,
               fontSize: 14,
             ),
           ),
@@ -526,7 +536,7 @@ class _ResultCard extends StatelessWidget {
           Text(
             l10n.zakatRateNote,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.75),
+              color: on.subtle,
               fontSize: 12,
               height: 1.35,
             ),
@@ -540,8 +550,13 @@ class _ResultCard extends StatelessWidget {
 class _ResultRow extends StatelessWidget {
   final String label;
   final String value;
+  final OnSurfaceColors on;
 
-  const _ResultRow({required this.label, required this.value});
+  const _ResultRow({
+    required this.label,
+    required this.value,
+    required this.on,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -553,14 +568,14 @@ class _ResultRow extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
+              color: on.muted,
               fontSize: 13,
             ),
           ),
           Text(
             value,
             style: TextStyle(
-              color: Colors.white,
+              color: on.foreground,
               fontWeight: FontWeight.w600,
               fontSize: 14,
             ),

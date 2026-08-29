@@ -134,7 +134,7 @@ class _OnboardingPinnedIconState extends State<OnboardingPinnedIcon>
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary
+                            color: AppColors.primaryInk
                                 .withValues(alpha: _glowOpacity.value),
                             blurRadius: 48,
                             spreadRadius: 8,

@@ -170,7 +170,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(4),
                                 color: active
-                                    ? AppColors.primary
+                                    ? AppColors.primaryInk
                                     : AppColors.border,
                               ),
                             );
@@ -184,7 +184,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                             onPressed: _onNext,
                             style: FilledButton.styleFrom(
                               backgroundColor: AppColors.primary,
-                              foregroundColor: AppColors.onWarm,
+                              foregroundColor: AppColors.onPrimary,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(26),

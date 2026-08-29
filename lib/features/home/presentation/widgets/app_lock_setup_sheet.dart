@@ -183,7 +183,7 @@ class _PinDots extends StatelessWidget {
         final color = showError
             ? AppColors.errorColor
             : isFilled
-                ? AppColors.primary
+                ? AppColors.primaryInk
                 : AppColors.border;
 
         return Container(

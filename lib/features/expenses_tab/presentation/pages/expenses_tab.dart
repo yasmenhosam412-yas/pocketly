@@ -1390,81 +1390,86 @@ class _SummaryCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return ThemedSummaryCard(
       accent: AppColors.expense,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      child: Builder(
+        builder: (context) {
+          final on = SummaryCardColors.of(context);
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(12),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: on.overlayStrong,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.trending_down_rounded,
+                      color: on.foreground,
+                      size: 24,
+                    ),
+                  ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: on.overlayStrong,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      periodLabel,
+                      style: TextStyle(
+                        color: on.foreground,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (categoryLabel != null) ...[
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: on.overlayStrong,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    categoryLabel!,
+                    style: TextStyle(
+                      color: on.foreground,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
-                child: const Icon(
-                  Icons.trending_down_rounded,
-                  color: Colors.white,
-                  size: 24,
+              ],
+              const SizedBox(height: 20),
+              Text(
+                l10n.totalExpenses,
+                style: TextStyle(
+                  color: on.muted,
+                  fontSize: 15,
                 ),
               ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  periodLabel,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
+              const SizedBox(height: 6),
+              Text(
+                Money.format(total),
+                style: TextStyle(
+                  color: on.foreground,
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -0.5,
                 ),
               ),
             ],
-          ),
-          if (categoryLabel != null) ...[
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Text(
-                categoryLabel!,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-          const SizedBox(height: 20),
-          Text(
-            l10n.totalExpenses,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
-              fontSize: 15,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            Money.format(total),
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              letterSpacing: -0.5,
-            ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

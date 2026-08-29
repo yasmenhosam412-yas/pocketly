@@ -25,16 +25,29 @@ enum AuthStatus {
 class AuthState extends Equatable {
   final AuthStatus status;
   final String? errorMessage;
+  final SocialAuthProvider? socialProvider;
 
-  const AuthState({this.status = AuthStatus.initial, this.errorMessage});
+  const AuthState({
+    this.status = AuthStatus.initial,
+    this.errorMessage,
+    this.socialProvider,
+  });
 
-   AuthState copyWith({AuthStatus? status, String? errorMessage}) {
+  AuthState copyWith({
+    AuthStatus? status,
+    String? errorMessage,
+    SocialAuthProvider? socialProvider,
+    bool clearSocialProvider = false,
+  }) {
     return AuthState(
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
+      socialProvider: clearSocialProvider
+          ? null
+          : (socialProvider ?? this.socialProvider),
     );
   }
 
   @override
-  List<Object> get props => [status, errorMessage ?? ''];
+  List<Object> get props => [status, errorMessage ?? '', socialProvider ?? ''];
 }

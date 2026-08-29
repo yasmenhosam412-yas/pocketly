@@ -6,6 +6,7 @@ import 'package:imrpo/core/services/association_context.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/session/user_session.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/features/home/presentation/theme/home_header_theme.dart';
 import 'package:imrpo/features/association_invites/presentation/pages/invite_members_screen.dart';
 import 'package:imrpo/features/association_invites/presentation/widgets/pending_association_invites.dart';
 import 'package:imrpo/features/associations/domain/entities/association_item.dart';
@@ -490,7 +491,7 @@ class _AssociationPickerSheet extends StatelessWidget {
                           leading: Icon(
                             _ledgerIcon(item),
                             color: selected
-                                ? AppColors.primary
+                                ? AppColors.primaryInk
                                 : AppColors.textColor,
                           ),
                           title: Text(
@@ -506,7 +507,7 @@ class _AssociationPickerSheet extends StatelessWidget {
                                   l10n.associationFamilyBadge,
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: AppColors.primary,
+                                    color: AppColors.primaryInk,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 )
@@ -518,7 +519,7 @@ class _AssociationPickerSheet extends StatelessWidget {
                                 IconButton(
                                   icon: Icon(
                                     Icons.person_add_alt_1_outlined,
-                                    color: AppColors.primary,
+                                    color: AppColors.primaryInk,
                                     size: 22,
                                   ),
                                   tooltip: l10n.associationInviteMembersAction,
@@ -583,7 +584,7 @@ class _AssociationPickerSheet extends StatelessWidget {
                               if (selected)
                                 Icon(
                                   Icons.check_circle_rounded,
-                                  color: AppColors.primary,
+                                  color: AppColors.primaryInk,
                                 ),
                             ],
                           ),
@@ -598,13 +599,13 @@ class _AssociationPickerSheet extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                         leading: Icon(
                           Icons.groups_rounded,
-                          color: AppColors.primary,
+                          color: AppColors.primaryInk,
                         ),
                         title: Text(
                           l10n.associationCreateFamilyAction,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
+                            color: AppColors.primaryInk,
                           ),
                         ),
                         subtitle: Text(
@@ -625,13 +626,13 @@ class _AssociationPickerSheet extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                         leading: Icon(
                           Icons.add_circle_outline_rounded,
-                          color: AppColors.primary,
+                          color: AppColors.primaryInk,
                         ),
                         title: Text(
                           l10n.associationCreateAction,
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
-                            color: AppColors.primary,
+                            color: AppColors.primaryInk,
                           ),
                         ),
                         onTap: () => Navigator.pop(
@@ -671,6 +672,50 @@ class _HeaderActionChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final header = HomeHeaderScope.maybeOf(context);
+    if (header != null) {
+      final bg = isHighlighted ? header.chipFillHighlighted : header.chipFill;
+      final fg = header.foreground;
+      return Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: isHighlighted
+                    ? header.chipBorderHighlighted
+                    : header.chipBorder,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 18, color: fg),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: fg,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (trailingIcon != null) ...[
+                  const SizedBox(width: 4),
+                  Icon(trailingIcon, size: 18, color: header.foregroundMuted),
+                ],
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
     final bg = lightStyle
         ? Colors.white.withValues(alpha: isHighlighted ? 0.28 : 0.18)
         : AppColors.surface;

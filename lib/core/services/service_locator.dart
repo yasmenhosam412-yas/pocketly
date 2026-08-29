@@ -7,12 +7,15 @@ import 'package:imrpo/core/services/notification_inbox_store.dart';
 import 'package:imrpo/core/services/notification_inbox_sync_service.dart';
 import 'package:imrpo/core/services/offline_transaction_store.dart';
 import 'package:imrpo/core/services/offline_transaction_sync_service.dart';
-import 'package:imrpo/core/services/auto_sms_import_preferences.dart';
 import 'package:imrpo/features/bill_reminders/data/bill_reminder_store.dart';
 import 'package:imrpo/features/bill_reminders/data/repositories/bill_reminder_repository_impl.dart';
 import 'package:imrpo/features/bill_reminders/domain/repositories/bill_reminder_repository.dart';
 import 'package:imrpo/features/bill_reminders/presentation/bloc/bill_reminders_bloc.dart';
-import 'package:imrpo/core/services/auto_sms_import_service.dart';
+import 'package:imrpo/features/recurring_transactions/data/recurring_transaction_post_service.dart';
+import 'package:imrpo/features/recurring_transactions/data/recurring_transaction_store.dart';
+import 'package:imrpo/features/recurring_transactions/data/repositories/recurring_transaction_repository_impl.dart';
+import 'package:imrpo/features/recurring_transactions/domain/repositories/recurring_transaction_repository.dart';
+import 'package:imrpo/features/recurring_transactions/presentation/bloc/recurring_transactions_bloc.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/receipt_storage_service.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
@@ -39,6 +42,7 @@ import 'package:imrpo/features/auth/domain/usecases/forget_password_usecase.dart
 import 'package:imrpo/features/auth/domain/usecases/login_usecase.dart';
 import 'package:imrpo/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:imrpo/features/auth/domain/usecases/signup_usecase.dart';
+import 'package:imrpo/features/auth/domain/usecases/social_login_usecase.dart';
 import 'package:imrpo/features/auth/domain/usecases/verify_set_new_pass_usecase.dart';
 import 'package:imrpo/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:imrpo/features/balance_tab/data/repositories/balance_repository_impl.dart';
@@ -180,10 +184,6 @@ void setupServiceLocator() {
     ),
   );
 
-  getIt.registerLazySingleton<AutoSmsImportPreferences>(
-    () => AutoSmsImportPreferences(),
-  );
-
   getIt.registerLazySingleton<BillReminderPreferences>(
     () => BillReminderPreferences(),
   );
@@ -210,12 +210,13 @@ void setupServiceLocator() {
     () => BillRemindersBloc(repository: getIt<BillReminderRepository>()),
   );
 
-  getIt.registerLazySingleton<AutoSmsImportService>(
-    () => AutoSmsImportService(
-      preferences: getIt<AutoSmsImportPreferences>(),
-      smsImport: getIt<SmsImportService>(),
-      bulkImport: getIt<SmsBulkImportService>(),
-      appLock: getIt<AppLockService>(),
+  getIt.registerLazySingleton<RecurringTransactionStore>(
+    () => RecurringTransactionStore(),
+  );
+
+  getIt.registerLazySingleton<RecurringTransactionRepository>(
+    () => RecurringTransactionRepositoryImpl(
+      store: getIt<RecurringTransactionStore>(),
     ),
   );
 
@@ -232,6 +233,10 @@ void setupServiceLocator() {
   /// Usecases
   getIt.registerLazySingleton<LoginUsecase>(
     () => LoginUsecase(authRepository: getIt<AuthRepository>()),
+  );
+
+  getIt.registerLazySingleton<SocialLoginUsecase>(
+    () => SocialLoginUsecase(authRepository: getIt<AuthRepository>()),
   );
 
   getIt.registerLazySingleton<SignupUsecase>(
@@ -257,6 +262,7 @@ void setupServiceLocator() {
   getIt.registerFactory<AuthBloc>(
     () => AuthBloc(
       loginUsecase: getIt<LoginUsecase>(),
+      socialLoginUsecase: getIt<SocialLoginUsecase>(),
       signupUsecase: getIt<SignupUsecase>(),
       forgetPasswordUsecase: getIt<ForgetPasswordUsecase>(),
       verifySetNewPassUsecase: getIt<VerifySetNewPassUsecase>(),
@@ -329,6 +335,21 @@ void setupServiceLocator() {
 
   getIt.registerLazySingleton(
     () => AddExpenseUsecase(expenseRepository: getIt<ExpenseRepository>()),
+  );
+
+  getIt.registerLazySingleton<RecurringTransactionPostService>(
+    () => RecurringTransactionPostService(
+      repository: getIt<RecurringTransactionRepository>(),
+      addIncomeUsecase: getIt<AddIncomeUsecase>(),
+      addExpenseUsecase: getIt<AddExpenseUsecase>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<RecurringTransactionsBloc>(
+    () => RecurringTransactionsBloc(
+      repository: getIt<RecurringTransactionRepository>(),
+      postService: getIt<RecurringTransactionPostService>(),
+    ),
   );
   getIt.registerLazySingleton(
     () => DeleteExpenseUsecase(expenseRepository: getIt<ExpenseRepository>()),

@@ -8,6 +8,7 @@ class Plan extends Equatable {
   final double savedAmount;
   final DateTime? deadline;
   final String? userId;
+  final String? imageUrl;
 
   const Plan({
     required this.id,
@@ -17,6 +18,7 @@ class Plan extends Equatable {
     required this.savedAmount,
     this.deadline,
     this.userId,
+    this.imageUrl,
   });
 
   double get progress {
@@ -35,5 +37,6 @@ class Plan extends Equatable {
     savedAmount,
     deadline,
     userId,
+    imageUrl,
   ];
 }

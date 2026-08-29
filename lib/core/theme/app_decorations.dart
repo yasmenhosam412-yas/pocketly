@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/theme/app_appearance.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 
 /// Flat, outlined decorations matching the wallet illustration style.
@@ -101,6 +102,16 @@ class AppDecorations {
     );
   }
 
+  static List<Color> summaryCardColors({
+    List<Color> colors = const [],
+    Color? accent,
+  }) {
+    final tabAccent = accent ?? (colors.isNotEmpty ? colors.first : null);
+    final g = _activeGradient(accent: tabAccent);
+    if (g != null && g.colors.isNotEmpty) return g.colors;
+    return colors;
+  }
+
   static BoxDecoration outlined({
     Color? fill,
     Color? border,
@@ -114,6 +125,32 @@ class AppDecorations {
           width: outlineWidth,
         ),
       );
+}
+
+/// Ink colors for widgets drawn on [ThemedSummaryCard].
+class SummaryCardColors extends InheritedWidget {
+  const SummaryCardColors({
+    super.key,
+    required this.colors,
+    required super.child,
+  });
+
+  final OnSurfaceColors colors;
+
+  static OnSurfaceColors of(BuildContext context) {
+    final scope =
+        context.dependOnInheritedWidgetOfExactType<SummaryCardColors>();
+    return scope?.colors ??
+        OnSurfaceColors.fromColor(
+          AppColors.primary,
+          isDark: Theme.of(context).brightness == Brightness.dark,
+          palette: context.appPalette,
+        );
+  }
+
+  @override
+  bool updateShouldNotify(SummaryCardColors oldWidget) =>
+      colors != oldWidget.colors;
 }
 
 /// Listens to appearance changes so keep-alive tabs update their dashboard cards.
@@ -136,6 +173,15 @@ class ThemedSummaryCard extends StatelessWidget {
     return ListenableBuilder(
       listenable: getIt<ThemePreferences>(),
       builder: (context, _) {
+        final fill = AppDecorations.summaryCardColors(
+          colors: colors,
+          accent: accent,
+        );
+        final on = OnSurfaceColors.fromColors(
+          fill.isEmpty ? [accent ?? AppColors.primary] : fill,
+          isDark: Theme.of(context).brightness == Brightness.dark,
+          palette: context.appPalette,
+        );
         return Container(
           width: double.infinity,
           padding: padding,
@@ -143,7 +189,7 @@ class ThemedSummaryCard extends StatelessWidget {
             colors,
             accent: accent,
           ),
-          child: child,
+          child: SummaryCardColors(colors: on, child: child),
         );
       },
     );

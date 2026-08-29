@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/config/oauth_config.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/services/onboarding_preferences.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:imrpo/features/auth/presentation/pages/forget_password_screen.dart';
 import 'package:imrpo/features/auth/presentation/pages/login_screen.dart';
+import 'package:imrpo/features/auth/presentation/pages/oauth_callback_screen.dart';
 import 'package:imrpo/features/auth/presentation/pages/set_new_passwod_screen.dart';
 import 'package:imrpo/features/auth/presentation/pages/signup_screen.dart';
 import 'package:imrpo/features/home/presentation/pages/calculator_screen.dart';
@@ -11,6 +13,7 @@ import 'package:imrpo/features/home/presentation/pages/home_screen.dart';
 import 'package:imrpo/features/monthly_report/presentation/pages/monthly_report_screen.dart';
 import 'package:imrpo/features/search/presentation/pages/global_search_screen.dart';
 import 'package:imrpo/features/bill_reminders/presentation/pages/bill_reminders_screen.dart';
+import 'package:imrpo/features/recurring_transactions/presentation/pages/recurring_transactions_screen.dart';
 import 'package:imrpo/features/onboarding/presentation/pages/onboarding_screen.dart';
 import 'package:imrpo/features/smart_import/presentation/pages/smart_import_screen.dart';
 import 'package:imrpo/features/csv_import/presentation/pages/csv_import_screen.dart';
@@ -21,8 +24,9 @@ import 'package:imrpo/features/association_invites/presentation/pages/invite_mem
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/features/bill_reminders/presentation/bloc/bill_reminders_bloc.dart';
+import 'package:imrpo/features/recurring_transactions/presentation/bloc/recurring_transactions_bloc.dart';
 
-final rootNavigatorKey = GlobalKey<NavigatorState>();
+export 'package:imrpo/core/config/root_navigator.dart';
 
 class AppRoutes {
   static const String home = '/home';
@@ -32,6 +36,7 @@ class AppRoutes {
   static const String calculator = '/calculator';
   static const String monthlyReport = '/monthly-report';
   static const String billReminders = '/bill-reminders';
+  static const String recurring = '/recurring';
   static const String notifications = '/notifications';
   static const String zakat = '/zakat';
   static const String statistics = '/statistics';
@@ -65,6 +70,13 @@ class AppLaunch {
 
 class AppRouter {
   static MaterialPageRoute generateRoute(RouteSettings settings) {
+    if (OAuthConfig.isCallbackRoute(settings.name)) {
+      return MaterialPageRoute(
+        settings: settings,
+        builder: (_) => OAuthCallbackScreen(routeName: settings.name),
+      );
+    }
+
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(
@@ -96,6 +108,14 @@ class AppRouter {
           builder: (_) => BlocProvider.value(
             value: getIt<BillRemindersBloc>()..add(const LoadBillRemindersEvent()),
             child: const BillRemindersScreen(),
+          ),
+        );
+      case AppRoutes.recurring:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: getIt<RecurringTransactionsBloc>()
+              ..add(const LoadRecurringTransactionsEvent()),
+            child: const RecurringTransactionsScreen(),
           ),
         );
       case AppRoutes.notifications:

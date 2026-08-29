@@ -70,11 +70,11 @@ class CustomFormField extends StatelessWidget {
             color: palette.textPrimary,
             fontWeight: FontWeight.w700,
           ),
-          cursorColor: AppColors.primary,
+          cursorColor: AppColors.primaryInk,
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(color: palette.textMuted),
-            prefixIcon: Icon(icon, color: AppColors.primary, size: 22),
+            prefixIcon: Icon(icon, color: AppColors.primaryInk, size: 22),
             suffixIcon: suffixIcon,
             filled: true,
             fillColor: palette.surface,
@@ -92,7 +92,7 @@ class CustomFormField extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+              borderSide: BorderSide(color: AppColors.primaryInk, width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),

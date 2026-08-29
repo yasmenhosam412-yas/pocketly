@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 
 class AuthPrimaryButton extends StatelessWidget {
@@ -32,13 +33,13 @@ class AuthPrimaryButton extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.28),
+              color: AppColors.primaryInk.withValues(alpha: 0.28),
               blurRadius: 0,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: ElevatedButton(
+          child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
@@ -48,11 +49,14 @@ class AuthPrimaryButton extends StatelessWidget {
           ),
           onPressed: isLoading ? null : onPressed,
           child: isLoading
-              ? const SizedBox(
+              ? SizedBox(
                   height: 24,
                   width: 24,
                   child: CircularProgressIndicator(
-                    color: Colors.white,
+                    color: ColorContrast.onColors([
+                      AppColors.primary,
+                      AppColors.secondary,
+                    ]),
                     strokeWidth: 2.5,
                   ),
                 )
@@ -61,7 +65,10 @@ class AuthPrimaryButton extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: ColorContrast.onColors([
+                      AppColors.primary,
+                      AppColors.secondary,
+                    ]),
                   ),
                 ),
         ),

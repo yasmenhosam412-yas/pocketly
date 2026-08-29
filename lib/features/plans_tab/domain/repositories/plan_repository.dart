@@ -8,8 +8,9 @@ abstract class PlanRepository {
     String category,
     double targetAmount,
     double savedAmount,
-    DateTime? deadline,
-  );
+    DateTime? deadline, {
+    String? imageUrl,
+  });
 
   Future<Either<Failure, void>> updatePlan(
     String planId,
@@ -17,8 +18,9 @@ abstract class PlanRepository {
     String category,
     double targetAmount,
     double savedAmount,
-    DateTime? deadline,
-  );
+    DateTime? deadline, {
+    String? imageUrl,
+  });
 
   Future<Either<Failure, void>> updatePlanSaved(
     String planId,

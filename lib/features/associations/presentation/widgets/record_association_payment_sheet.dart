@@ -273,7 +273,7 @@ class _RecordAssociationPaymentSheetState
                     children: [
                       Icon(
                         Icons.calendar_today_outlined,
-                        color: AppColors.primary,
+                        color: AppColors.primaryInk,
                         size: 22,
                       ),
                       const SizedBox(width: 12),
@@ -307,6 +307,7 @@ class _RecordAssociationPaymentSheetState
                 onPressed: _submit,
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: Text(l10n.associationHubPaymentSave),

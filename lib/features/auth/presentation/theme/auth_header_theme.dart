@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 
 /// Auth hero header colors — selected appearance gradient in light, tinted dark in dark mode.
@@ -31,18 +32,24 @@ class AuthHeaderTheme {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final palette = context.appPalette;
     final gradient = getIt<ThemePreferences>().headerGradient();
+    final lightBg = ColorContrast.isLightAverage(gradient.colors);
+    final on = OnSurfaceColors.fromColors(
+      gradient.colors,
+      isDark: isDark,
+      palette: palette,
+    );
 
-    if (!isDark) {
+    if (!isDark || lightBg) {
       return AuthHeaderTheme._(
         gradientColors: gradient.colors,
         gradientBegin: gradient.begin,
         gradientEnd: gradient.end,
-        foreground: Colors.white,
-        foregroundMuted: Colors.white.withValues(alpha: 0.88),
-        glassFill: Colors.white.withValues(alpha: 0.16),
-        glassBorder: Colors.white.withValues(alpha: 0.35),
-        iconGlassFill: Colors.white.withValues(alpha: 0.2),
-        shadow: AppColors.stroke.withValues(alpha: 0.12),
+        foreground: on.foreground,
+        foregroundMuted: on.muted,
+        glassFill: on.overlay,
+        glassBorder: on.border,
+        iconGlassFill: on.overlayStrong,
+        shadow: AppColors.stroke.withValues(alpha: lightBg ? 0.08 : 0.12),
       );
     }
 

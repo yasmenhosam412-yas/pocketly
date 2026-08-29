@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:imrpo/core/theme/app_appearance.dart';
 import 'package:imrpo/core/theme/app_color_scheme.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 
 class AppColors {
   AppColors._();
@@ -22,6 +23,7 @@ class AppColors {
   static Color primary = AppAccentPalette.coral.primary;
   static Color primaryLight = AppAccentPalette.coral.primaryLight;
   static Color secondary = AppAccentPalette.coral.secondary;
+  static bool _isDark = false;
 
   static const income = Color(0xFF7EB87A);
   static const incomeDark = Color(0xFF5A9B56);
@@ -44,6 +46,22 @@ class AppColors {
   static const error = expense;
 
   static const onWarm = Color(0xFFFFFFFF);
+
+  static Color get onPrimary => ColorContrast.onColor(primary);
+
+  static Color get onSecondary => ColorContrast.onColor(secondary);
+
+  static Color get onPrimaryInk => ColorContrast.onColor(primaryInk);
+
+  /// Accent used for icons and labels on cards/scaffold (readable if primary is white).
+  static Color inkOf(Color color) =>
+      ColorContrast.asInk(color, onDarkSurface: _isDark);
+
+  static Color get primaryInk => inkOf(primary);
+
+  static Color get secondaryInk => inkOf(secondary);
+
+  static Color get balanceInk => inkOf(balance);
 
   static Color get primaryColor => primary;
   static Color get secondaryColor => primaryLight;
@@ -78,6 +96,7 @@ class AppColors {
   }
 
   static void applyDarkMode(bool isDark) {
+    _isDark = isDark;
     applyScheme(isDark ? AppColorScheme.dark : AppColorScheme.light);
   }
 }

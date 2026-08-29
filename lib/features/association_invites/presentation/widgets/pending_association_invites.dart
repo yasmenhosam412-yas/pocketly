@@ -161,14 +161,15 @@ class _PendingAssociationInvitesState
                                 busy ? null : () => _respond(invite, true),
                             style: FilledButton.styleFrom(
                               backgroundColor: AppColors.primary,
-                              foregroundColor: AppColors.onWarm,
+                              foregroundColor: AppColors.onPrimary,
                             ),
                             child: busy
-                                ? const SizedBox(
+                                ? SizedBox(
                                     width: 16,
                                     height: 16,
                                     child: CircularProgressIndicator(
                                       strokeWidth: 2,
+                                      color: AppColors.onPrimary,
                                     ),
                                   )
                                 : Text(l10n.associationInviteAccept),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/core/services/payment_methods_store.dart';
 import 'package:imrpo/core/services/service_locator.dart';
+import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/features/auth/presentation/widgets/custom_text_field.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
@@ -129,7 +130,7 @@ class _PaymentMethodChipsSectionState extends State<PaymentMethodChipsSection> {
                         selectedColor: widget.accentColor,
                         labelStyle: TextStyle(
                           color: widget.selected.isEmpty
-                              ? Colors.white
+                              ? ColorContrast.onColor(widget.accentColor)
                               : AppColors.textColor,
                           fontWeight: FontWeight.w500,
                         ),
@@ -149,8 +150,9 @@ class _PaymentMethodChipsSectionState extends State<PaymentMethodChipsSection> {
                             : null,
                         selectedColor: widget.accentColor,
                         labelStyle: TextStyle(
-                          color:
-                              isSelected ? Colors.white : AppColors.textColor,
+                          color: isSelected
+                              ? ColorContrast.onColor(widget.accentColor)
+                              : AppColors.textColor,
                           fontWeight: FontWeight.w600,
                         ),
                         backgroundColor: AppColors.surface,
@@ -164,7 +166,7 @@ class _PaymentMethodChipsSectionState extends State<PaymentMethodChipsSection> {
                       avatar: Icon(
                         _adding ? Icons.close_rounded : Icons.add_rounded,
                         size: 18,
-                        color: widget.accentColor,
+                        color: AppColors.inkOf(widget.accentColor),
                       ),
                       label: Text(
                         _adding
@@ -177,14 +179,15 @@ class _PaymentMethodChipsSectionState extends State<PaymentMethodChipsSection> {
                                 if (!_adding) _newMethodController.clear();
                               })
                           : null,
-                      backgroundColor:
-                          widget.accentColor.withValues(alpha: 0.1),
+                      backgroundColor: AppColors.inkOf(widget.accentColor)
+                          .withValues(alpha: 0.1),
                       labelStyle: TextStyle(
-                        color: widget.accentColor,
+                        color: AppColors.inkOf(widget.accentColor),
                         fontWeight: FontWeight.w700,
                       ),
                       side: BorderSide(
-                        color: widget.accentColor.withValues(alpha: 0.35),
+                        color: AppColors.inkOf(widget.accentColor)
+                            .withValues(alpha: 0.35),
                       ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -211,6 +214,8 @@ class _PaymentMethodChipsSectionState extends State<PaymentMethodChipsSection> {
                       label: Text(l10n.paymentMethodSave),
                       style: FilledButton.styleFrom(
                         backgroundColor: widget.accentColor,
+                        foregroundColor:
+                            ColorContrast.onColor(widget.accentColor),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                     ),

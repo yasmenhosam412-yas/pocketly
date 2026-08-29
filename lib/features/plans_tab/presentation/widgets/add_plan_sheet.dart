@@ -1,17 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
+import 'package:imrpo/core/services/receipt_storage_service.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/core/utils/receipt_image_validator.dart';
 import 'package:imrpo/core/widgets/app_toast.dart';
 import 'package:imrpo/core/widgets/currency_amount_field.dart';
 import 'package:imrpo/features/auth/presentation/widgets/custom_text_field.dart';
-import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
+import 'package:imrpo/features/expenses_tab/presentation/widgets/receipt_attachment_section.dart';
 import 'package:imrpo/features/plans_tab/domain/entities/plan.dart';
 import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
-import 'package:imrpo/features/plans_tab/presentation/widgets/plan_allocation_paid_from_section.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
@@ -34,7 +37,10 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
   String _category = 'Savings';
   late String _currencyCode;
   DateTime? _deadline;
-  String _paidFromSource = 'Cash';
+  File? _imageFile;
+  String? _existingImageUrl;
+  bool _imageRemoved = false;
+  bool _submitting = false;
 
   static const _otherCategory = 'Other';
 
@@ -45,10 +51,6 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
     super.initState();
     _currencyCode = getIt<CurrencyPreferences>().displayCode;
     final plan = widget.plan;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      context.read<IncomesTabBloc>().add(const LoadIncomesEvent());
-    });
     if (plan != null) {
       _titleController.text = plan.title;
       _targetController.text = _formatDisplayAmount(plan.targetAmount);
@@ -60,8 +62,8 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
         _category = _otherCategory;
         _otherCategoryController.text = plan.category;
       }
+      _existingImageUrl = plan.imageUrl;
     }
-    _savedController.addListener(_onSavedTextChanged);
   }
 
   static const _categories = [
@@ -74,28 +76,13 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
 
   bool get _isOtherCategory => _category == _otherCategory;
 
-  double get _previousSavedBase => widget.plan?.savedAmount ?? 0;
-
-  bool get _requiresPaidFrom {
-    final saved = double.tryParse(_savedController.text.trim());
-    if (saved == null) return false;
-    final baseSaved = CurrencyConverter.toBase(saved, _currencyCode);
-    return baseSaved > _previousSavedBase;
-  }
-
   @override
   void dispose() {
     _titleController.dispose();
     _targetController.dispose();
-    _savedController
-      ..removeListener(_onSavedTextChanged)
-      ..dispose();
+    _savedController.dispose();
     _otherCategoryController.dispose();
     super.dispose();
-  }
-
-  void _onSavedTextChanged() {
-    if (mounted) setState(() {});
   }
 
   @override
@@ -154,14 +141,15 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
               initialCurrencyCode: _currencyCode,
               onCurrencyChanged: (c) => _currencyCode = c.code,
             ),
-            if (_requiresPaidFrom) ...[
-              const SizedBox(height: 16),
-              PlanAllocationPaidFromSection(
-                selectedSource: _paidFromSource,
-                onSelected: (src) => setState(() => _paidFromSource = src),
-                accentColor: _planColor,
+            const SizedBox(height: 6),
+            Text(
+              l10n.amountSavedHint,
+              style: TextStyle(
+                fontSize: 13,
+                height: 1.35,
+                color: AppColors.textColor.withValues(alpha: 0.55),
               ),
-            ],
+            ),
             const SizedBox(height: 16),
             Text(
               l10n.categoryField,
@@ -204,6 +192,26 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
                 icon: Icons.category_outlined,
               ),
             ],
+            const SizedBox(height: 16),
+            ReceiptAttachmentSection(
+              localFile: _imageFile,
+              remoteUrl: _existingImageUrl,
+              removed: _imageRemoved,
+              accentColor: _planColor,
+              attachIcon: Icons.add_photo_alternate_outlined,
+              label: l10n.planImageLabel,
+              attachLabel: l10n.planImageAttach,
+              replaceLabel: l10n.planImageReplace,
+              removeLabel: l10n.planImageRemove,
+              onLocalFileChanged: (file) => setState(() {
+                _imageFile = file;
+                _imageRemoved = false;
+              }),
+              onRemove: () => setState(() {
+                _imageFile = null;
+                _imageRemoved = true;
+              }),
+            ),
             const SizedBox(height: 16),
             InkWell(
               onTap: _pickDeadline,
@@ -269,15 +277,24 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                onPressed: _submit,
-                child: Text(
-                  _isEditing ? l10n.updateGoal : l10n.savePlan,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
+                onPressed: _submitting ? null : _submit,
+                child: _submitting
+                    ? const SizedBox(
+                        width: 22,
+                        height: 22,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text(
+                        _isEditing ? l10n.updateGoal : l10n.savePlan,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
               ),
             ),
           ],
@@ -309,10 +326,11 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
     }
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     final title = _titleController.text.trim();
     final target = double.tryParse(_targetController.text.trim());
-    final saved = double.tryParse(_savedController.text.trim());
+    final savedRaw = _savedController.text.trim();
+    final saved = savedRaw.isEmpty ? 0.0 : double.tryParse(savedRaw);
 
     final l10n = AppLocalizations.of(context)!;
     if (title.isEmpty) {
@@ -327,7 +345,7 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
       _showError(l10n.errorEnterAmountSaved);
       return;
     }
-    if (saved > target) {
+    if (saved > target + 0.01) {
       _showError(l10n.errorSavedExceedsTarget);
       return;
     }
@@ -339,23 +357,38 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
     }
 
     final baseTarget = CurrencyConverter.toBase(target, _currencyCode);
-    final baseSaved = CurrencyConverter.toBase(saved, _currencyCode);
-
-    if (baseSaved > baseTarget) {
-      _showError(l10n.errorSavedExceedsTarget);
-      return;
-    }
-
-    final needsPaidFrom = baseSaved > _previousSavedBase;
-    final paidFrom = _paidFromSource.trim();
-    if (needsPaidFrom && paidFrom.isEmpty) {
-      _showError(l10n.planAllocationSelectPaidFrom);
-      return;
-    }
-
-    final allocationTitle = l10n.balancePlanAllocationExpenseTitle(
-      localizeDemoTitle(l10n, title),
+    final baseSaved = CurrencyConverter.toBaseAtMost(
+      saved,
+      _currencyCode,
+      baseTarget,
     );
+
+    setState(() => _submitting = true);
+    String? imageUrl = _imageRemoved ? null : _existingImageUrl;
+    try {
+      final storage = getIt<ReceiptStorageService>();
+      if (_imageRemoved && _existingImageUrl != null) {
+        await storage.deleteByPublicUrl(_existingImageUrl);
+      }
+      if (_imageFile != null) {
+        if (!ReceiptImageValidator.isSupportedPath(_imageFile!.path)) {
+          if (!mounted) return;
+          setState(() => _submitting = false);
+          _showError(l10n.expenseReceiptInvalidType);
+          return;
+        }
+        if (_existingImageUrl != null) {
+          await storage.deleteByPublicUrl(_existingImageUrl);
+        }
+        imageUrl = await storage.uploadReceipt(_imageFile!);
+      }
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _submitting = false);
+      _showError(l10n.planImageUploadFailed);
+      return;
+    }
+    if (!mounted) return;
 
     final bloc = context.read<PlansTabBloc>();
     if (_isEditing) {
@@ -367,8 +400,7 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
           targetAmount: baseTarget,
           savedAmount: baseSaved,
           deadline: _deadline,
-          expensePaidFrom: needsPaidFrom ? paidFrom : null,
-          expenseTitle: needsPaidFrom ? allocationTitle : null,
+          imageUrl: imageUrl,
         ),
       );
     } else {
@@ -379,8 +411,7 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
           targetAmount: baseTarget,
           savedAmount: baseSaved,
           deadline: _deadline,
-          expensePaidFrom: needsPaidFrom ? paidFrom : null,
-          expenseTitle: needsPaidFrom ? allocationTitle : null,
+          imageUrl: imageUrl,
         ),
       );
     }

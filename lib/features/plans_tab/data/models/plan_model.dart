@@ -10,10 +10,19 @@ class PlanModel extends Plan {
     required super.savedAmount,
     super.deadline,
     super.userId,
+    super.imageUrl,
   });
 
   factory PlanModel.fromMap(Map<String, dynamic> map) {
     final deadlineRaw = map['deadline'];
+    final rawImage = map['image_url'];
+    final String? imageUrl;
+    if (rawImage is String) {
+      final t = rawImage.trim();
+      imageUrl = t.isEmpty ? null : t;
+    } else {
+      imageUrl = null;
+    }
     return PlanModel(
       id: map['plan_id'] as String,
       title: map['title'] as String,
@@ -24,6 +33,7 @@ class PlanModel extends Plan {
           ? DateTime.parse(deadlineRaw as String)
           : null,
       userId: userIdFromRow(map),
+      imageUrl: imageUrl,
     );
   }
 }

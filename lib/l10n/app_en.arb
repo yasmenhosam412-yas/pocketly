@@ -180,6 +180,15 @@
   "billRemindersPermissionDenied": "Allow notifications in system settings to get bill reminders.",
   "billRemindersSaved": "Reminder saved",
   "billRemindersDeleted": "Reminder deleted",
+  "recurringTransactionsTitle": "Recurring transactions",
+  "recurringTransactionsSubtitle": "Auto-add salary, rent, and bills on the due day each month",
+  "recurringTransactionsEmpty": "No recurring transactions yet. Add salary, rent, internet, and more.",
+  "recurringTransactionsAdd": "Add recurring",
+  "recurringTransactionsEdit": "Edit recurring",
+  "recurringTransactionsTitleHint": "e.g. Salary, Rent, Internet",
+  "recurringTransactionsPostedThisMonth": "Posted this month",
+  "recurringTransactionsDeleted": "Recurring transaction deleted",
+  "recurringTransactionsDeleteConfirmTitle": "Delete this recurring transaction?",
   "billRemindersTestNow": "Test now",
   "billRemindersTestNowSent": "Test notification sent — check your notification shade",
   "billReminderNotificationTitle": "Bill: {title}",
@@ -468,6 +477,8 @@
   "forgotPasswordQuestion": "Forgot Password?",
   "loginButton": "Login",
   "orDivider": "OR",
+  "continueWithGoogle": "Continue with Google",
+  "continueWithFacebook": "Continue with Facebook",
   "noAccountPrompt": "Don't have an account?",
   "signUpLink": "Sign Up",
   "messageEnterEmailPassword": "Enter email and password",
@@ -773,6 +784,7 @@
   "goalTitleHint": "e.g. Emergency Fund",
   "targetAmountLabel": "Target amount",
   "amountSavedLabel": "Amount saved",
+  "amountSavedHint": "Starting progress only — it does not come out of net balance. Use Add to goal on the Balance tab to move money from your wallet.",
   "setDeadlineOptional": "Set deadline (optional)",
   "savePlan": "Save Plan",
   "updateGoal": "Update Goal",
@@ -838,6 +850,7 @@
     }
   },
   "balanceAddToPlanSuccess": "Amount added to your savings goal",
+  "balanceNoSurplusForPlan": "No available net balance to add to a goal.",
   "balancePlanAllocationPaidFromHint": "Choose which source this allocation is paid from (shown on Balance, not unassigned).",
   "planAllocationSelectPaidFrom": "Select paid from for this goal allocation",
   "balancePlanAllocationExpenseTitle": "Savings goal: {planTitle}",
@@ -1104,20 +1117,6 @@
       "failed": { "type": "int" }
     }
   },
-  "settingsAutoSmsImport": "Auto-import from SMS",
-  "settingsAutoSmsImportSubtitle": "When the app opens, new bank SMS are detected and added as income or expense using your chosen category and source.",
-  "settingsAutoSmsImportDefaults": "Auto-import categories",
-  "settingsAutoSmsImportDefaultsTitle": "Defaults for auto-import",
-  "settingsAutoSmsImportDefaultsHint": "Used for every automatic import. SMS text is only used for titles.",
-  "settingsAutoSmsImportPermissionDenied": "SMS permission is required for auto-import.",
-  "settingsAutoSmsImportEnabled": "Auto-import is on. New financial SMS will be added when you open the app.",
-  "autoSmsImportAddedSnack": "Auto-imported {incomes} incomes and {expenses} expenses.",
-  "@autoSmsImportAddedSnack": {
-    "placeholders": {
-      "incomes": { "type": "int" },
-      "expenses": { "type": "int" }
-    }
-  },
   "settingsAppLock": "App lock",
   "settingsAppLockBiometric": "Face ID / fingerprint",
   "settingsAppLockChangePin": "Change PIN",
@@ -1253,5 +1252,15 @@
   "zakatMeetsNisab": "You meet nisab — estimated zakat:",
   "zakatBelowNisab": "Below nisab — no zakat due:",
   "zakatDueLabel": "Estimated zakat (2.5%)",
-  "zakatRateNote": "Hawl (one lunar year) on wealth is assumed. Adjust inputs for your case."
+  "zakatRateNote": "Hawl (one lunar year) on wealth is assumed. Adjust inputs for your case.",
+  "homeWidgetTodayExpenses": "Today's expenses",
+  "homeWidgetSettingsTile": "Home screen widget",
+  "homeWidgetQuickName": "Quick expense",
+  "homeWidgetQuickSettingsTile": "Quick expense widget",
+  "homeWidgetPinUnsupported": "Your launcher can't pin widgets. Long-press the home screen and choose Widgets, then add Pocketly.",
+  "planImageLabel": "Goal photo",
+  "planImageAttach": "Add a photo",
+  "planImageReplace": "Change photo",
+  "planImageRemove": "Remove photo",
+  "planImageUploadFailed": "Couldn't upload the photo. Try again."
 }

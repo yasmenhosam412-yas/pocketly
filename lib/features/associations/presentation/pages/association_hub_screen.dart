@@ -412,7 +412,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
                         ? Money.formatEgp(hub.installmentAmount!)
                         : '—',
                     icon: Icons.payments_outlined,
-                    color: AppColors.primary,
+                    color: AppColors.primaryInk,
                   ),
                 ),
               ],
@@ -529,11 +529,11 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
               (m) => ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: CircleAvatar(
-                  backgroundColor: AppColors.primary.withValues(alpha: 0.12),
+                  backgroundColor: AppColors.primaryInk.withValues(alpha: 0.12),
                   child: Text(
                     (m.username.isNotEmpty ? m.username[0] : '?').toUpperCase(),
                     style: TextStyle(
-                      color: AppColors.primary,
+                      color: AppColors.primaryInk,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -555,6 +555,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
                 label: Text(l10n.associationHubAdvanceTurn),
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
@@ -639,16 +640,16 @@ class _EmptySetupCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.primary.withValues(alpha: 0.06),
+        color: AppColors.primaryInk.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.primaryInk.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
           Icon(
             Icons.groups_3_outlined,
             size: 48,
-            color: AppColors.primary,
+            color: AppColors.primaryInk,
           ),
           const SizedBox(height: 12),
           Text(
@@ -694,7 +695,7 @@ class _StatCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 22),
+          Icon(icon, color: AppColors.inkOf(color), size: 22),
           const SizedBox(height: 8),
           Text(
             label,
@@ -734,12 +735,12 @@ class _CurrentTurnCard extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primary.withValues(alpha: 0.12),
-            AppColors.primary.withValues(alpha: 0.04),
+            AppColors.primaryInk.withValues(alpha: 0.12),
+            AppColors.primaryInk.withValues(alpha: 0.04),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
+        border: Border.all(color: AppColors.primaryInk.withValues(alpha: 0.25)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -758,7 +759,7 @@ class _CurrentTurnCard extends StatelessWidget {
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w800,
-              color: AppColors.primary,
+              color: AppColors.primaryInk,
             ),
           ),
           const SizedBox(height: 4),
@@ -893,11 +894,11 @@ class _TurnSlotTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: isCurrent
-            ? AppColors.primary.withValues(alpha: 0.08)
+            ? AppColors.primaryInk.withValues(alpha: 0.08)
             : AppColors.card,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isCurrent ? AppColors.primary : AppColors.border,
+          color: isCurrent ? AppColors.primaryInk : AppColors.border,
           width: isCurrent ? 1.5 : 1,
         ),
       ),
@@ -915,7 +916,9 @@ class _TurnSlotTile extends StatelessWidget {
               '$turnNumber',
               style: TextStyle(
                 fontWeight: FontWeight.w800,
-                color: isCurrent ? Colors.white : AppColors.textSecondary,
+                color: isCurrent
+                    ? AppColors.onPrimary
+                    : AppColors.textSecondary,
               ),
             ),
           ),
@@ -939,7 +942,7 @@ class _TurnSlotTile extends StatelessWidget {
               child: Text(
                 l10n.associationHubCurrentBadge,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.onPrimary,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                 ),

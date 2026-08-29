@@ -26,9 +26,7 @@ class AddPlanEvent extends PlansTabEvent {
   final double targetAmount;
   final double savedAmount;
   final DateTime? deadline;
-  /// Required when [savedAmount] > 0 — records expense paid-from for balance.
-  final String? expensePaidFrom;
-  final String? expenseTitle;
+  final String? imageUrl;
 
   const AddPlanEvent({
     required this.title,
@@ -36,8 +34,7 @@ class AddPlanEvent extends PlansTabEvent {
     required this.targetAmount,
     required this.savedAmount,
     this.deadline,
-    this.expensePaidFrom,
-    this.expenseTitle,
+    this.imageUrl,
   });
 
   @override
@@ -47,8 +44,7 @@ class AddPlanEvent extends PlansTabEvent {
     targetAmount,
     savedAmount,
     deadline ?? '',
-    expensePaidFrom ?? '',
-    expenseTitle ?? '',
+    imageUrl ?? '',
   ];
 }
 
@@ -59,9 +55,7 @@ class UpdatePlanEvent extends PlansTabEvent {
   final double targetAmount;
   final double savedAmount;
   final DateTime? deadline;
-  /// Required when [savedAmount] increases vs current plan — expense paid-from.
-  final String? expensePaidFrom;
-  final String? expenseTitle;
+  final String? imageUrl;
 
   const UpdatePlanEvent({
     required this.id,
@@ -70,8 +64,7 @@ class UpdatePlanEvent extends PlansTabEvent {
     required this.targetAmount,
     required this.savedAmount,
     this.deadline,
-    this.expensePaidFrom,
-    this.expenseTitle,
+    this.imageUrl,
   });
 
   @override
@@ -82,8 +75,7 @@ class UpdatePlanEvent extends PlansTabEvent {
     targetAmount,
     savedAmount,
     deadline ?? '',
-    expensePaidFrom ?? '',
-    expenseTitle ?? '',
+    imageUrl ?? '',
   ];
 }
 

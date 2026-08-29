@@ -88,7 +88,7 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
                 label: Text(l10n.backToLogin),
                 style: TextButton.styleFrom(
-                  foregroundColor: AppColors.primary,
+                  foregroundColor: AppColors.primaryInk,
                 ),
               ),
             ],

@@ -12,6 +12,7 @@ class PlanListTile extends StatelessWidget {
   final Plan plan;
   final VoidCallback? onTap;
   final VoidCallback? onDelete;
+  final VoidCallback? onAddFromBalance;
   final bool isDeleting;
 
   const PlanListTile({
@@ -19,6 +20,7 @@ class PlanListTile extends StatelessWidget {
     required this.plan,
     this.onTap,
     this.onDelete,
+    this.onAddFromBalance,
     this.isDeleting = false,
   });
 
@@ -79,6 +81,11 @@ class PlanListTile extends StatelessWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            if (plan.imageUrl != null &&
+                                plan.imageUrl!.trim().isNotEmpty) ...[
+                              _PlanImageThumb(url: plan.imageUrl!),
+                              const SizedBox(width: 12),
+                            ],
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,6 +252,37 @@ class PlanListTile extends StatelessWidget {
                             ],
                           ),
                         ),
+                        if (onAddFromBalance != null && !plan.isCompleted) ...[
+                          const SizedBox(height: 10),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: onAddFromBalance,
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: _planAccent,
+                                side: BorderSide(
+                                  color: _planColor.withValues(alpha: 0.45),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              icon: const Icon(
+                                Icons.account_balance_wallet_outlined,
+                                size: 18,
+                              ),
+                              label: Text(
+                                l10n.balanceAddToPlan,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -260,6 +298,34 @@ class PlanListTile extends StatelessWidget {
   String _formatDate(BuildContext context, DateTime date) {
     final locale = Localizations.localeOf(context).toString();
     return DateFormat.MMMd(locale).format(date);
+  }
+}
+
+class _PlanImageThumb extends StatelessWidget {
+  final String url;
+
+  const _PlanImageThumb({required this.url});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: SizedBox(
+        width: 56,
+        height: 56,
+        child: Image.network(
+          url,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stack) => ColoredBox(
+            color: AppColors.plans.withValues(alpha: 0.12),
+            child: Icon(
+              Icons.image_outlined,
+              color: AppColors.plansDark,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

@@ -881,6 +881,60 @@ abstract class AppLocalizations {
   /// **'Reminder deleted'**
   String get billRemindersDeleted;
 
+  /// No description provided for @recurringTransactionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring transactions'**
+  String get recurringTransactionsTitle;
+
+  /// No description provided for @recurringTransactionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-add salary, rent, and bills on the due day each month'**
+  String get recurringTransactionsSubtitle;
+
+  /// No description provided for @recurringTransactionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recurring transactions yet. Add salary, rent, internet, and more.'**
+  String get recurringTransactionsEmpty;
+
+  /// No description provided for @recurringTransactionsAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add recurring'**
+  String get recurringTransactionsAdd;
+
+  /// No description provided for @recurringTransactionsEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit recurring'**
+  String get recurringTransactionsEdit;
+
+  /// No description provided for @recurringTransactionsTitleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Salary, Rent, Internet'**
+  String get recurringTransactionsTitleHint;
+
+  /// No description provided for @recurringTransactionsPostedThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Posted this month'**
+  String get recurringTransactionsPostedThisMonth;
+
+  /// No description provided for @recurringTransactionsDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring transaction deleted'**
+  String get recurringTransactionsDeleted;
+
+  /// No description provided for @recurringTransactionsDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this recurring transaction?'**
+  String get recurringTransactionsDeleteConfirmTitle;
+
   /// No description provided for @billRemindersTestNow.
   ///
   /// In en, this message translates to:
@@ -2032,6 +2086,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OR'**
   String get orDivider;
+
+  /// No description provided for @continueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get continueWithGoogle;
+
+  /// No description provided for @continueWithFacebook.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Facebook'**
+  String get continueWithFacebook;
 
   /// No description provided for @noAccountPrompt.
   ///
@@ -3263,6 +3329,12 @@ abstract class AppLocalizations {
   /// **'Amount saved'**
   String get amountSavedLabel;
 
+  /// No description provided for @amountSavedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting progress only — it does not come out of net balance. Use Add to goal on the Balance tab to move money from your wallet.'**
+  String get amountSavedHint;
+
   /// No description provided for @setDeadlineOptional.
   ///
   /// In en, this message translates to:
@@ -3448,6 +3520,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Amount added to your savings goal'**
   String get balanceAddToPlanSuccess;
+
+  /// No description provided for @balanceNoSurplusForPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'No available net balance to add to a goal.'**
+  String get balanceNoSurplusForPlan;
 
   /// No description provided for @balancePlanAllocationPaidFromHint.
   ///
@@ -4331,54 +4409,6 @@ abstract class AppLocalizations {
   /// **'{failed} message(s) could not be imported.'**
   String smartImportBulkPartialFail(int failed);
 
-  /// No description provided for @settingsAutoSmsImport.
-  ///
-  /// In en, this message translates to:
-  /// **'Auto-import from SMS'**
-  String get settingsAutoSmsImport;
-
-  /// No description provided for @settingsAutoSmsImportSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'When the app opens, new bank SMS are detected and added as income or expense using your chosen category and source.'**
-  String get settingsAutoSmsImportSubtitle;
-
-  /// No description provided for @settingsAutoSmsImportDefaults.
-  ///
-  /// In en, this message translates to:
-  /// **'Auto-import categories'**
-  String get settingsAutoSmsImportDefaults;
-
-  /// No description provided for @settingsAutoSmsImportDefaultsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Defaults for auto-import'**
-  String get settingsAutoSmsImportDefaultsTitle;
-
-  /// No description provided for @settingsAutoSmsImportDefaultsHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Used for every automatic import. SMS text is only used for titles.'**
-  String get settingsAutoSmsImportDefaultsHint;
-
-  /// No description provided for @settingsAutoSmsImportPermissionDenied.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS permission is required for auto-import.'**
-  String get settingsAutoSmsImportPermissionDenied;
-
-  /// No description provided for @settingsAutoSmsImportEnabled.
-  ///
-  /// In en, this message translates to:
-  /// **'Auto-import is on. New financial SMS will be added when you open the app.'**
-  String get settingsAutoSmsImportEnabled;
-
-  /// No description provided for @autoSmsImportAddedSnack.
-  ///
-  /// In en, this message translates to:
-  /// **'Auto-imported {incomes} incomes and {expenses} expenses.'**
-  String autoSmsImportAddedSnack(int incomes, int expenses);
-
   /// No description provided for @settingsAppLock.
   ///
   /// In en, this message translates to:
@@ -4972,6 +5002,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hawl (one lunar year) on wealth is assumed. Adjust inputs for your case.'**
   String get zakatRateNote;
+
+  /// No description provided for @homeWidgetTodayExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s expenses'**
+  String get homeWidgetTodayExpenses;
+
+  /// No description provided for @homeWidgetSettingsTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Home screen widget'**
+  String get homeWidgetSettingsTile;
+
+  /// No description provided for @homeWidgetQuickName.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick expense'**
+  String get homeWidgetQuickName;
+
+  /// No description provided for @homeWidgetQuickSettingsTile.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick expense widget'**
+  String get homeWidgetQuickSettingsTile;
+
+  /// No description provided for @homeWidgetPinUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Your launcher can\'t pin widgets. Long-press the home screen and choose Widgets, then add Pocketly.'**
+  String get homeWidgetPinUnsupported;
+
+  /// No description provided for @planImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal photo'**
+  String get planImageLabel;
+
+  /// No description provided for @planImageAttach.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a photo'**
+  String get planImageAttach;
+
+  /// No description provided for @planImageReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get planImageReplace;
+
+  /// No description provided for @planImageRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove photo'**
+  String get planImageRemove;
+
+  /// No description provided for @planImageUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t upload the photo. Try again.'**
+  String get planImageUploadFailed;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

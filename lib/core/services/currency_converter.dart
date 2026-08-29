@@ -74,6 +74,33 @@ class CurrencyConverter {
   static double fromBase(double baseAmount, String toCode) =>
       convert(amount: baseAmount, fromCode: baseCode, toCode: toCode);
 
+  /// 0.01 in [currencyCode], expressed in base (USD).
+  static double displayCentInBase(String currencyCode) =>
+      toBase(0.01, currencyCode);
+
+  /// True when [baseAmount] is more than [maxBase] by over one display cent.
+  ///
+  /// Display amounts are 2-decimal, so converting the on-screen maximum back
+  /// to USD can sit a fraction over the cap. That must still count as "full".
+  static bool exceedsCap(
+    double baseAmount,
+    double maxBase, {
+    required String currencyCode,
+  }) {
+    return baseAmount > maxBase + displayCentInBase(currencyCode);
+  }
+
+  /// Convert a typed display amount to base, snapping down to [maxBase] when
+  /// FX rounding pushed it just over.
+  static double toBaseAtMost(
+    double displayAmount,
+    String fromCode,
+    double maxBase,
+  ) {
+    final converted = toBase(displayAmount, fromCode);
+    return converted > maxBase ? maxBase : converted;
+  }
+
   static String format(double amount, String currencyCode) {
     final currency = byCode(currencyCode);
     final value = amount == amount.roundToDouble()

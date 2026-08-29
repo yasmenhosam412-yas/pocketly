@@ -271,7 +271,7 @@ class _EditGom3eyaSheetState extends State<_EditGom3eyaSheet> {
                           '${index + 1}',
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
-                            color: AppColors.primary,
+                            color: AppColors.primaryInk,
                           ),
                         ),
                       ),
@@ -308,6 +308,7 @@ class _EditGom3eyaSheetState extends State<_EditGom3eyaSheet> {
                 onPressed: _save,
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: Text(l10n.associationHubSave),

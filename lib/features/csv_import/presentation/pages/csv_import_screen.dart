@@ -53,7 +53,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  CircularProgressIndicator(color: AppColors.primary),
+                  CircularProgressIndicator(color: AppColors.primaryInk),
                   const SizedBox(height: 16),
                   Text(l10n.csvImportProgress),
                 ],
@@ -95,6 +95,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
           label: Text(l10n.csvImportPickFile),
           style: FilledButton.styleFrom(
             backgroundColor: AppColors.primary,
+            foregroundColor: AppColors.onPrimary,
             minimumSize: const Size(double.infinity, 52),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
@@ -215,6 +216,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
                     : null,
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.onPrimary,
                 ),
                 child: Text(l10n.csvImportPreview),
               ),
@@ -275,6 +277,7 @@ class _CsvImportScreenState extends State<CsvImportScreen> {
                 onPressed: _preview.isEmpty ? null : _runImport,
                 style: FilledButton.styleFrom(
                   backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.onPrimary,
                 ),
                 child: Text(l10n.csvImportRun),
               ),
