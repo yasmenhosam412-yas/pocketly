@@ -11,6 +11,8 @@ class Expense extends Equatable {
   final String? receiptUrl;
   final String? entryCurrency;
   final double? entryAmount;
+  /// Who recorded this row (family ledgers).
+  final String? userId;
 
   const Expense({
     required this.id,
@@ -22,6 +24,7 @@ class Expense extends Equatable {
     this.receiptUrl,
     this.entryCurrency,
     this.entryAmount,
+    this.userId,
   });
 
   @override
@@ -35,5 +38,6 @@ class Expense extends Equatable {
         receiptUrl,
         entryCurrency,
         entryAmount,
+        userId,
       ];
 }

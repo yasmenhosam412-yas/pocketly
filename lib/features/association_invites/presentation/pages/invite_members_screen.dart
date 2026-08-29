@@ -6,7 +6,31 @@ import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/features/association_invites/data/association_invite_datasource.dart';
 import 'package:imrpo/features/association_invites/domain/entities/profile_search_result.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+
+class InviteMembersArgs {
+  final String associationId;
+  final String associationName;
+
+  const InviteMembersArgs({
+    required this.associationId,
+    required this.associationName,
+  });
+}
+
+Future<void> openInviteMembersScreen(
+  BuildContext context, {
+  required String associationId,
+  required String associationName,
+}) {
+  return Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (_) => InviteMembersScreen(
+        associationId: associationId,
+        associationName: associationName,
+      ),
+    ),
+  );
+}
 
 class InviteMembersScreen extends StatefulWidget {
   const InviteMembersScreen({
@@ -24,7 +48,7 @@ class InviteMembersScreen extends StatefulWidget {
 
 class _InviteMembersScreenState extends State<InviteMembersScreen> {
   final _searchController = TextEditingController();
-  final _datasource = AssociationInviteDatasource(getIt<SupabaseClient>());
+  final _datasource = getIt<AssociationInviteDatasource>();
 
   List<ProfileSearchResult> _results = [];
   bool _searching = false;

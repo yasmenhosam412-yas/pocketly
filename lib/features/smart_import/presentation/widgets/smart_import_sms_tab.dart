@@ -15,7 +15,7 @@ import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class SmartImportSmsTab extends StatefulWidget {
-  static const tabIndex = 2;
+  static const tabIndex = 3;
 
   final ScrollController scrollController;
   final TabController tabController;

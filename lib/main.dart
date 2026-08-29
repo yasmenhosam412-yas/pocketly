@@ -134,7 +134,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
           title: "Pocketly",
           navigatorKey: rootNavigatorKey,
           locale: locale,
-
           onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,

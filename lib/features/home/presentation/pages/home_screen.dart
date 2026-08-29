@@ -11,8 +11,10 @@ import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/services/association_context.dart';
+import 'package:imrpo/core/services/association_member_names.dart';
 import 'package:imrpo/core/session/user_session.dart';
 import 'package:imrpo/features/associations/presentation/widgets/association_ledger_banner.dart';
+import 'package:imrpo/features/association_invites/presentation/widgets/pending_association_invites.dart';
 import 'package:imrpo/features/home/presentation/widgets/association_selector.dart';
 import 'package:imrpo/features/home/presentation/widgets/home_date_filter_sheet.dart';
 import 'package:imrpo/features/home/presentation/theme/home_header_theme.dart';
@@ -30,6 +32,8 @@ import 'package:imrpo/core/services/onboarding_preferences.dart';
 import 'package:imrpo/core/widgets/triple_back_to_exit.dart';
 import 'package:imrpo/core/widgets/offline_banner.dart';
 import 'package:imrpo/features/home/presentation/widgets/home_first_run_guide.dart';
+import 'package:imrpo/core/helpers/association_ledger_access.dart';
+import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_ai_tab.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -66,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen>
         if (!associations.isLoaded) {
           await associations.load();
         }
+        await getIt<AssociationMemberNames>().refresh();
         await getIt<InitialBalanceStore>().load();
       }
     } catch (_) {
@@ -205,6 +210,7 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
                       ),
                     ),
                     const SliverToBoxAdapter(child: OfflineBanner()),
+                    const SliverToBoxAdapter(child: PendingAssociationInvites()),
                     const SliverToBoxAdapter(child: AssociationLedgerBanner()),
                     SliverToBoxAdapter(
                       child: Padding(
@@ -470,16 +476,46 @@ class _HomeHeader extends StatelessWidget {
                                 },
                               ),
                               const SizedBox(width: 8),
-                              KeyedSubtree(
-                                key: HomeGuideTargets.smartImport,
-                                child: _HeaderActionChip(
-                                  icon: Icons.document_scanner_outlined,
-                                  label: l10n.smartImportShort,
-                                  trailingIcon: Icons.arrow_forward_rounded,
-                                  onTap: () => Navigator.of(
-                                    context,
-                                  ).pushNamed(AppRoutes.smartImport),
-                                ),
+                              ListenableBuilder(
+                                listenable: getIt<AssociationContext>(),
+                                builder: (context, _) {
+                                  final canEdit =
+                                      AssociationLedgerAccess.canEdit;
+                                  return Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (canEdit) ...[
+                                        KeyedSubtree(
+                                          key: HomeGuideTargets.smartImport,
+                                          child: _HeaderActionChip(
+                                            icon: Icons.auto_awesome_rounded,
+                                            label: l10n.magicAddShort,
+                                            onTap: () =>
+                                                showMagicAddSheet(context),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                      ],
+                                      KeyedSubtree(
+                                        key: canEdit
+                                            ? const ValueKey(
+                                                'home-import-chip',
+                                              )
+                                            : HomeGuideTargets.smartImport,
+                                        child: _HeaderActionChip(
+                                          icon:
+                                              Icons.document_scanner_outlined,
+                                          label: l10n.smartImportShort,
+                                          trailingIcon:
+                                              Icons.arrow_forward_rounded,
+                                          onTap: () => Navigator.of(
+                                            context,
+                                          ).pushNamed(AppRoutes.smartImport),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
                               // const SizedBox(width: 8),
                               // _HeaderActionChip(

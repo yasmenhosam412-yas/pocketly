@@ -13,6 +13,7 @@ class Loan extends Equatable {
   final double repaidAmount;
   final DateTime? dueDate;
   final String notes;
+  final String? userId;
 
   const Loan({
     required this.id,
@@ -22,6 +23,7 @@ class Loan extends Equatable {
     required this.repaidAmount,
     this.dueDate,
     this.notes = '',
+    this.userId,
   });
 
   double get remaining {
@@ -56,5 +58,6 @@ class Loan extends Equatable {
     repaidAmount,
     dueDate,
     notes,
+    userId,
   ];
 }

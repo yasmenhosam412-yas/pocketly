@@ -6,12 +6,9 @@ import 'package:imrpo/features/expenses_tab/data/models/expense_model.dart';
 import 'package:intl/intl.dart';
 import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
-import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/receipt_storage_service.dart';
-import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/core/utils/receipt_image_validator.dart';
 import 'package:imrpo/core/services/service_locator.dart';
-import 'package:imrpo/features/balance_tab/domain/services/wallet_balance_calculator.dart';
 import 'package:imrpo/features/expenses_tab/presentation/widgets/receipt_attachment_section.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/widgets/app_toast.dart';
@@ -422,17 +419,6 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
     }
 
     final baseAmount = CurrencyConverter.toBase(amount, _currencyCode);
-    final available = WalletBalanceCalculator.availableToSpend(
-      paidFrom: _paidFromSource,
-      incomes: context.read<IncomesTabBloc>().state.incomes,
-      expenses: context.read<ExpensesTabBloc>().state.expenses,
-      initialBySource: getIt<InitialBalanceStore>().totalsBySource,
-      excludeExpenseId: widget.expense?.id,
-    );
-    if (baseAmount > available + 0.005) {
-      _showError(l10n.pocketInsufficientFunds(Money.format(available)));
-      return;
-    }
     final entryCurrency = CurrencyConverter.isDefaultEntryCurrency(_currencyCode)
         ? null
         : _currencyCode;

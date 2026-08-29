@@ -4,6 +4,7 @@ import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:imrpo/features/loans_tab/domain/entities/loan.dart';
+import 'package:imrpo/features/associations/presentation/widgets/family_author_meta.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
 class LoanListTile extends StatelessWidget {
@@ -97,6 +98,7 @@ class LoanListTile extends StatelessWidget {
                                       color: AppColors.textColor,
                                     ),
                                   ),
+                                  FamilyAuthorMeta(userId: loan.userId),
                                   const SizedBox(height: 8),
                                   Wrap(
                                     spacing: 6,

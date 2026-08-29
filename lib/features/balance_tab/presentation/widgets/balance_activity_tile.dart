@@ -5,6 +5,7 @@ import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/features/budgets/domain/services/budget_calculator.dart';
 import 'package:imrpo/features/balance_tab/domain/entities/balance_activity.dart';
+import 'package:imrpo/features/associations/presentation/widgets/family_author_meta.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
@@ -84,6 +85,7 @@ class BalanceActivityTile extends StatelessWidget {
                     color: AppColors.textColor.withValues(alpha: 0.55),
                   ),
                 ),
+                FamilyAuthorMeta(userId: activity.userId),
               ],
             ),
           ),

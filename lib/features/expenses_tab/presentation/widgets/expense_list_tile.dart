@@ -11,6 +11,7 @@ import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/core/models/transaction_entry_meta.dart';
 import 'package:imrpo/core/utils/transaction_entry_format.dart';
 import 'package:imrpo/core/widgets/payment_method_badge.dart';
+import 'package:imrpo/features/associations/presentation/widgets/family_author_meta.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 class ExpenseListTile extends StatelessWidget {
   final ExpenseModel expense;
@@ -162,6 +163,11 @@ class ExpenseListTile extends StatelessWidget {
                         ],
                       ),
                     ],
+                    FamilyAuthorMeta(
+                      userId: expense.userId,
+                      style: metaStyle,
+                      iconColor: iconMetaColor,
+                    ),
                   ],
                 ),
               ),

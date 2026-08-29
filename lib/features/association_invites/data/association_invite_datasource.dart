@@ -50,22 +50,32 @@ class AssociationInviteDatasource {
   }
 
   Future<List<AssociationInviteItem>> listMyPendingInvites() async {
-    final rows = await _client.rpc('list_my_pending_association_invites');
-    final list = rows as List<dynamic>? ?? [];
-    return list.map((row) {
-      final map = Map<String, dynamic>.from(row as Map);
-      return AssociationInviteItem(
-        inviteId: map['invite_id']?.toString() ?? '',
-        associationId: map['association_id']?.toString() ?? '',
-        associationName: map['association_name']?.toString() ?? '',
-        inviterUsername: map['inviter_username']?.toString() ?? '',
-        createdAt: DateTime.parse(
-          map['created_at']?.toString() ?? DateTime.now().toIso8601String(),
-        ),
-        expiresAt: DateTime.parse(
-          map['expires_at']?.toString() ?? DateTime.now().toIso8601String(),
-        ),
-      );
-    }).where((i) => i.inviteId.isNotEmpty).toList();
+    try {
+      final rows = await _client.rpc('list_my_pending_association_invites');
+      final list = rows as List<dynamic>? ?? [];
+      return list.map((row) {
+        final map = Map<String, dynamic>.from(row as Map);
+        return AssociationInviteItem(
+          inviteId: map['invite_id']?.toString() ?? '',
+          associationId: map['association_id']?.toString() ?? '',
+          associationName: map['association_name']?.toString() ?? '',
+          inviterUsername: map['inviter_username']?.toString() ?? '',
+          createdAt: DateTime.parse(
+            map['created_at']?.toString() ?? DateTime.now().toIso8601String(),
+          ),
+          expiresAt: DateTime.parse(
+            map['expires_at']?.toString() ?? DateTime.now().toIso8601String(),
+          ),
+        );
+      }).where((i) => i.inviteId.isNotEmpty).toList();
+    } on PostgrestException catch (e) {
+      final msg = e.message.toLowerCase();
+      if (e.code == 'PGRST202' ||
+          msg.contains('list_my_pending_association_invites') ||
+          msg.contains('could not find the function')) {
+        return [];
+      }
+      rethrow;
+    }
   }
 }

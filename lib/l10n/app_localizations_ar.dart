@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'imrpo';
+  String get appTitle => 'Pocketly';
 
   @override
   String get exitPressTwiceMore => 'اضغط رجوع مرتين كمان للخروج';
@@ -42,10 +42,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeGuideExpenseBody => 'من تبويب المصاريف اضغط إضافة مصروف أول ما تصرف.';
 
   @override
-  String get homeGuideImportTitle => 'استورد من الرسائل';
+  String get homeGuideImportTitle => 'ضيف أسرع بالذكاء';
 
   @override
-  String get homeGuideImportBody => 'من استيراد تقدر تجيب المعاملات من الرسائل من غير ما تكتبها بإيدك.';
+  String get homeGuideImportBody => 'اضغط إضافة ذكية واكتب أو قول المعاملة. أو استخدم استيراد لرسائل البنك واللصق.';
 
   @override
   String get homeGuideSettingsTitle => 'الإعدادات';
@@ -479,13 +479,42 @@ class AppLocalizationsAr extends AppLocalizations {
   String get associationPickerTitle => 'اختار الدفتر';
 
   @override
-  String get associationPickerSubtitle => 'كل دفتر له دخل ومصاريف وميزانيات وخطط لوحده.';
+  String get associationPickerSubtitle => 'الشخصي ليك لوحدك. دفتر العيلة الكل يضيف فيه. الجمعية المدير هو اللي بيسجّل.';
 
   @override
   String get associationCreateTitle => 'دفتر جديد';
 
   @override
-  String get associationCreateAction => 'إضافة دفتر';
+  String get associationCreateAction => 'إضافة جمعية';
+
+  @override
+  String get associationCreateFamilyTitle => 'دفتر عيلة جديد';
+
+  @override
+  String get associationCreateFamilyAction => 'إضافة عيلة';
+
+  @override
+  String get associationCreateFamilyHint => 'مثال: البيت';
+
+  @override
+  String get associationCreateFamilySubtitle => 'كل اللي تدعوه يقدر يضيف دخله ومصاريفه. هتدعوهم بعد كده.';
+
+  @override
+  String get associationFamilyBadge => 'عيلة';
+
+  @override
+  String get associationFamilyBanner => 'دفتر العيلة: كل عضو يقدر يضيف دخله ومصاريفه.';
+
+  @override
+  String familyTransactionBy(String name) {
+    return 'ضافها $name';
+  }
+
+  @override
+  String get familyAuthorYou => 'إنت';
+
+  @override
+  String get familyAuthorUnknown => 'فرد من العيلة';
 
   @override
   String get associationNameHint => 'مثال: شغل، بيت، ادخار';
@@ -548,6 +577,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get associationInvitePendingTitle => 'دعوات وصلتلك';
+
+  @override
+  String associationInvitePendingBody(String username, String name) {
+    return '$username دعاك لدفتر \"$name\"';
+  }
 
   @override
   String get associationInviteAccept => 'انضم';
@@ -978,6 +1012,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorEnterUsername => 'اكتب اسم المستخدم';
+
+  @override
+  String get errorUsernameTaken => 'اسم المستخدم ده متاخد. اختار اسم تاني.';
 
   @override
   String get logoutConfirmTitle => 'تخرج؟';
@@ -1983,6 +2020,77 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get smartImportQuickAdded => 'اتضافت المعاملة.';
+
+  @override
+  String get magicAddTitle => 'إضافة ذكية';
+
+  @override
+  String get magicAddShort => 'ذكاء';
+
+  @override
+  String get magicAddTab => 'ذكاء';
+
+  @override
+  String get magicAddHint => 'اكتب أو قول اللي حصل — زي «قهوة 50 امبارح» أو «راتب 8000». هنحدد النوع والتصنيف والتاريخ.';
+
+  @override
+  String get magicAddFieldLabel => 'حصل إيه؟';
+
+  @override
+  String get magicAddFieldHint => 'قهوة 50، أوبر 30 امبارح';
+
+  @override
+  String get magicAddListen => 'اتكلم';
+
+  @override
+  String get magicAddListening => 'بنسمع…';
+
+  @override
+  String get magicAddVoiceUnavailable => 'الإدخال بالصوت مش متاح على الجهاز ده.';
+
+  @override
+  String get magicAddVoicePermissionDenied => 'محتاج إذن الميكروفون عشان تضيف بصوتك.';
+
+  @override
+  String get magicAddVoicePermanentlyDenied => 'إذن الميكروفون مقفول. فعّله من إعدادات الموبايل وبعدين اضغط اتكلم تاني.';
+
+  @override
+  String get magicAddNoAmount => 'ضيف مبلغ، زي: قهوة 50';
+
+  @override
+  String get magicAddExampleCoffee => 'coffee 50';
+
+  @override
+  String get magicAddExampleUber => 'uber 30 yesterday';
+
+  @override
+  String get magicAddExampleSalary => 'راتب 8000';
+
+  @override
+  String get magicAddExampleArabic => 'قهوة 45';
+
+  @override
+  String get magicAddPreviewTitle => 'جاهز للإضافة';
+
+  @override
+  String magicAddAddAll(int count) {
+    return 'ضيف $count';
+  }
+
+  @override
+  String get magicAddAddOne => 'ضيف المعاملة';
+
+  @override
+  String get magicAddOpenForm => 'الفورم الكامل';
+
+  @override
+  String get expenseFabAiOption => 'اكتب أو اتكلم';
+
+  @override
+  String get expenseFabAiOptionSubtitle => 'زي: قهوة 50 امبارح';
+
+  @override
+  String get incomeFabMenuTitle => 'دخل جديد';
 
   @override
   String get smartImportPasteHint => 'الصق رسالة أو أكتر من البنك أو المحفظة. سطر فاضي بين الرسائل، أو الصق كذا رسالة ورا بعض. بنعرف المبلغ ونوع كل رسالة (دخل ولا مصروف).';

@@ -66,7 +66,8 @@ class LoansDatasourceImpl with AssociationDatasourceMixin
   Future<List<LoanModel>> getLoans() async {
     final userId = SupabaseAuthHelper.requireUserId();
     var selectQuery =
-        supabaseClient.from('loans').select().eq('user_id', userId);
+        supabaseClient.from('loans').select();
+    selectQuery = scopeOwnUserQuery(selectQuery, userId);
     selectQuery = scopeFinancialQuery(selectQuery);
     final response = await selectQuery;
 

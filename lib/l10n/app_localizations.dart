@@ -98,7 +98,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'imrpo'**
+  /// **'Pocketly'**
   String get appTitle;
 
   /// No description provided for @exitPressTwiceMore.
@@ -164,13 +164,13 @@ abstract class AppLocalizations {
   /// No description provided for @homeGuideImportTitle.
   ///
   /// In en, this message translates to:
-  /// **'Import from SMS'**
+  /// **'Add faster with AI'**
   String get homeGuideImportTitle;
 
   /// No description provided for @homeGuideImportBody.
   ///
   /// In en, this message translates to:
-  /// **'Use Import to pull transactions from messages instead of typing them.'**
+  /// **'Tap AI add and type or speak a transaction. Or use Import for bank SMS and pasted messages.'**
   String get homeGuideImportBody;
 
   /// No description provided for @homeGuideSettingsTitle.
@@ -962,7 +962,7 @@ abstract class AppLocalizations {
   /// No description provided for @associationPickerSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Each ledger has its own income, expenses, budgets, and plans.'**
+  /// **'Personal is yours. A family ledger lets everyone add. An association is recorded by the manager.'**
   String get associationPickerSubtitle;
 
   /// No description provided for @associationCreateTitle.
@@ -974,8 +974,62 @@ abstract class AppLocalizations {
   /// No description provided for @associationCreateAction.
   ///
   /// In en, this message translates to:
-  /// **'Add ledger'**
+  /// **'Add association'**
   String get associationCreateAction;
+
+  /// No description provided for @associationCreateFamilyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New family ledger'**
+  String get associationCreateFamilyTitle;
+
+  /// No description provided for @associationCreateFamilyAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Add family'**
+  String get associationCreateFamilyAction;
+
+  /// No description provided for @associationCreateFamilyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Our house'**
+  String get associationCreateFamilyHint;
+
+  /// No description provided for @associationCreateFamilySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone you invite can add their own income and expenses. You\'ll invite them next.'**
+  String get associationCreateFamilySubtitle;
+
+  /// No description provided for @associationFamilyBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Family'**
+  String get associationFamilyBadge;
+
+  /// No description provided for @associationFamilyBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Family ledger: everyone can add their own income and expenses.'**
+  String get associationFamilyBanner;
+
+  /// No description provided for @familyTransactionBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Added by {name}'**
+  String familyTransactionBy(String name);
+
+  /// No description provided for @familyAuthorYou.
+  ///
+  /// In en, this message translates to:
+  /// **'you'**
+  String get familyAuthorYou;
+
+  /// No description provided for @familyAuthorUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'a family member'**
+  String get familyAuthorUnknown;
 
   /// No description provided for @associationNameHint.
   ///
@@ -1084,6 +1138,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invitations for you'**
   String get associationInvitePendingTitle;
+
+  /// No description provided for @associationInvitePendingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{username} invited you to \"{name}\"'**
+  String associationInvitePendingBody(String username, String name);
 
   /// No description provided for @associationInviteAccept.
   ///
@@ -1900,6 +1960,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter a username'**
   String get errorEnterUsername;
+
+  /// No description provided for @errorUsernameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That username is already taken. Choose another.'**
+  String get errorUsernameTaken;
 
   /// No description provided for @logoutConfirmTitle.
   ///
@@ -3754,6 +3820,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Transaction added.'**
   String get smartImportQuickAdded;
+
+  /// No description provided for @magicAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI add'**
+  String get magicAddTitle;
+
+  /// No description provided for @magicAddShort.
+  ///
+  /// In en, this message translates to:
+  /// **'AI add'**
+  String get magicAddShort;
+
+  /// No description provided for @magicAddTab.
+  ///
+  /// In en, this message translates to:
+  /// **'AI'**
+  String get magicAddTab;
+
+  /// No description provided for @magicAddHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Type or say what happened — like “coffee 50 yesterday” or “راتب 8000”. We’ll fill type, category, and date.'**
+  String get magicAddHint;
+
+  /// No description provided for @magicAddFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What happened?'**
+  String get magicAddFieldLabel;
+
+  /// No description provided for @magicAddFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'coffee 50, uber 30 yesterday'**
+  String get magicAddFieldHint;
+
+  /// No description provided for @magicAddListen.
+  ///
+  /// In en, this message translates to:
+  /// **'Speak'**
+  String get magicAddListen;
+
+  /// No description provided for @magicAddListening.
+  ///
+  /// In en, this message translates to:
+  /// **'Listening…'**
+  String get magicAddListening;
+
+  /// No description provided for @magicAddVoiceUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Voice input isn’t available on this device.'**
+  String get magicAddVoiceUnavailable;
+
+  /// No description provided for @magicAddVoicePermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone permission is needed to speak a transaction.'**
+  String get magicAddVoicePermissionDenied;
+
+  /// No description provided for @magicAddVoicePermanentlyDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone is blocked. Allow it in system settings, then tap Speak again.'**
+  String get magicAddVoicePermanentlyDenied;
+
+  /// No description provided for @magicAddNoAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Add an amount, e.g. coffee 50'**
+  String get magicAddNoAmount;
+
+  /// No description provided for @magicAddExampleCoffee.
+  ///
+  /// In en, this message translates to:
+  /// **'coffee 50'**
+  String get magicAddExampleCoffee;
+
+  /// No description provided for @magicAddExampleUber.
+  ///
+  /// In en, this message translates to:
+  /// **'uber 30 yesterday'**
+  String get magicAddExampleUber;
+
+  /// No description provided for @magicAddExampleSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'salary 8000'**
+  String get magicAddExampleSalary;
+
+  /// No description provided for @magicAddExampleArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'قهوة 45'**
+  String get magicAddExampleArabic;
+
+  /// No description provided for @magicAddPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to add'**
+  String get magicAddPreviewTitle;
+
+  /// No description provided for @magicAddAddAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Add {count}'**
+  String magicAddAddAll(int count);
+
+  /// No description provided for @magicAddAddOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Add transaction'**
+  String get magicAddAddOne;
+
+  /// No description provided for @magicAddOpenForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Use full form'**
+  String get magicAddOpenForm;
+
+  /// No description provided for @expenseFabAiOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Type or speak'**
+  String get expenseFabAiOption;
+
+  /// No description provided for @expenseFabAiOptionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. coffee 50 yesterday'**
+  String get expenseFabAiOptionSubtitle;
+
+  /// No description provided for @incomeFabMenuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New income'**
+  String get incomeFabMenuTitle;
 
   /// No description provided for @smartImportPasteHint.
   ///

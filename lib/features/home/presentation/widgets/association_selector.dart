@@ -6,6 +6,8 @@ import 'package:imrpo/core/services/association_context.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/session/user_session.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/features/association_invites/presentation/pages/invite_members_screen.dart';
+import 'package:imrpo/features/association_invites/presentation/widgets/pending_association_invites.dart';
 import 'package:imrpo/features/associations/domain/entities/association_item.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
@@ -50,10 +52,17 @@ class AssociationSelector extends StatelessWidget {
                 personalFallback: l10n.associationPersonal,
               )
             : l10n.associationPersonal;
+        final icon = active == null
+            ? Icons.menu_book_rounded
+            : active.isPersonal
+                ? Icons.person_outline_rounded
+                : active.isFamily
+                    ? Icons.groups_rounded
+                    : Icons.menu_book_rounded;
 
         return _HeaderActionChip(
           lightStyle: lightStyle,
-          icon: Icons.menu_book_rounded,
+          icon: icon,
           label: label,
           trailingIcon: Icons.expand_more_rounded,
           isHighlighted: active != null && !active.isPersonal,
@@ -87,8 +96,18 @@ shape: const RoundedRectangleBorder(
 
     if (!context.mounted || choice == null) return;
 
+    if (choice.createFamilyRequested) {
+      await _createFamily(context, associationContext, l10n);
+      return;
+    }
+
     if (choice.createRequested) {
       await _createAssociation(context, associationContext, l10n);
+      return;
+    }
+
+    if (choice.inviteId != null) {
+      await _openInvite(context, associationContext, choice.inviteId!);
       return;
     }
 
@@ -117,7 +136,12 @@ shape: const RoundedRectangleBorder(
   ) async {
     final name = await showDialog<String>(
       context: context,
-      builder: (dialogContext) => _CreateAssociationDialog(l10n: l10n),
+      builder: (dialogContext) => _CreateAssociationDialog(
+        l10n: l10n,
+        title: l10n.associationCreateTitle,
+        hint: l10n.associationNameHint,
+        action: l10n.associationCreateAction,
+      ),
     );
 
     if (!context.mounted || name == null) return;
@@ -152,6 +176,84 @@ shape: const RoundedRectangleBorder(
         ),
       );
     }
+  }
+
+  Future<void> _createFamily(
+    BuildContext context,
+    AssociationContext associationContext,
+    AppLocalizations l10n,
+  ) async {
+    final name = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) => _CreateAssociationDialog(
+        l10n: l10n,
+        title: l10n.associationCreateFamilyTitle,
+        hint: l10n.associationCreateFamilyHint,
+        action: l10n.associationCreateFamilyAction,
+        subtitle: l10n.associationCreateFamilySubtitle,
+      ),
+    );
+
+    if (!context.mounted || name == null) return;
+
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.associationNameRequired),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    try {
+      final id = await associationContext.createFamilyAssociation(name);
+      if (!context.mounted) return;
+      UserSession.reloadForAssociationSwitch(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.associationCreated(name)),
+          backgroundColor: AppColors.success,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      await openInviteMembersScreen(
+        context,
+        associationId: id,
+        associationName: name,
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _openInvite(
+    BuildContext context,
+    AssociationContext associationContext,
+    String associationId,
+  ) async {
+    AssociationItem? item;
+    for (final candidate in associationContext.items) {
+      if (candidate.id == associationId) {
+        item = candidate;
+        break;
+      }
+    }
+    if (item == null) return;
+    await openInviteMembersScreen(
+      context,
+      associationId: item.id,
+      associationName: associationContext.displayName(
+        item,
+        personalFallback: AppLocalizations.of(context)!.associationPersonal,
+      ),
+    );
   }
 
   Future<void> _deleteAssociation(
@@ -218,8 +320,18 @@ shape: const RoundedRectangleBorder(
 
 class _CreateAssociationDialog extends StatefulWidget {
   final AppLocalizations l10n;
+  final String title;
+  final String hint;
+  final String action;
+  final String? subtitle;
 
-  const _CreateAssociationDialog({required this.l10n});
+  const _CreateAssociationDialog({
+    required this.l10n,
+    required this.title,
+    required this.hint,
+    required this.action,
+    this.subtitle,
+  });
 
   @override
   State<_CreateAssociationDialog> createState() =>
@@ -245,26 +357,42 @@ class _CreateAssociationDialogState extends State<_CreateAssociationDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = widget.l10n;
     return AlertDialog(
-      title: Text(l10n.associationCreateTitle),
-      content: TextField(
-        controller: _nameController,
-        autofocus: true,
-        textInputAction: TextInputAction.done,
-        onSubmitted: (_) => _submit(),
-        decoration: InputDecoration(
-          hintText: l10n.associationNameHint,
-        ),
+      title: Text(widget.title),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (widget.subtitle != null) ...[
+            Text(
+              widget.subtitle!,
+              style: TextStyle(
+                fontSize: 14,
+                height: 1.4,
+                color: AppColors.textColor.withValues(alpha: 0.7),
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+          TextField(
+            controller: _nameController,
+            autofocus: true,
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) => _submit(),
+            decoration: InputDecoration(
+              hintText: widget.hint,
+            ),
+          ),
+        ],
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text(l10n.cancel),
+          child: Text(widget.l10n.cancel),
         ),
         FilledButton(
           onPressed: _submit,
-          child: Text(l10n.associationCreateAction),
+          child: Text(widget.action),
         ),
       ],
     );
@@ -274,13 +402,23 @@ class _CreateAssociationDialogState extends State<_CreateAssociationDialog> {
 class _AssociationSheetResult {
   final String? selectedId;
   final bool createRequested;
+  final bool createFamilyRequested;
   final String? deleteId;
+  final String? inviteId;
 
   const _AssociationSheetResult({
     this.selectedId,
     this.createRequested = false,
+    this.createFamilyRequested = false,
     this.deleteId,
+    this.inviteId,
   });
+}
+
+IconData _ledgerIcon(AssociationItem item) {
+  if (item.isPersonal) return Icons.person_outline_rounded;
+  if (item.isFamily) return Icons.groups_rounded;
+  return Icons.menu_book_outlined;
 }
 
 class _AssociationPickerSheet extends StatelessWidget {
@@ -340,6 +478,7 @@ class _AssociationPickerSheet extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      const PendingAssociationInvites(compact: true),
                       ...items.map((item) {
                         final selected = item.id == activeId;
                         final label = associationContext.displayName(
@@ -349,9 +488,7 @@ class _AssociationPickerSheet extends StatelessWidget {
                         return ListTile(
                           contentPadding: EdgeInsets.zero,
                           leading: Icon(
-                            item.isPersonal
-                                ? Icons.person_outline_rounded
-                                : Icons.menu_book_outlined,
+                            _ledgerIcon(item),
                             color: selected
                                 ? AppColors.primary
                                 : AppColors.textColor,
@@ -364,9 +501,32 @@ class _AssociationPickerSheet extends StatelessWidget {
                                   : FontWeight.w500,
                             ),
                           ),
+                          subtitle: item.isFamily
+                              ? Text(
+                                  l10n.associationFamilyBadge,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                )
+                              : null,
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              if (item.canManageInvites)
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.person_add_alt_1_outlined,
+                                    color: AppColors.primary,
+                                    size: 22,
+                                  ),
+                                  tooltip: l10n.associationInviteMembersAction,
+                                  onPressed: () => Navigator.pop(
+                                    context,
+                                    _AssociationSheetResult(inviteId: item.id),
+                                  ),
+                                ),
                               if (!item.isPersonal)
                                 IconButton(
                                   icon: Icon(
@@ -434,6 +594,33 @@ class _AssociationPickerSheet extends StatelessWidget {
                         );
                       }),
                       const SizedBox(height: 8),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Icon(
+                          Icons.groups_rounded,
+                          color: AppColors.primary,
+                        ),
+                        title: Text(
+                          l10n.associationCreateFamilyAction,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        subtitle: Text(
+                          l10n.associationCreateFamilySubtitle,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.textColor.withValues(alpha: 0.55),
+                          ),
+                        ),
+                        onTap: () => Navigator.pop(
+                          context,
+                          const _AssociationSheetResult(
+                            createFamilyRequested: true,
+                          ),
+                        ),
+                      ),
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: Icon(

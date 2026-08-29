@@ -1,3 +1,4 @@
+import 'package:imrpo/core/helpers/row_user_id.dart';
 import 'package:imrpo/features/loans_tab/domain/entities/loan.dart';
 
 class LoanModel extends Loan {
@@ -9,6 +10,7 @@ class LoanModel extends Loan {
     required super.repaidAmount,
     super.dueDate,
     super.notes,
+    super.userId,
   });
 
   factory LoanModel.fromMap(Map<String, dynamic> map) {
@@ -21,6 +23,7 @@ class LoanModel extends Loan {
       repaidAmount: (map['repaid_amount'] as num?)?.toDouble() ?? 0,
       dueDate: dueRaw != null ? DateTime.parse(dueRaw as String) : null,
       notes: (map['notes'] as String?) ?? '',
+      userId: userIdFromRow(map),
     );
   }
 

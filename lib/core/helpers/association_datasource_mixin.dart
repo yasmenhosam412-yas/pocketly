@@ -12,6 +12,18 @@ mixin AssociationDatasourceMixin {
         ctx.activeAssociationId!.isNotEmpty;
   }
 
+  /// Shared/family ledgers list everyone's rows; personal stays own-user only.
+  bool get listSharedLedgerRows {
+    if (!useAssociationScope) return false;
+    final item = getIt<AssociationContext>().activeItem;
+    return item != null && !item.isPersonal;
+  }
+
+  bool get isFamilyLedger {
+    if (!useAssociationScope) return false;
+    return getIt<AssociationContext>().activeItem?.isFamily ?? false;
+  }
+
   Map<String, dynamic> scopedFinancialRow(Map<String, dynamic> row) {
     if (!useAssociationScope) return row;
     return {...row, 'association_id': requireAssociationId()};
@@ -20,5 +32,16 @@ mixin AssociationDatasourceMixin {
   T scopeFinancialQuery<T>(T query) {
     if (!useAssociationScope) return query;
     return (query as dynamic).eq('association_id', requireAssociationId()) as T;
+  }
+
+  T scopeOwnUserQuery<T>(T query, String userId) {
+    if (listSharedLedgerRows) return query;
+    return (query as dynamic).eq('user_id', userId) as T;
+  }
+
+  /// Family budgets are ledger-wide; skip own-user on write.
+  T scopeOwnUserUnlessFamily<T>(T query, String userId) {
+    if (isFamilyLedger) return query;
+    return (query as dynamic).eq('user_id', userId) as T;
   }
 }

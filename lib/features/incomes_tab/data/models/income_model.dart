@@ -1,3 +1,4 @@
+import 'package:imrpo/core/helpers/row_user_id.dart';
 import 'package:imrpo/features/incomes_tab/domain/entities/income.dart';
 
 class IncomeModel extends Income {
@@ -9,6 +10,7 @@ class IncomeModel extends Income {
     required super.date,
     super.entryCurrency,
     super.entryAmount,
+    super.userId,
   });
 
   factory IncomeModel.fromMap(Map<String, dynamic> map) {
@@ -33,6 +35,7 @@ class IncomeModel extends Income {
       date: DateTime.parse(map['date'] as String),
       entryCurrency: entryCurrency,
       entryAmount: entryAmount,
+      userId: userIdFromRow(map),
     );
   }
 }

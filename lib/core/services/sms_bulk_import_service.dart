@@ -93,10 +93,10 @@ class SmsBulkImportService {
       if (entry.type == FinancialEntryType.expense) {
         final result = await _addExpense(
           title,
-          resolvedExpenseCategory,
+          entry.expenseCategory ?? resolvedExpenseCategory,
           baseAmount,
           date,
-          incomeSource: expensePaidFrom,
+          incomeSource: entry.paidFrom ?? expensePaidFrom,
         );
         result.fold((_) => failed++, (_) => expenseCount++);
       } else {
@@ -104,7 +104,7 @@ class SmsBulkImportService {
           title,
           baseAmount,
           date,
-          resolvedIncomeSource,
+          entry.incomeSource ?? resolvedIncomeSource,
         );
         result.fold((_) => failed++, (_) => incomeCount++);
       }

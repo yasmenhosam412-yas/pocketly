@@ -18,6 +18,8 @@ import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.da
 import 'package:imrpo/features/incomes_tab/presentation/widgets/add_income_sheet.dart';
 import 'package:imrpo/features/incomes_tab/presentation/widgets/income_list_tile.dart';
 import 'package:imrpo/features/incomes_tab/presentation/widgets/manage_income_source_sheet.dart';
+import 'package:imrpo/core/models/parsed_financial_entry.dart';
+import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_ai_tab.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
 class IncomesTab extends StatefulWidget {
@@ -58,18 +60,21 @@ class _IncomesTabState extends State<IncomesTab>
           if (!AssociationLedgerAccess.canEdit) {
             return const SizedBox.shrink();
           }
-          return FloatingActionButton.extended(
-            key: HomeGuideTargets.addIncome,
-            heroTag: 'fab-incomes',
-            onPressed: _openAddSheet,
-            backgroundColor: AppColors.income,
-            elevation: 2,
-            icon: const Icon(Icons.add_rounded, color: Colors.white),
-            label: Text(
-              l10n.addIncome,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
+          return GestureDetector(
+            onLongPress: _openAddSheet,
+            child: FloatingActionButton.extended(
+              key: HomeGuideTargets.addIncome,
+              heroTag: 'fab-incomes',
+              onPressed: _openMagicAdd,
+              backgroundColor: AppColors.income,
+              elevation: 2,
+              icon: const Icon(Icons.add_rounded, color: Colors.white),
+              label: Text(
+                l10n.addIncome,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           );
@@ -147,7 +152,7 @@ class _IncomesTabState extends State<IncomesTab>
               return tabCenteredScroll(
                 Stack(
                   children: [
-                    _EmptyState(onAdd: _openAddSheet),
+                    _EmptyState(onAdd: _openMagicAdd),
                     const Center(
                       child: CircularProgressIndicator(color: AppColors.income),
                     ),
@@ -347,7 +352,7 @@ class _IncomesTabState extends State<IncomesTab>
                               SliverFillRemaining(
                                 hasScrollBody: false,
                                 child: sorted.isEmpty
-                                    ? _EmptyState(onAdd: _openAddSheet)
+                                    ? _EmptyState(onAdd: _openMagicAdd)
                                     : _FilteredEmptyState(
                                         message: activeSource != null
                                             ? l10n.incomeFilterNoSourceEntries
@@ -438,6 +443,13 @@ class _IncomesTabState extends State<IncomesTab>
   }
 
   void _openAddSheet() => _showIncomeSheet(const AddIncomeSheet());
+
+  Future<void> _openMagicAdd() {
+    return showMagicAddSheet(
+      context,
+      preferredType: FinancialEntryType.income,
+    );
+  }
 
   void _openEditSheet(Income income) =>
       _showIncomeSheet(AddIncomeSheet(income: income));

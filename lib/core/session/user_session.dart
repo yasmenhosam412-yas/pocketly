@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/services/app_lock_service.dart';
 import 'package:imrpo/core/services/association_context.dart';
+import 'package:imrpo/core/services/association_member_names.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/features/auth/presentation/bloc/auth_bloc.dart';
@@ -43,6 +44,7 @@ class UserSession {
     }
     context.read<BillRemindersBloc>().add(const ResetBillRemindersEvent());
     getIt<AssociationContext>().clear();
+    getIt<AssociationMemberNames>().clear();
     getIt<AppLockService>().onLoggedOut();
     getIt<HomeDateFilter>().reset(notify: false);
     context.read<HomeBloc>().add(const ClearUserProfileEvent());
@@ -71,6 +73,7 @@ class UserSession {
         );
     context.read<PlansTabBloc>().add(const LoadPlansEvent(force: true));
     context.read<LoansTabBloc>().add(const LoadLoansEvent(force: true));
+    getIt<AssociationMemberNames>().refresh();
   }
 
   static void loadAll(BuildContext context) {
@@ -95,6 +98,7 @@ class UserSession {
         );
     context.read<PlansTabBloc>().add(const LoadPlansEvent());
     context.read<LoansTabBloc>().add(const LoadLoansEvent());
+    getIt<AssociationMemberNames>().refresh();
   }
 
   static void _loadOfflineLedgers(BuildContext context) {

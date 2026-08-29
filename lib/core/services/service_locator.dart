@@ -24,7 +24,9 @@ import 'package:imrpo/core/services/payment_methods_store.dart';
 import 'package:imrpo/core/services/locale_preferences.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/services/association_invite_disclaimer_prefs.dart';
+import 'package:imrpo/core/services/association_member_names.dart';
 import 'package:imrpo/core/services/onboarding_preferences.dart';
+import 'package:imrpo/features/association_invites/data/association_invite_datasource.dart';
 import 'package:imrpo/core/services/sms_bulk_import_service.dart';
 import 'package:imrpo/core/services/sms_import_service.dart';
 import 'package:imrpo/core/services/sms_imported_registry.dart';
@@ -129,10 +131,21 @@ void setupServiceLocator() {
     () => AssociationInviteDisclaimerPrefs(),
   );
 
+  getIt.registerLazySingleton<AssociationInviteDatasource>(
+    () => AssociationInviteDatasource(getIt<SupabaseClient>()),
+  );
+
   getIt.registerLazySingleton<HomeDateFilter>(() => HomeDateFilter());
 
   getIt.registerLazySingleton<AssociationContext>(
     () => AssociationContext(client: getIt<SupabaseClient>()),
+  );
+
+  getIt.registerLazySingleton<AssociationMemberNames>(
+    () => AssociationMemberNames(
+      getIt<SupabaseClient>(),
+      getIt<AssociationContext>(),
+    ),
   );
 
   getIt.registerLazySingleton<OfflineTransactionStore>(

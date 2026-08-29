@@ -67,7 +67,8 @@ class IncomeDatasourceImpl extends IncomeDatasource
   Future<List<IncomeModel>> getIncomes() async {
     final userId = SupabaseAuthHelper.requireUserId();
     var selectQuery =
-        supabaseClient.from('incomes').select().eq('user_id', userId);
+        supabaseClient.from('incomes').select();
+    selectQuery = scopeOwnUserQuery(selectQuery, userId);
     selectQuery = scopeFinancialQuery(selectQuery);
     final response = await selectQuery;
     return response.map((item) => IncomeModel.fromMap(item)).toList();

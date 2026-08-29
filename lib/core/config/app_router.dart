@@ -17,6 +17,7 @@ import 'package:imrpo/features/csv_import/presentation/pages/csv_import_screen.d
 import 'package:imrpo/features/notifications/presentation/pages/notifications_screen.dart';
 import 'package:imrpo/features/zakat/presentation/pages/zakat_screen.dart';
 import 'package:imrpo/features/statistics_tab/presentation/pages/statistics_screen.dart';
+import 'package:imrpo/features/association_invites/presentation/pages/invite_members_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/features/bill_reminders/presentation/bloc/bill_reminders_bloc.dart';
@@ -34,6 +35,7 @@ class AppRoutes {
   static const String notifications = '/notifications';
   static const String zakat = '/zakat';
   static const String statistics = '/statistics';
+  static const String inviteMembers = '/invite-members';
   static const String onboarding = '/onboarding';
   static const String login = '/login';
   static const String signup = '/signup';
@@ -102,6 +104,15 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const ZakatScreen());
       case AppRoutes.statistics:
         return MaterialPageRoute(builder: (_) => const StatisticsScreen());
+      case AppRoutes.inviteMembers:
+        final args = settings.arguments as InviteMembersArgs;
+        return MaterialPageRoute(
+          settings: const RouteSettings(name: AppRoutes.inviteMembers),
+          builder: (_) => InviteMembersScreen(
+            associationId: args.associationId,
+            associationName: args.associationName,
+          ),
+        );
       case AppRoutes.onboarding:
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
       case AppRoutes.login:

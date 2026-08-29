@@ -62,13 +62,18 @@ class SmartImportHeader extends StatelessWidget {
                 unselectedLabelColor: AppColors.textMuted,
                 labelStyle: TextStyle(
                   fontWeight: FontWeight.w700,
-                  fontSize: 12,
+                  fontSize: 11,
                 ),
                 unselectedLabelStyle: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontSize: 12,
+                  fontSize: 11,
                 ),
+                labelPadding: EdgeInsets.zero,
                 tabs: [
+                  _LabeledTab(
+                    icon: Icons.auto_awesome_rounded,
+                    label: l10n.magicAddTab,
+                  ),
                   _LabeledTab(
                     icon: Icons.content_paste_go_rounded,
                     label: l10n.smartImportPasteTab,
@@ -104,8 +109,8 @@ class _LabeledTab extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 17),
-          const SizedBox(width: 4),
+          Icon(icon, size: 15),
+          const SizedBox(width: 3),
           Flexible(
             child: Text(
               label,

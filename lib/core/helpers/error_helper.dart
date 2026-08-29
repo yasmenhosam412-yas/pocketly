@@ -27,8 +27,16 @@ class UnknownError extends Failure {
   UnknownError({required super.error});
 }
 
+class UsernameTakenException implements Exception {
+  const UsernameTakenException();
+}
+
 class ErrorHelper {
   static Failure handle(Object e) {
+    if (e is UsernameTakenException) {
+      return ServerError(error: l10nUsernameTakenToken);
+    }
+
     if (e is AuthException) {
       if (messageIndicatesNoInternet(e.message)) {
         return NetworkError(error: l10nNoInternetToken);
@@ -52,6 +60,9 @@ class ErrorHelper {
       if (messageIndicatesNoInternet(e.message)) {
         return NetworkError(error: l10nNoInternetToken);
       }
+      if (_isUsernameTakenViolation(e)) {
+        return ServerError(error: l10nUsernameTakenToken);
+      }
       return ServerError(error: e.message);
     }
 
@@ -61,5 +72,13 @@ class ErrorHelper {
     }
 
     return UnknownError(error: asString);
+  }
+
+  static bool _isUsernameTakenViolation(PostgrestException e) {
+    final blob =
+        '${e.code} ${e.message} ${e.details ?? ''} ${e.hint ?? ''}'.toLowerCase();
+    return e.code == '23505' &&
+        (blob.contains('username') ||
+            blob.contains('profiles_username_lower_uidx'));
   }
 }

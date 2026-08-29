@@ -38,6 +38,7 @@ class BalanceSummaryBuilder {
           amount: income.amount,
           date: income.date,
           type: BalanceActivityType.income,
+          userId: income.userId,
         ),
       ),
       ...monthlyExpenses.map(
@@ -49,6 +50,7 @@ class BalanceSummaryBuilder {
           date: expense.date,
           type: BalanceActivityType.expense,
           incomeSource: expense.incomeSource,
+          userId: expense.userId,
         ),
       ),
     ]..sort((a, b) => b.date.compareTo(a.date));

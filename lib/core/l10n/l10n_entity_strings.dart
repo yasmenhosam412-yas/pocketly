@@ -139,6 +139,9 @@ String localizeApiError(AppLocalizations l10n, String? message) {
   if (message == l10nDeleteAccountRpcRequiredToken) {
     return l10n.errorDeleteAccountRpcRequired;
   }
+  if (message == l10nUsernameTakenToken) {
+    return l10n.errorUsernameTaken;
+  }
   if (messageIndicatesNoInternet(message)) {
     return l10n.noInternetConnection;
   }

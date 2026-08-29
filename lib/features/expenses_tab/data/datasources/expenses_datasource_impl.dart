@@ -77,7 +77,8 @@ class ExpensesDatasourceImpl extends ExpensesDatasource
   Future<List<ExpenseModel>> getExpenses() async {
     final userId = SupabaseAuthHelper.requireUserId();
     var selectQuery =
-        supabaseClient.from('expenses').select().eq('user_id', userId);
+        supabaseClient.from('expenses').select();
+    selectQuery = scopeOwnUserQuery(selectQuery, userId);
     selectQuery = scopeFinancialQuery(selectQuery);
     final response = await selectQuery;
 

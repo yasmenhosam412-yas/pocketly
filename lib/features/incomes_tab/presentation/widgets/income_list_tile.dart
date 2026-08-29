@@ -7,6 +7,7 @@ import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:imrpo/features/incomes_tab/domain/entities/income.dart';
+import 'package:imrpo/features/associations/presentation/widgets/family_author_meta.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/core/models/transaction_entry_meta.dart';
 import 'package:imrpo/core/utils/transaction_entry_format.dart';
@@ -124,6 +125,11 @@ class IncomeListTile extends StatelessWidget {
                           ),
                         ),
                       ],
+                    ),
+                    FamilyAuthorMeta(
+                      userId: income.userId,
+                      style: metaStyle,
+                      iconColor: iconMetaColor,
                     ),
                   ],
                 ),

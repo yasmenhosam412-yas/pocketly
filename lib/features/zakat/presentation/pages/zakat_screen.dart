@@ -155,6 +155,7 @@ class _ZakatScreenState extends State<ZakatScreen> {
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w700,
+            color: Colors.black,
           ),
         ),
       ),
@@ -219,7 +220,8 @@ class _ZakatScreenState extends State<ZakatScreen> {
             controller: _goldCtrl,
             valueHint: _metalValueHint(
               l10n,
-              (_parse(_goldCtrl.text) ?? 0) * (_parse(_goldPriceCtrl.text) ?? 0),
+              (_parse(_goldCtrl.text) ?? 0) *
+                  (_parse(_goldPriceCtrl.text) ?? 0),
             ),
           ),
           _WeightField(
@@ -326,10 +328,7 @@ class _InfoCard extends StatelessWidget {
           Icon(Icons.info_outline_rounded, color: AppColors.primary),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              text,
-              style: TextStyle(fontSize: 13, height: 1.45),
-            ),
+            child: Text(text, style: TextStyle(fontSize: 13, height: 1.45)),
           ),
         ],
       ),
@@ -439,10 +438,7 @@ class _WeightField extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               valueHint!,
-              style: TextStyle(
-                fontSize: 12,
-                color: AppColors.textSecondary,
-              ),
+              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
             ),
           ],
         ],

@@ -187,10 +187,19 @@ class AssociationContext extends ChangeNotifier {
 
   Future<void> _fetchMemberships() async {
     final userId = SupabaseAuthHelper.requireUserId();
-    final rows = await _client
-        .from('association_members')
-        .select('role, associations(id, name, is_personal)')
-        .eq('user_id', userId);
+    List<dynamic> rows;
+    try {
+      rows = await _client
+          .from('association_members')
+          .select('role, associations(id, name, is_personal, ledger_kind)')
+          .eq('user_id', userId);
+    } on PostgrestException catch (e) {
+      if (!_isMissingLedgerKindColumn(e)) rethrow;
+      rows = await _client
+          .from('association_members')
+          .select('role, associations(id, name, is_personal)')
+          .eq('user_id', userId);
+    }
 
     final parsed = <AssociationItem>[];
     for (final row in rows) {
@@ -199,22 +208,31 @@ class AssociationContext extends ChangeNotifier {
       final id = assoc['id']?.toString();
       final name = assoc['name']?.toString();
       if (id == null || name == null) continue;
+      final isPersonal = assoc['is_personal'] == true;
       parsed.add(
         AssociationItem(
           id: id,
           name: name,
-          isPersonal: assoc['is_personal'] == true,
+          isPersonal: isPersonal,
           role: row['role']?.toString() ?? 'member',
+          kind: _kindFromRow(assoc, isPersonal: isPersonal),
         ),
       );
     }
 
     parsed.sort((a, b) {
       if (a.isPersonal != b.isPersonal) return a.isPersonal ? -1 : 1;
+      if (a.isFamily != b.isFamily) return a.isFamily ? -1 : 1;
       return a.name.toLowerCase().compareTo(b.name.toLowerCase());
     });
 
     _items = parsed;
+  }
+
+  static String _kindFromRow(Map assoc, {required bool isPersonal}) {
+    final raw = assoc['ledger_kind']?.toString().trim();
+    if (raw == 'family' || raw == 'shared' || raw == 'personal') return raw!;
+    return isPersonal ? 'personal' : 'shared';
   }
 
   Future<void> _restoreActiveSelection() async {
@@ -261,6 +279,62 @@ class AssociationContext extends ChangeNotifier {
     await _fetchMemberships();
     await selectAssociation(id);
     return id;
+  }
+
+  Future<String> createFamilyAssociation(String name) async {
+    try {
+      final raw = await _client.rpc(
+        'create_family_association',
+        params: {'p_name': name.trim()},
+      );
+      final id = raw.toString();
+      await _fetchMemberships();
+      await selectAssociation(id);
+      return id;
+    } on PostgrestException catch (e) {
+      if (!_isMissingFamilyRpc(e)) rethrow;
+      return _createFamilyViaInsert(name.trim());
+    }
+  }
+
+  Future<String> _createFamilyViaInsert(String name) async {
+    final userId = SupabaseAuthHelper.requireUserId();
+    try {
+      final row = await _client
+          .from('associations')
+          .insert({
+            'name': name,
+            'is_personal': false,
+            'ledger_kind': 'family',
+          })
+          .select('id')
+          .single();
+      final id = row['id'].toString();
+      await _client.from('association_members').insert({
+        'association_id': id,
+        'user_id': userId,
+        'role': 'owner',
+      });
+      await _fetchMemberships();
+      await selectAssociation(id);
+      return id;
+    } on PostgrestException {
+      return createAssociation(name);
+    }
+  }
+
+  bool _isMissingFamilyRpc(PostgrestException e) {
+    final msg = e.message.toLowerCase();
+    return e.code == 'PGRST202' ||
+        msg.contains('create_family_association') ||
+        msg.contains('could not find the function');
+  }
+
+  bool _isMissingLedgerKindColumn(PostgrestException e) {
+    final msg = e.message.toLowerCase();
+    return e.code == '42703' ||
+        e.code == 'PGRST204' ||
+        msg.contains('ledger_kind');
   }
 
   /// Deletes a non-personal ledger and all of its financial data (DB cascade).

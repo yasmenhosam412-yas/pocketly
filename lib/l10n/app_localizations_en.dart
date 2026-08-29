@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'imrpo';
+  String get appTitle => 'Pocketly';
 
   @override
   String get exitPressTwiceMore => 'Press back 2 more times to exit';
@@ -42,10 +42,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeGuideExpenseBody => 'Open Expenses and tap Add Expense whenever you spend.';
 
   @override
-  String get homeGuideImportTitle => 'Import from SMS';
+  String get homeGuideImportTitle => 'Add faster with AI';
 
   @override
-  String get homeGuideImportBody => 'Use Import to pull transactions from messages instead of typing them.';
+  String get homeGuideImportBody => 'Tap AI add and type or speak a transaction. Or use Import for bank SMS and pasted messages.';
 
   @override
   String get homeGuideSettingsTitle => 'Settings';
@@ -479,13 +479,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get associationPickerTitle => 'Choose ledger';
 
   @override
-  String get associationPickerSubtitle => 'Each ledger has its own income, expenses, budgets, and plans.';
+  String get associationPickerSubtitle => 'Personal is yours. A family ledger lets everyone add. An association is recorded by the manager.';
 
   @override
   String get associationCreateTitle => 'New ledger';
 
   @override
-  String get associationCreateAction => 'Add ledger';
+  String get associationCreateAction => 'Add association';
+
+  @override
+  String get associationCreateFamilyTitle => 'New family ledger';
+
+  @override
+  String get associationCreateFamilyAction => 'Add family';
+
+  @override
+  String get associationCreateFamilyHint => 'e.g. Our house';
+
+  @override
+  String get associationCreateFamilySubtitle => 'Everyone you invite can add their own income and expenses. You\'ll invite them next.';
+
+  @override
+  String get associationFamilyBadge => 'Family';
+
+  @override
+  String get associationFamilyBanner => 'Family ledger: everyone can add their own income and expenses.';
+
+  @override
+  String familyTransactionBy(String name) {
+    return 'Added by $name';
+  }
+
+  @override
+  String get familyAuthorYou => 'you';
+
+  @override
+  String get familyAuthorUnknown => 'a family member';
 
   @override
   String get associationNameHint => 'e.g. Work, Home, Savings';
@@ -548,6 +577,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get associationInvitePendingTitle => 'Invitations for you';
+
+  @override
+  String associationInvitePendingBody(String username, String name) {
+    return '$username invited you to \"$name\"';
+  }
 
   @override
   String get associationInviteAccept => 'Join';
@@ -978,6 +1012,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorEnterUsername => 'Please enter a username';
+
+  @override
+  String get errorUsernameTaken => 'That username is already taken. Choose another.';
 
   @override
   String get logoutConfirmTitle => 'Log out?';
@@ -1983,6 +2020,77 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get smartImportQuickAdded => 'Transaction added.';
+
+  @override
+  String get magicAddTitle => 'AI add';
+
+  @override
+  String get magicAddShort => 'AI add';
+
+  @override
+  String get magicAddTab => 'AI';
+
+  @override
+  String get magicAddHint => 'Type or say what happened — like “coffee 50 yesterday” or “راتب 8000”. We’ll fill type, category, and date.';
+
+  @override
+  String get magicAddFieldLabel => 'What happened?';
+
+  @override
+  String get magicAddFieldHint => 'coffee 50, uber 30 yesterday';
+
+  @override
+  String get magicAddListen => 'Speak';
+
+  @override
+  String get magicAddListening => 'Listening…';
+
+  @override
+  String get magicAddVoiceUnavailable => 'Voice input isn’t available on this device.';
+
+  @override
+  String get magicAddVoicePermissionDenied => 'Microphone permission is needed to speak a transaction.';
+
+  @override
+  String get magicAddVoicePermanentlyDenied => 'Microphone is blocked. Allow it in system settings, then tap Speak again.';
+
+  @override
+  String get magicAddNoAmount => 'Add an amount, e.g. coffee 50';
+
+  @override
+  String get magicAddExampleCoffee => 'coffee 50';
+
+  @override
+  String get magicAddExampleUber => 'uber 30 yesterday';
+
+  @override
+  String get magicAddExampleSalary => 'salary 8000';
+
+  @override
+  String get magicAddExampleArabic => 'قهوة 45';
+
+  @override
+  String get magicAddPreviewTitle => 'Ready to add';
+
+  @override
+  String magicAddAddAll(int count) {
+    return 'Add $count';
+  }
+
+  @override
+  String get magicAddAddOne => 'Add transaction';
+
+  @override
+  String get magicAddOpenForm => 'Use full form';
+
+  @override
+  String get expenseFabAiOption => 'Type or speak';
+
+  @override
+  String get expenseFabAiOptionSubtitle => 'e.g. coffee 50 yesterday';
+
+  @override
+  String get incomeFabMenuTitle => 'New income';
 
   @override
   String get smartImportPasteHint => 'Paste one or more bank or wallet messages. Put a blank line between messages, or paste several SMS in a row. We detect amounts and income vs expense for each.';

@@ -68,6 +68,7 @@ class CustomFormField extends StatelessWidget {
           style: TextStyle(
             fontSize: 15,
             color: palette.textPrimary,
+            fontWeight: FontWeight.w700,
           ),
           cursorColor: AppColors.primary,
           decoration: InputDecoration(

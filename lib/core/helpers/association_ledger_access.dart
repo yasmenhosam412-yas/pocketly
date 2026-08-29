@@ -10,8 +10,10 @@ class AssociationLedgerAccess {
 
   static AssociationItem? get activeItem => _ctx.activeItem;
 
-  /// Personal ledger or association owner (treasurer) may add/edit/delete.
+  /// Personal, family (any member), or shared-ledger treasurer may add/edit.
   static bool get canEdit => _ctx.canEditActiveLedger;
+
+  static bool get isFamily => activeItem != null && activeItem!.isFamily;
 
   static bool get isAssociationLedger =>
       activeItem != null && !activeItem!.isPersonal;

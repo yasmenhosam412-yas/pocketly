@@ -1,3 +1,4 @@
+import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/models/pending_transaction.dart';
 import 'package:imrpo/features/expenses_tab/data/models/expense_model.dart';
 import 'package:imrpo/features/incomes_tab/data/models/income_model.dart';
@@ -14,6 +15,7 @@ List<ExpenseModel> pendingToExpenseModels(List<PendingTransaction> pending) {
           incomeSource: item.incomeSource,
           entryCurrency: item.entryCurrency,
           entryAmount: item.entryAmount,
+          userId: SupabaseAuthHelper.userId,
         ),
       )
       .toList();
@@ -30,6 +32,7 @@ List<IncomeModel> pendingToIncomeModels(List<PendingTransaction> pending) {
           date: item.date,
           entryCurrency: item.entryCurrency,
           entryAmount: item.entryAmount,
+          userId: SupabaseAuthHelper.userId,
         ),
       )
       .toList();

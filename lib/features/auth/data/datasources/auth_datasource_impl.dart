@@ -1,4 +1,6 @@
+import 'package:imrpo/core/helpers/error_helper.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
+import 'package:imrpo/core/helpers/username_uniqueness.dart';
 import 'package:imrpo/features/auth/data/datasources/auth_datasource.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -24,18 +26,27 @@ class AuthDatasourceImpl extends AuthDatasource {
 
   @override
   Future<void> signup(String username, String email, String password) async {
+    final trimmedName = username.trim();
+    await assertUsernameAvailable(supabaseClient, trimmedName);
     final response = await supabaseClient.auth.signUp(
       password: password,
       email: email,
-      data: {"username": username},
+      data: {"username": trimmedName},
     );
     final user = response.user;
     if (user != null) {
-      await supabaseClient.from("profiles").insert({
-        "id": user.id,
-        "username": username,
-        "email": email,
-      });
+      try {
+        await supabaseClient.from("profiles").insert({
+          "id": user.id,
+          "username": trimmedName,
+          "email": email,
+        });
+      } on PostgrestException catch (e) {
+        if (e.code == '23505') {
+          throw const UsernameTakenException();
+        }
+        rethrow;
+      }
     }
   }
 

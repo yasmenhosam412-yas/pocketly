@@ -11,6 +11,7 @@ class SearchResultItem extends Equatable {
   final String category;
   final double amount;
   final DateTime date;
+  final String? userId;
 
   const SearchResultItem({
     required this.type,
@@ -19,6 +20,7 @@ class SearchResultItem extends Equatable {
     required this.category,
     required this.amount,
     required this.date,
+    this.userId,
   });
 
   factory SearchResultItem.fromIncome(IncomeModel income) {
@@ -29,6 +31,7 @@ class SearchResultItem extends Equatable {
       category: income.category,
       amount: income.amount,
       date: income.date,
+      userId: income.userId,
     );
   }
 
@@ -40,9 +43,10 @@ class SearchResultItem extends Equatable {
       category: expense.category,
       amount: expense.amount,
       date: expense.date,
+      userId: expense.userId,
     );
   }
 
   @override
-  List<Object?> get props => [type, id, title, category, amount, date];
+  List<Object?> get props => [type, id, title, category, amount, date, userId];
 }

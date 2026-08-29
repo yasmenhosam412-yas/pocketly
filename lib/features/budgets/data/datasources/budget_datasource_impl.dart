@@ -21,9 +21,9 @@ class BudgetDatasourceImpl extends BudgetDatasource
     var selectQuery = supabaseClient
         .from('budgets')
         .select()
-        .eq('user_id', userId)
         .eq('year', year)
         .eq('month', month);
+    selectQuery = scopeOwnUserQuery(selectQuery, userId);
     selectQuery = scopeFinancialQuery(selectQuery);
     final response = await selectQuery;
 
@@ -48,19 +48,19 @@ class BudgetDatasourceImpl extends BudgetDatasource
             'category': normalizedCategory,
             'amount': amount,
           })
-          .eq('budget_id', budgetId)
-          .eq('user_id', userId);
+          .eq('budget_id', budgetId);
+      updateQuery = scopeOwnUserUnlessFamily(updateQuery, userId);
       updateQuery = scopeFinancialQuery(updateQuery);
       final updated = await updateQuery.select().single();
 
       var deleteDupQuery = supabaseClient
           .from('budgets')
           .delete()
-          .eq('user_id', userId)
           .eq('year', year)
           .eq('month', month)
           .eq('category', normalizedCategory)
           .neq('budget_id', budgetId);
+      deleteDupQuery = scopeOwnUserUnlessFamily(deleteDupQuery, userId);
       deleteDupQuery = scopeFinancialQuery(deleteDupQuery);
       await deleteDupQuery;
 
@@ -70,10 +70,10 @@ class BudgetDatasourceImpl extends BudgetDatasource
     var existingQuery = supabaseClient
         .from('budgets')
         .select()
-        .eq('user_id', userId)
         .eq('category', normalizedCategory)
         .eq('year', year)
         .eq('month', month);
+    existingQuery = scopeOwnUserQuery(existingQuery, userId);
     existingQuery = scopeFinancialQuery(existingQuery);
     final existing = await existingQuery.maybeSingle();
 
@@ -109,8 +109,8 @@ class BudgetDatasourceImpl extends BudgetDatasource
     var deleteQuery = supabaseClient
         .from('budgets')
         .delete()
-        .eq('budget_id', budgetId)
-        .eq('user_id', userId);
+        .eq('budget_id', budgetId);
+    deleteQuery = scopeOwnUserUnlessFamily(deleteQuery, userId);
     deleteQuery = scopeFinancialQuery(deleteQuery);
     final deleted = await deleteQuery.select('budget_id');
 
@@ -124,8 +124,8 @@ class BudgetDatasourceImpl extends BudgetDatasource
     var updateQuery = supabaseClient
         .from('budgets')
         .update({'category': toCategory})
-        .eq('user_id', userId)
         .eq('category', fromCategory);
+    updateQuery = scopeOwnUserUnlessFamily(updateQuery, userId);
     updateQuery = scopeFinancialQuery(updateQuery);
     await updateQuery;
   }

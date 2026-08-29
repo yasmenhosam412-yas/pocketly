@@ -17,6 +17,7 @@ import 'package:imrpo/features/incomes_tab/presentation/utils/show_income_sheet.
 import 'package:imrpo/features/incomes_tab/presentation/widgets/add_income_sheet.dart';
 import 'package:imrpo/features/search/domain/global_search_matcher.dart';
 import 'package:imrpo/features/search/domain/search_result_item.dart';
+import 'package:imrpo/features/associations/presentation/widgets/family_author_meta.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
@@ -349,6 +350,7 @@ class _SearchResultTile extends StatelessWidget {
                         color: AppColors.textColor.withValues(alpha: 0.55),
                       ),
                     ),
+                    FamilyAuthorMeta(userId: item.userId),
                   ],
                 ),
               ),

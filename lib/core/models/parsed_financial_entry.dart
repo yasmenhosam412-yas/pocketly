@@ -11,6 +11,12 @@ class ParsedFinancialEntry {
   final DateTime? date;
   final FinancialEntryType type;
   final String rawText;
+  /// Preset expense category (Food, Transport, …) when inferred from text.
+  final String? expenseCategory;
+  /// Wallet / card the expense was paid from.
+  final String? paidFrom;
+  /// Income source chip (Salary, Freelance, …).
+  final String? incomeSource;
 
   const ParsedFinancialEntry({
     this.title,
@@ -19,6 +25,9 @@ class ParsedFinancialEntry {
     this.date,
     required this.type,
     required this.rawText,
+    this.expenseCategory,
+    this.paidFrom,
+    this.incomeSource,
   });
 
   String get sourceCurrencyCode =>
@@ -39,6 +48,9 @@ class ParsedFinancialEntry {
     String? currencyCode,
     DateTime? date,
     FinancialEntryType? type,
+    String? expenseCategory,
+    String? paidFrom,
+    String? incomeSource,
   }) {
     return ParsedFinancialEntry(
       title: title ?? this.title,
@@ -47,6 +59,9 @@ class ParsedFinancialEntry {
       date: date ?? this.date,
       type: type ?? this.type,
       rawText: rawText,
+      expenseCategory: expenseCategory ?? this.expenseCategory,
+      paidFrom: paidFrom ?? this.paidFrom,
+      incomeSource: incomeSource ?? this.incomeSource,
     );
   }
 }

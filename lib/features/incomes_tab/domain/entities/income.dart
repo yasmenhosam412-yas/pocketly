@@ -8,6 +8,8 @@ class Income extends Equatable {
   final DateTime date;
   final String? entryCurrency;
   final double? entryAmount;
+  /// Who recorded this row (family ledgers).
+  final String? userId;
 
   const Income({
     required this.id,
@@ -17,6 +19,7 @@ class Income extends Equatable {
     required this.date,
     this.entryCurrency,
     this.entryAmount,
+    this.userId,
   });
 
   @override
@@ -28,5 +31,6 @@ class Income extends Equatable {
         date,
         entryCurrency,
         entryAmount,
+        userId,
       ];
 }

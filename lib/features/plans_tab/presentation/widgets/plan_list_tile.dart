@@ -4,6 +4,7 @@ import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:imrpo/features/plans_tab/domain/entities/plan.dart';
+import 'package:imrpo/features/associations/presentation/widgets/family_author_meta.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
@@ -90,6 +91,7 @@ class PlanListTile extends StatelessWidget {
                                       color: AppColors.textColor,
                                     ),
                                   ),
+                                  FamilyAuthorMeta(userId: plan.userId),
                                   const SizedBox(height: 8),
                                   _CategoryChip(
                                     label: localizePlanCategory(

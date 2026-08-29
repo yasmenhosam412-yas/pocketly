@@ -1,3 +1,4 @@
+import 'package:imrpo/core/helpers/row_user_id.dart';
 import 'package:imrpo/features/expenses_tab/domain/entities/expense.dart';
 
 class ExpenseModel extends Expense {
@@ -11,6 +12,7 @@ class ExpenseModel extends Expense {
     super.receiptUrl,
     super.entryCurrency,
     super.entryAmount,
+    super.userId,
   });
 
   factory ExpenseModel.fromMap(Map<String, dynamic> map) {
@@ -53,6 +55,7 @@ class ExpenseModel extends Expense {
       receiptUrl: receiptUrl,
       entryCurrency: entryCurrency,
       entryAmount: entryAmount,
+      userId: userIdFromRow(map),
     );
   }
 }

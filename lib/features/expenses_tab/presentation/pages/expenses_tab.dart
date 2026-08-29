@@ -13,17 +13,17 @@ import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/helpers/association_ledger_access.dart';
 import 'package:imrpo/core/services/association_context.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
-import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/widgets/app_toast.dart';
+import 'package:imrpo/core/models/parsed_financial_entry.dart';
+import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_ai_tab.dart';
 import 'package:imrpo/core/widgets/tab_centered_scroll.dart';
 import 'package:imrpo/core/widgets/transaction_tab_loading_skeleton.dart';
 import 'package:imrpo/core/widgets/tab_refresh_overlay.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/features/home/presentation/widgets/home_first_run_guide.dart';
-import 'package:imrpo/features/balance_tab/domain/services/wallet_balance_calculator.dart';
 import 'package:imrpo/features/expenses_tab/presentation/bloc/expenses_tab_bloc.dart';
 import 'package:imrpo/features/expenses_tab/presentation/widgets/add_expense_sheet.dart';
 import 'package:imrpo/features/budgets/domain/entities/budget_period.dart';
@@ -379,7 +379,7 @@ class _ExpensesTabState extends State<ExpensesTab>
               return tabCenteredScroll(
                 Stack(
                   children: [
-                    _EmptyState(onAdd: _openAddSheet),
+                    _EmptyState(onAdd: _openMagicAdd),
                     const Center(
                       child: CircularProgressIndicator(color: _expenseColor),
                     ),
@@ -712,7 +712,7 @@ class _ExpensesTabState extends State<ExpensesTab>
                               SliverFillRemaining(
                                 hasScrollBody: false,
                                 child: state.expenses.isEmpty
-                                    ? _EmptyState(onAdd: _openAddSheet)
+                                    ? _EmptyState(onAdd: _openMagicAdd)
                                     : _FilteredEmptyState(
                                         message: activeCategory != null
                                             ? l10n.expenseFilterNoCategoryEntries
@@ -817,7 +817,7 @@ class _ExpensesTabState extends State<ExpensesTab>
   Future<void> _onExpenseFabPressed() async {
     final draft = getIt<SmartImportDraftStore>().lastExpenseDraft;
     if (draft == null) {
-      _openAddSheet();
+      await _openMagicAdd();
       return;
     }
 
@@ -857,6 +857,22 @@ class _ExpensesTabState extends State<ExpensesTab>
               ListTile(
                 contentPadding: EdgeInsets.zero,
                 leading: const Icon(
+                  Icons.auto_awesome_rounded,
+                  color: _expenseColor,
+                ),
+                title: Text(l10n.expenseFabAiOption),
+                subtitle: Text(
+                  l10n.expenseFabAiOptionSubtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textColor.withValues(alpha: 0.55),
+                  ),
+                ),
+                onTap: () => Navigator.pop(ctx, 'ai'),
+              ),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: const Icon(
                   Icons.edit_note_outlined,
                   color: _expenseColor,
                 ),
@@ -886,11 +902,20 @@ class _ExpensesTabState extends State<ExpensesTab>
     );
 
     if (!mounted) return;
-    if (choice == 'scan') {
+    if (choice == 'ai') {
+      await _openMagicAdd();
+    } else if (choice == 'scan') {
       _openFromLastReceiptDraft();
     } else if (choice == 'blank') {
       _openAddSheet();
     }
+  }
+
+  Future<void> _openMagicAdd() {
+    return showMagicAddSheet(
+      context,
+      preferredType: FinancialEntryType.expense,
+    );
   }
 
   void _openFromLastReceiptDraft() {
@@ -932,26 +957,6 @@ class _ExpensesTabState extends State<ExpensesTab>
   }
 
   void _applyExpenseShortcut(ExpenseShortcut s) {
-    final l10n = AppLocalizations.of(context)!;
-    if (WalletBalanceCalculator.exceedsPocket(
-      amount: s.amountBase,
-      paidFrom: s.incomeSource,
-      incomes: context.read<IncomesTabBloc>().state.incomes,
-      expenses: context.read<ExpensesTabBloc>().state.expenses,
-      initialBySource: getIt<InitialBalanceStore>().totalsBySource,
-    )) {
-      final available = WalletBalanceCalculator.availableToSpend(
-        paidFrom: s.incomeSource,
-        incomes: context.read<IncomesTabBloc>().state.incomes,
-        expenses: context.read<ExpensesTabBloc>().state.expenses,
-        initialBySource: getIt<InitialBalanceStore>().totalsBySource,
-      );
-      AppToast.error(
-        context,
-        l10n.pocketInsufficientFunds(Money.format(available)),
-      );
-      return;
-    }
     setState(() => _pendingShortcutLogLabel = s.displayLabel);
     context.read<ExpensesTabBloc>().add(
       AddExpenseEvent(
