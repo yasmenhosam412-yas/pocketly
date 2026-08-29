@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -47,7 +48,6 @@ class AppLockService extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _enabled = prefs.getBool(_enabledKey) ?? false;
     _biometricEnabled = prefs.getBool(_biometricKey) ?? false;
-    await _refreshBiometricCapability();
 
     final hasPin = await _hasPin();
     if (_enabled && !hasPin) {
@@ -60,6 +60,11 @@ class AppLockService extends ChangeNotifier {
     _isLocked = _enabled && hasPin;
     _loaded = true;
     notifyListeners();
+    unawaited(
+      _refreshBiometricCapability().then((_) {
+        if (_loaded) notifyListeners();
+      }),
+    );
   }
 
   Future<void> _refreshBiometricCapability() async {

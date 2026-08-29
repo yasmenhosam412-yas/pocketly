@@ -24,6 +24,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   late final TextEditingController _emailController;
   late final TextEditingController _passController;
+  late final FocusNode _emailFocus;
+  late final FocusNode _passwordFocus;
   bool _obscurePassword = true;
 
   @override
@@ -31,12 +33,16 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _emailController = TextEditingController();
     _passController = TextEditingController();
+    _emailFocus = FocusNode();
+    _passwordFocus = FocusNode();
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passController.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
     super.dispose();
   }
 
@@ -80,23 +86,36 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         },
         builder: (context, state) {
-          return Column(
+          return AutofillGroup(
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               CustomFormField(
                 label: l10n.labelEmail,
                 hint: l10n.hintEmail,
                 controller: _emailController,
+                focusNode: _emailFocus,
                 icon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                autofillHints: const [AutofillHints.email],
+                autocorrect: false,
+                enableSuggestions: false,
+                onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
               ),
               const SizedBox(height: 18),
               CustomFormField(
                 label: l10n.labelPassword,
                 hint: l10n.hintPasswordDots,
                 controller: _passController,
+                focusNode: _passwordFocus,
                 obscure: _obscurePassword,
                 icon: Icons.lock_outline_rounded,
+                textInputAction: TextInputAction.go,
+                autofillHints: const [AutofillHints.password],
+                autocorrect: false,
+                enableSuggestions: false,
+                onFieldSubmitted: (_) => _onLogin(),
                 suffixIcon: CustomFormField.visibilityToggle(
                   context: context,
                   obscure: _obscurePassword,
@@ -131,6 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: _onLogin,
               ),
             ],
+            ),
           );
         },
       ),

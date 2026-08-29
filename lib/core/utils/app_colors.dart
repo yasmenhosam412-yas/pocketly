@@ -36,6 +36,9 @@ class AppColors {
   static const plans = Color(0xFFF7C14D);
   static const plansDark = Color(0xFFE5A83A);
 
+  static const loans = Color(0xFF5BA8A0);
+  static const loansDark = Color(0xFF3D8A82);
+
   static const success = income;
   static const warning = plans;
   static const error = expense;

@@ -21,6 +21,10 @@ class _SignupScreenState extends State<SignupScreen> {
   late final TextEditingController _emailController;
   late final TextEditingController _passController;
   late final TextEditingController _confirmPassController;
+  late final FocusNode _nameFocus;
+  late final FocusNode _emailFocus;
+  late final FocusNode _passwordFocus;
+  late final FocusNode _confirmPasswordFocus;
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -32,6 +36,10 @@ class _SignupScreenState extends State<SignupScreen> {
     _emailController = TextEditingController();
     _passController = TextEditingController();
     _confirmPassController = TextEditingController();
+    _nameFocus = FocusNode();
+    _emailFocus = FocusNode();
+    _passwordFocus = FocusNode();
+    _confirmPasswordFocus = FocusNode();
   }
 
   @override
@@ -40,6 +48,10 @@ class _SignupScreenState extends State<SignupScreen> {
     _emailController.dispose();
     _passController.dispose();
     _confirmPassController.dispose();
+    _nameFocus.dispose();
+    _emailFocus.dispose();
+    _passwordFocus.dispose();
+    _confirmPasswordFocus.dispose();
     super.dispose();
   }
 
@@ -82,30 +94,48 @@ class _SignupScreenState extends State<SignupScreen> {
           }
         },
         builder: (context, state) {
-          return Column(
+          return AutofillGroup(
+            child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               CustomFormField(
                 label: l10n.labelFullName,
                 hint: l10n.hintEnterYourName,
                 controller: _nameController,
+                focusNode: _nameFocus,
                 icon: Icons.person_outline_rounded,
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.next,
+                autofillHints: const [AutofillHints.name],
+                onFieldSubmitted: (_) => _emailFocus.requestFocus(),
               ),
               const SizedBox(height: 18),
               CustomFormField(
                 label: l10n.labelEmail,
                 hint: l10n.hintEmail,
                 controller: _emailController,
+                focusNode: _emailFocus,
                 icon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.next,
+                autofillHints: const [AutofillHints.email],
+                autocorrect: false,
+                enableSuggestions: false,
+                onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
               ),
               const SizedBox(height: 18),
               CustomFormField(
                 label: l10n.labelPassword,
                 hint: l10n.hintPasswordDots,
                 controller: _passController,
+                focusNode: _passwordFocus,
                 obscure: _obscurePassword,
                 icon: Icons.lock_outline_rounded,
+                textInputAction: TextInputAction.next,
+                autofillHints: const [AutofillHints.newPassword],
+                autocorrect: false,
+                enableSuggestions: false,
+                onFieldSubmitted: (_) => _confirmPasswordFocus.requestFocus(),
                 suffixIcon: CustomFormField.visibilityToggle(
                   context: context,
                   obscure: _obscurePassword,
@@ -118,8 +148,14 @@ class _SignupScreenState extends State<SignupScreen> {
                 label: l10n.labelConfirmPassword,
                 hint: l10n.hintPasswordDots,
                 controller: _confirmPassController,
+                focusNode: _confirmPasswordFocus,
                 obscure: _obscureConfirmPassword,
                 icon: Icons.lock_outline_rounded,
+                textInputAction: TextInputAction.done,
+                autofillHints: const [AutofillHints.newPassword],
+                autocorrect: false,
+                enableSuggestions: false,
+                onFieldSubmitted: (_) => _onSignup(),
                 suffixIcon: CustomFormField.visibilityToggle(
                   context: context,
                   obscure: _obscureConfirmPassword,
@@ -135,6 +171,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 onPressed: _onSignup,
               ),
             ],
+            ),
           );
         },
       ),

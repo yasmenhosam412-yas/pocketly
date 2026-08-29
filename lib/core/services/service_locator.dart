@@ -92,6 +92,16 @@ import 'package:imrpo/features/home/domain/usecases/get_user_profile_usecase.dar
 import 'package:imrpo/features/home/domain/usecases/update_username_usecase.dart';
 import 'package:imrpo/features/home/presentation/bloc/home_bloc.dart';
 import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
+import 'package:imrpo/features/loans_tab/data/datasources/loans_datasource.dart';
+import 'package:imrpo/features/loans_tab/data/datasources/loans_datasource_impl.dart';
+import 'package:imrpo/features/loans_tab/data/repositories/loan_repository_impl.dart';
+import 'package:imrpo/features/loans_tab/domain/repositories/loan_repository.dart';
+import 'package:imrpo/features/loans_tab/domain/usecases/add_loan_usecase.dart';
+import 'package:imrpo/features/loans_tab/domain/usecases/delete_loan_usecase.dart';
+import 'package:imrpo/features/loans_tab/domain/usecases/get_all_loans_usecase.dart';
+import 'package:imrpo/features/loans_tab/domain/usecases/update_loan_repaid_usecase.dart';
+import 'package:imrpo/features/loans_tab/domain/usecases/update_loan_usecase.dart';
+import 'package:imrpo/features/loans_tab/presentation/bloc/loans_tab_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final getIt = GetIt.instance;
@@ -430,6 +440,46 @@ void setupServiceLocator() {
       updatePlanSavedUsecase: getIt<UpdatePlanSavedUsecase>(),
       deletePlanUsecase: getIt<DeletePlanUsecase>(),
       addExpenseUsecase: getIt<AddExpenseUsecase>(),
+    ),
+  );
+
+  //--------------------------LOANS--------------------------
+
+  getIt.registerLazySingleton<LoansDatasource>(
+    () => LoansDatasourceImpl(supabaseClient: getIt<SupabaseClient>()),
+  );
+
+  getIt.registerLazySingleton<LoanRepository>(
+    () => LoanRepositoryImpl(loansDatasource: getIt<LoansDatasource>()),
+  );
+
+  getIt.registerLazySingleton(
+    () => AddLoanUsecase(loanRepository: getIt<LoanRepository>()),
+  );
+
+  getIt.registerLazySingleton(
+    () => UpdateLoanUsecase(loanRepository: getIt<LoanRepository>()),
+  );
+
+  getIt.registerLazySingleton(
+    () => UpdateLoanRepaidUsecase(loanRepository: getIt<LoanRepository>()),
+  );
+
+  getIt.registerLazySingleton(
+    () => DeleteLoanUsecase(loanRepository: getIt<LoanRepository>()),
+  );
+
+  getIt.registerLazySingleton(
+    () => GetAllLoansUsecase(loanRepository: getIt<LoanRepository>()),
+  );
+
+  getIt.registerFactory<LoansTabBloc>(
+    () => LoansTabBloc(
+      getAllLoansUsecase: getIt<GetAllLoansUsecase>(),
+      addLoanUsecase: getIt<AddLoanUsecase>(),
+      updateLoanUsecase: getIt<UpdateLoanUsecase>(),
+      updateLoanRepaidUsecase: getIt<UpdateLoanRepaidUsecase>(),
+      deleteLoanUsecase: getIt<DeleteLoanUsecase>(),
     ),
   );
 

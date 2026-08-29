@@ -144,8 +144,6 @@ class _SetBudgetSheetState extends State<SetBudgetSheet> {
               constraints: BoxConstraints(maxHeight: maxHeight),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisSize: MainAxisSize.min,

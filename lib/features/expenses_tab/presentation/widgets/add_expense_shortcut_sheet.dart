@@ -158,7 +158,6 @@ class _AddExpenseShortcutSheetState extends State<AddExpenseShortcutSheet> {
           Flexible(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(24),
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

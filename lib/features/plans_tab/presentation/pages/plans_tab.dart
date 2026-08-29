@@ -348,14 +348,9 @@ class _DashboardCard extends StatelessWidget {
     final progressPercent = (overallProgress * 100).round();
     final l10n = AppLocalizations.of(context)!;
 
-    return Container(
-      width: double.infinity,
+    return ThemedSummaryCard(
+      accent: AppColors.plans,
       padding: const EdgeInsets.all(22),
-      decoration: AppDecorations.summaryCard([
-        AppColors.plans,
-        AppColors.plansDark,
-        AppColors.secondary,
-      ]),
       child: Column(
         children: [
           Row(

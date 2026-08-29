@@ -12,6 +12,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'imrpo';
 
   @override
+  String get exitPressTwiceMore => 'Press back 2 more times to exit';
+
+  @override
+  String get exitPressOnceMore => 'Press back once more to exit';
+
+  @override
+  String get homeGuideNext => 'Next';
+
+  @override
+  String get homeGuideDone => 'Got it';
+
+  @override
+  String get homeGuideTabsTitle => 'Your money tabs';
+
+  @override
+  String get homeGuideTabsBody => 'Switch between Incomes, Expenses, Balance, Loans, and Plans.';
+
+  @override
+  String get homeGuideIncomeTitle => 'Add your first income';
+
+  @override
+  String get homeGuideIncomeBody => 'Tap Add Income to record a salary, freelance payment, or any money coming in.';
+
+  @override
+  String get homeGuideExpenseTitle => 'Track spending';
+
+  @override
+  String get homeGuideExpenseBody => 'Open Expenses and tap Add Expense whenever you spend.';
+
+  @override
+  String get homeGuideImportTitle => 'Import from SMS';
+
+  @override
+  String get homeGuideImportBody => 'Use Import to pull transactions from messages instead of typing them.';
+
+  @override
+  String get homeGuideSettingsTitle => 'Settings';
+
+  @override
+  String get homeGuideSettingsBody => 'Change currency, language, theme, and app lock from here. 3-month charts are in Settings and the Stats chip on Home.';
+
+  @override
   String get onboardingSkip => 'Skip';
 
   @override
@@ -54,6 +96,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tabStatistics => 'Stats';
 
   @override
+  String get tabLoans => 'Loans';
+
+  @override
   String get statisticsLast3Months => 'Last 3 months';
 
   @override
@@ -84,6 +129,145 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statisticsEmpty => 'Add incomes and expenses to see your 3-month charts.';
+
+  @override
+  String get loanNewFab => 'New loan';
+
+  @override
+  String get loanAddTitle => 'Add loan';
+
+  @override
+  String get loanEditTitle => 'Edit loan';
+
+  @override
+  String get loanPersonLabel => 'Person';
+
+  @override
+  String get loanPersonHint => 'Who is this loan with?';
+
+  @override
+  String get loanDirectionLabel => 'Type';
+
+  @override
+  String get loanDirectionGiven => 'I lent';
+
+  @override
+  String get loanDirectionReceived => 'I borrowed';
+
+  @override
+  String get loanPrincipalLabel => 'Amount';
+
+  @override
+  String get loanRepaidLabel => 'Already repaid';
+
+  @override
+  String get loanDueDateOptional => 'Due date (optional)';
+
+  @override
+  String get loanNotesOptional => 'Notes (optional)';
+
+  @override
+  String get loanNotesHint => 'Reason, terms, or anything to remember';
+
+  @override
+  String get loanSave => 'Save loan';
+
+  @override
+  String get loanUpdate => 'Update loan';
+
+  @override
+  String get loanRecordPayment => 'Record payment';
+
+  @override
+  String get loanPaymentAmount => 'Payment amount';
+
+  @override
+  String get loanPaymentSubmit => 'Save payment';
+
+  @override
+  String get loanOverview => 'Loan position';
+
+  @override
+  String get loanOwedToYou => 'Owed to you';
+
+  @override
+  String get loanYouOwe => 'You owe';
+
+  @override
+  String get loanNetPositive => 'Net: people owe you more';
+
+  @override
+  String get loanNetNegative => 'Net: you owe more';
+
+  @override
+  String get loanOpenCount => 'Open';
+
+  @override
+  String get loanOverdueCount => 'Overdue';
+
+  @override
+  String get loanSettledCount => 'Settled';
+
+  @override
+  String loanRemainingOf(String remaining, String principal) {
+    return '$remaining left of $principal';
+  }
+
+  @override
+  String loanOfPrincipal(String amount) {
+    return 'of $amount';
+  }
+
+  @override
+  String get loanTapToEdit => 'Tap to edit loan';
+
+  @override
+  String get loanSettledBadge => 'Settled';
+
+  @override
+  String get loanOverdueBadge => 'Overdue';
+
+  @override
+  String get loanEmptyTitle => 'Track money you lent or borrowed';
+
+  @override
+  String get loanEmptySubtitle => 'Add a loan, record payments, and see what is still outstanding.';
+
+  @override
+  String get loanFilterAll => 'All';
+
+  @override
+  String get loanFilterGiven => 'Lent';
+
+  @override
+  String get loanFilterReceived => 'Borrowed';
+
+  @override
+  String get loanFilterOverdue => 'Overdue';
+
+  @override
+  String get loanFilterSettled => 'Settled';
+
+  @override
+  String get loanFilterEmpty => 'Nothing in this filter yet.';
+
+  @override
+  String get loansSectionTitle => 'Loans';
+
+  @override
+  String get errorEnterPersonName => 'Enter the person\'s name';
+
+  @override
+  String get errorEnterLoanAmount => 'Enter a valid loan amount';
+
+  @override
+  String get errorRepaidExceedsPrincipal => 'Repaid cannot be more than the loan amount';
+
+  @override
+  String get errorEnterPaymentAmount => 'Enter a valid payment amount';
+
+  @override
+  String get errorPaymentExceedsRemaining => 'Payment cannot be more than the remaining amount';
 
   @override
   String get associationPersonal => 'Personal';
@@ -1406,6 +1590,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorEnterValidAmount => 'Please enter a valid amount';
+
+  @override
+  String pocketInsufficientFunds(String amount) {
+    return 'Not enough in your pocket. Available: $amount';
+  }
 
   @override
   String get errorEnterCategoryName => 'Please enter a category name';

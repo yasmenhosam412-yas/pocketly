@@ -1,7 +1,7 @@
 name: imrpo
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.3.0+3
+version: 0.4.0+4
 
 environment:
   sdk: ^3.11.5
@@ -33,7 +33,7 @@ dependencies:
   flutter_local_notifications: ^19.2.1
   timezone: ^0.10.1
   flutter_timezone: ^4.1.0
-  upgrader: ^13.7.0
+  app_upgrader_flutter: ^1.0.3
 
 dev_dependencies:
   flutter_test:

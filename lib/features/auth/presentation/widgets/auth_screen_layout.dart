@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/core/widgets/triple_back_to_exit.dart';
 import 'package:imrpo/features/auth/presentation/theme/auth_header_theme.dart';
 
-/// Shared auth shell: gradient header + elevated form card (matches home header).
 class AuthScreenLayout extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -27,72 +27,80 @@ class AuthScreenLayout extends StatelessWidget {
     final palette = context.appPalette;
     final topPadding = MediaQuery.paddingOf(context).top;
 
-    return Scaffold(
-      backgroundColor: palette.scaffold,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            _AuthGradientHeader(
-              icon: icon,
-              title: title,
-              subtitle: subtitle,
-              topPadding: topPadding,
-              onBack: onBack,
-            ),
-            Expanded(
-              child: Transform.translate(
-                offset: const Offset(0, -28),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: palette.card,
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: palette.border.withValues(
-                                alpha: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? 0.65
-                                    : 0.35,
+    return TripleBackToExit(
+      onAlternateBack: onBack,
+      child: Scaffold(
+        backgroundColor: palette.scaffold,
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              _AuthGradientHeader(
+                icon: icon,
+                title: title,
+                subtitle: subtitle,
+                topPadding: topPadding,
+                onBack: onBack,
+              ),
+              Expanded(
+                child: Transform.translate(
+                  offset: const Offset(0, -28),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: palette.card,
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: palette.border.withValues(
+                                  alpha:
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? 0.65
+                                      : 0.35,
+                                ),
+                                width: AppDecorations.outlineWidth,
                               ),
-                              width: AppDecorations.outlineWidth,
+                              boxShadow: AppDecorations.flatShadow(
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.black
+                                    : AppColors.stroke,
+                              ),
                             ),
-                            boxShadow: AppDecorations.flatShadow(
-                              color: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Colors.black
-                                  : AppColors.stroke,
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.fromLTRB(
+                                22,
+                                28,
+                                22,
+                                24,
+                              ),
+                              child: child,
                             ),
                           ),
-                          child: SingleChildScrollView(
-                            padding: const EdgeInsets.fromLTRB(22, 28, 22, 24),
-                            keyboardDismissBehavior:
-                                ScrollViewKeyboardDismissBehavior.onDrag,
-                            child: child,
+                        ),
+                        if (footer != null) ...[
+                          const SizedBox(height: 12),
+                          footer!,
+                          SizedBox(
+                            height: MediaQuery.paddingOf(context).bottom + 8,
                           ),
-                        ),
-                      ),
-                      if (footer != null) ...[
-                        const SizedBox(height: 12),
-                        footer!,
-                        SizedBox(
-                          height: MediaQuery.paddingOf(context).bottom + 8,
-                        ),
-                      ] else
-                        SizedBox(
-                          height: MediaQuery.paddingOf(context).bottom + 8,
-                        ),
-                    ],
+                        ] else
+                          SizedBox(
+                            height: MediaQuery.paddingOf(context).bottom + 8,
+                          ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -171,10 +179,7 @@ class _AuthGradientHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: header.iconGlassFill,
                     borderRadius: BorderRadius.circular(18),
-                    border: Border.all(
-                      color: header.glassBorder,
-                      width: 1.5,
-                    ),
+                    border: Border.all(color: header.glassBorder, width: 1.5),
                     boxShadow: [
                       BoxShadow(
                         color: header.shadow,
@@ -189,11 +194,8 @@ class _AuthGradientHeader extends StatelessWidget {
                     child: Image.asset(
                       'assets/wallet.png',
                       fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => Icon(
-                        icon,
-                        color: header.foreground,
-                        size: 28,
-                      ),
+                      errorBuilder: (context, error, stackTrace) =>
+                          Icon(icon, color: header.foreground, size: 28),
                     ),
                   ),
                 ),

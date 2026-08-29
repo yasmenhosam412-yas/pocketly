@@ -4,6 +4,7 @@ import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
 import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/service_locator.dart';
+import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/core/widgets/plans_balance_tab_loading_skeleton.dart';
@@ -157,8 +158,10 @@ class _BalanceTabState extends State<BalanceTab>
     await Future.delayed(const Duration(milliseconds: 350));
   }
 
-  double _netBalance(BalanceSummary summary, double initialBalance) =>
-      initialBalance + summary.monthlyIncome - summary.monthlyExpenses;
+  double _netBalance(BalanceSummary summary, double initialBalance) {
+    final net = initialBalance + summary.monthlyIncome - summary.monthlyExpenses;
+    return net < 0 ? 0 : net;
+  }
 
   double _savingsRate(BalanceSummary summary) {
     if (summary.monthlyIncome <= 0) return 0;
@@ -586,31 +589,8 @@ class _NetBalanceCard extends StatelessWidget {
     final isPositive = balance >= 0;
     final l10n = AppLocalizations.of(context)!;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: isPositive
-              ? [AppColors.balanceDark, AppColors.balance, AppColors.secondary]
-              : [AppColors.expenseDark, AppColors.expense],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.stroke.withValues(alpha: 0.12),
-          width: 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: (isPositive ? AppColors.balance : AppColors.expenseDark)
-                .withValues(alpha: 0.25),
-            blurRadius: 0,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return ThemedSummaryCard(
+      accent: isPositive ? AppColors.balance : AppColors.expense,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -167,6 +167,47 @@ create policy "Members delete plans"
     and public.can_write_financial_row(association_id)
   );
 
+-- LOANS (run supabase/loans.sql first)
+do $$
+begin
+  if to_regclass('public.loans') is null then
+    return;
+  end if;
+  execute 'drop policy if exists "Members read loans" on public.loans';
+  execute 'drop policy if exists "Members insert loans" on public.loans';
+  execute 'drop policy if exists "Members update loans" on public.loans';
+  execute 'drop policy if exists "Members delete loans" on public.loans';
+  execute $p$
+    create policy "Members read loans"
+      on public.loans for select
+      using (public.can_read_financial_row(association_id, user_id))
+  $p$;
+  execute $p$
+    create policy "Members insert loans"
+      on public.loans for insert
+      with check (
+        user_id = auth.uid()
+        and public.can_write_financial_row(association_id)
+      )
+  $p$;
+  execute $p$
+    create policy "Members update loans"
+      on public.loans for update
+      using (
+        user_id = auth.uid()
+        and public.can_write_financial_row(association_id)
+      )
+  $p$;
+  execute $p$
+    create policy "Members delete loans"
+      on public.loans for delete
+      using (
+        user_id = auth.uid()
+        and public.can_write_financial_row(association_id)
+      )
+  $p$;
+end $$;
+
 -- BUDGETS
 drop policy if exists "Members read budgets" on public.budgets;
 drop policy if exists "Members insert budgets" on public.budgets;

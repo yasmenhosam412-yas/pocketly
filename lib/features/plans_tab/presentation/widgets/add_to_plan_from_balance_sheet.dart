@@ -122,7 +122,6 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
           ),
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,

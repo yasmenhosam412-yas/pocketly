@@ -21,6 +21,7 @@ import 'package:imrpo/core/services/offline_transaction_sync_service.dart';
 import 'package:imrpo/features/bill_reminders/data/bill_reminder_store.dart';
 import 'package:imrpo/features/bill_reminders/presentation/bloc/bill_reminders_bloc.dart';
 import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
+import 'package:imrpo/features/loans_tab/presentation/bloc/loans_tab_bloc.dart';
 
 /// Clears cached user-specific state when signing out or switching accounts.
 class UserSession {
@@ -50,6 +51,7 @@ class UserSession {
     context.read<BudgetsBloc>().add(const ResetBudgetsEvent());
     context.read<BalanceTabBloc>().add(const ResetBalanceTabEvent());
     context.read<PlansTabBloc>().add(const ResetPlansTabEvent());
+    context.read<LoansTabBloc>().add(const ResetLoansTabEvent());
     context.read<AuthBloc>().add(const ResetAuthEvent());
   }
 
@@ -68,6 +70,7 @@ class UserSession {
           ),
         );
     context.read<PlansTabBloc>().add(const LoadPlansEvent(force: true));
+    context.read<LoansTabBloc>().add(const LoadLoansEvent(force: true));
   }
 
   static void loadAll(BuildContext context) {
@@ -91,6 +94,7 @@ class UserSession {
           ),
         );
     context.read<PlansTabBloc>().add(const LoadPlansEvent());
+    context.read<LoansTabBloc>().add(const LoadLoansEvent());
   }
 
   static void _loadOfflineLedgers(BuildContext context) {
@@ -129,5 +133,6 @@ class UserSession {
           ),
         );
     context.read<PlansTabBloc>().add(const LoadPlansEvent(force: true));
+    context.read<LoansTabBloc>().add(const LoadLoansEvent(force: true));
   }
 }

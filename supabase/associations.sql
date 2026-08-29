@@ -37,6 +37,14 @@ alter table public.plans
 alter table public.budgets
   add column if not exists association_id uuid references public.associations (id) on delete cascade;
 
+do $$
+begin
+  if to_regclass('public.loans') is not null then
+    execute 'alter table public.loans add column if not exists association_id uuid references public.associations (id) on delete cascade';
+    execute 'create index if not exists loans_association_idx on public.loans (association_id)';
+  end if;
+end $$;
+
 create index if not exists incomes_association_idx on public.incomes (association_id);
 create index if not exists expenses_association_idx on public.expenses (association_id);
 create index if not exists plans_association_idx on public.plans (association_id);
@@ -254,6 +262,57 @@ create policy "Members delete plans"
     and public.is_association_member(association_id)
   );
 
+do $$
+begin
+  if to_regclass('public.loans') is null then
+    return;
+  end if;
+  execute 'drop policy if exists "Users can read own loans" on public.loans';
+  execute 'drop policy if exists "Users can insert own loans" on public.loans';
+  execute 'drop policy if exists "Users can update own loans" on public.loans';
+  execute 'drop policy if exists "Users can delete own loans" on public.loans';
+  execute 'drop policy if exists "Members read loans" on public.loans';
+  execute 'drop policy if exists "Members insert loans" on public.loans';
+  execute 'drop policy if exists "Members update loans" on public.loans';
+  execute 'drop policy if exists "Members delete loans" on public.loans';
+  execute $p$
+    create policy "Members read loans"
+      on public.loans for select
+      using (
+        user_id = auth.uid()
+        and association_id is not null
+        and public.is_association_member(association_id)
+      )
+  $p$;
+  execute $p$
+    create policy "Members insert loans"
+      on public.loans for insert
+      with check (
+        user_id = auth.uid()
+        and association_id is not null
+        and public.is_association_member(association_id)
+      )
+  $p$;
+  execute $p$
+    create policy "Members update loans"
+      on public.loans for update
+      using (
+        user_id = auth.uid()
+        and association_id is not null
+        and public.is_association_member(association_id)
+      )
+  $p$;
+  execute $p$
+    create policy "Members delete loans"
+      on public.loans for delete
+      using (
+        user_id = auth.uid()
+        and association_id is not null
+        and public.is_association_member(association_id)
+      )
+  $p$;
+end $$;
+
 drop policy if exists "Users can read own budgets" on public.budgets;
 drop policy if exists "Users can insert own budgets" on public.budgets;
 drop policy if exists "Users can update own budgets" on public.budgets;
@@ -337,6 +396,10 @@ begin
   where user_id = uid and association_id is null;
   update public.budgets set association_id = aid
   where user_id = uid and association_id is null;
+  if to_regclass('public.loans') is not null then
+    update public.loans set association_id = aid
+    where user_id = uid and association_id is null;
+  end if;
 
   return aid;
 end;
@@ -451,6 +514,9 @@ begin
   delete from public.expenses where user_id = uid;
   delete from public.budgets where user_id = uid;
   delete from public.plans where user_id = uid;
+  if to_regclass('public.loans') is not null then
+    delete from public.loans where user_id = uid;
+  end if;
 
   delete from public.associations a
   using public.association_members m

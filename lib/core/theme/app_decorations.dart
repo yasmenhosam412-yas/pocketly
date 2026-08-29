@@ -60,24 +60,32 @@ class AppDecorations {
         ),
       );
 
-  static ResolvedAppGradient? get _activeGradient {
+  static ResolvedAppGradient? _activeGradient({Color? accent}) {
     try {
       if (!getIt.isRegistered<ThemePreferences>()) return null;
-      return getIt<ThemePreferences>().headerGradient();
+      return getIt<ThemePreferences>().headerGradient(accent: accent);
     } catch (_) {
       return null;
     }
   }
 
+  /// Dashboard cards on tabs use the selected palette and gradient style,
+  /// optionally tinted with [accent] (same as the home header).
   static BoxDecoration summaryCard(
     List<Color> colors, {
     Alignment? begin,
     Alignment? end,
+    Color? accent,
   }) {
-    final g = _activeGradient;
+    final tabAccent = accent ?? (colors.isNotEmpty ? colors.first : null);
+    final g = _activeGradient(accent: tabAccent);
+    final resolved = g?.colors;
+    final useColors = (resolved != null && resolved.isNotEmpty)
+        ? resolved
+        : colors;
     return BoxDecoration(
       gradient: LinearGradient(
-        colors: colors,
+        colors: useColors,
         begin: begin ?? g?.begin ?? Alignment.topLeft,
         end: end ?? g?.end ?? Alignment.bottomRight,
       ),
@@ -87,7 +95,7 @@ class AppDecorations {
         width: outlineWidth,
       ),
       boxShadow: flatShadow(
-        color: colors.first,
+        color: useColors.isNotEmpty ? useColors.first : AppColors.primary,
         offset: const Offset(0, 4),
       ),
     );
@@ -106,4 +114,38 @@ class AppDecorations {
           width: outlineWidth,
         ),
       );
+}
+
+/// Listens to appearance changes so keep-alive tabs update their dashboard cards.
+class ThemedSummaryCard extends StatelessWidget {
+  const ThemedSummaryCard({
+    super.key,
+    required this.child,
+    this.colors = const [],
+    this.accent,
+    this.padding = const EdgeInsets.all(24),
+  });
+
+  final Widget child;
+  final List<Color> colors;
+  final Color? accent;
+  final EdgeInsetsGeometry padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: getIt<ThemePreferences>(),
+      builder: (context, _) {
+        return Container(
+          width: double.infinity,
+          padding: padding,
+          decoration: AppDecorations.summaryCard(
+            colors,
+            accent: accent,
+          ),
+          child: child,
+        );
+      },
+    );
+  }
 }

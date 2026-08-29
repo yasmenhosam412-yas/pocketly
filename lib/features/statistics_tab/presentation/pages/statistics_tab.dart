@@ -24,10 +24,7 @@ class StatisticsTab extends StatefulWidget {
   State<StatisticsTab> createState() => _StatisticsTabState();
 }
 
-class _StatisticsTabState extends State<StatisticsTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class _StatisticsTabState extends State<StatisticsTab> {
 
   @override
   void initState() {
@@ -44,7 +41,6 @@ class _StatisticsTabState extends State<StatisticsTab>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final l10n = AppLocalizations.of(context)!;
 
     return BlocBuilder<IncomesTabBloc, IncomesTabState>(

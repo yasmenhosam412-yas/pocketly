@@ -13,6 +13,7 @@ import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/helpers/association_ledger_access.dart';
 import 'package:imrpo/core/services/association_context.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
+import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
@@ -21,6 +22,8 @@ import 'package:imrpo/core/widgets/tab_centered_scroll.dart';
 import 'package:imrpo/core/widgets/transaction_tab_loading_skeleton.dart';
 import 'package:imrpo/core/widgets/tab_refresh_overlay.dart';
 import 'package:imrpo/core/utils/money_format.dart';
+import 'package:imrpo/features/home/presentation/widgets/home_first_run_guide.dart';
+import 'package:imrpo/features/balance_tab/domain/services/wallet_balance_calculator.dart';
 import 'package:imrpo/features/expenses_tab/presentation/bloc/expenses_tab_bloc.dart';
 import 'package:imrpo/features/expenses_tab/presentation/widgets/add_expense_sheet.dart';
 import 'package:imrpo/features/budgets/domain/entities/budget_period.dart';
@@ -167,6 +170,7 @@ class _ExpensesTabState extends State<ExpensesTab>
             return const SizedBox.shrink();
           }
           return FloatingActionButton.extended(
+            key: HomeGuideTargets.addExpense,
             heroTag: 'fab-expenses',
             onPressed: _onExpenseFabPressed,
             backgroundColor: _expenseColor,
@@ -228,7 +232,8 @@ class _ExpensesTabState extends State<ExpensesTab>
           ),
           BlocListener<ExpensesTabBloc, ExpensesTabState>(
             listenWhen: (previous, current) =>
-                _isRestoringUndo && current.status == ExpensesTabStatus.errorAdd,
+                _isRestoringUndo &&
+                current.status == ExpensesTabStatus.errorAdd,
             listener: (context, state) {
               setState(() => _isRestoringUndo = false);
               ScaffoldMessenger.of(context).showSnackBar(
@@ -734,7 +739,8 @@ class _ExpensesTabState extends State<ExpensesTab>
                                   ) {
                                     final expense = filtered[index];
 
-                                    final canEdit = AssociationLedgerAccess.canEdit;
+                                    final canEdit =
+                                        AssociationLedgerAccess.canEdit;
                                     return ExpenseListTile(
                                       expense: expense,
                                       onTap: canEdit
@@ -915,7 +921,7 @@ class _ExpensesTabState extends State<ExpensesTab>
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-shape: const RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => BlocProvider.value(
@@ -926,6 +932,26 @@ shape: const RoundedRectangleBorder(
   }
 
   void _applyExpenseShortcut(ExpenseShortcut s) {
+    final l10n = AppLocalizations.of(context)!;
+    if (WalletBalanceCalculator.exceedsPocket(
+      amount: s.amountBase,
+      paidFrom: s.incomeSource,
+      incomes: context.read<IncomesTabBloc>().state.incomes,
+      expenses: context.read<ExpensesTabBloc>().state.expenses,
+      initialBySource: getIt<InitialBalanceStore>().totalsBySource,
+    )) {
+      final available = WalletBalanceCalculator.availableToSpend(
+        paidFrom: s.incomeSource,
+        incomes: context.read<IncomesTabBloc>().state.incomes,
+        expenses: context.read<ExpensesTabBloc>().state.expenses,
+        initialBySource: getIt<InitialBalanceStore>().totalsBySource,
+      );
+      AppToast.error(
+        context,
+        l10n.pocketInsufficientFunds(Money.format(available)),
+      );
+      return;
+    }
     setState(() => _pendingShortcutLogLabel = s.displayLabel);
     context.read<ExpensesTabBloc>().add(
       AddExpenseEvent(
@@ -969,7 +995,7 @@ shape: const RoundedRectangleBorder(
 
     final action = await showModalBottomSheet<String>(
       context: context,
-shape: const RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) => Padding(
@@ -1082,7 +1108,7 @@ shape: const RoundedRectangleBorder(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-shape: const RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) => AnimatedPadding(
@@ -1357,14 +1383,8 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: AppDecorations.summaryCard([
-        AppColors.expenseDark,
-        AppColors.expense,
-        AppColors.primary,
-      ]),
+    return ThemedSummaryCard(
+      accent: AppColors.expense,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1558,10 +1578,7 @@ class _ExpenseSortBar extends StatelessWidget {
 
   static const _expenseColor = AppColors.expense;
 
-  const _ExpenseSortBar({
-    required this.sort,
-    required this.onSortChanged,
-  });
+  const _ExpenseSortBar({required this.sort, required this.onSortChanged});
 
   @override
   Widget build(BuildContext context) {

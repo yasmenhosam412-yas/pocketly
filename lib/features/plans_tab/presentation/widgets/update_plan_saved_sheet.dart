@@ -114,7 +114,6 @@ class _UpdatePlanSavedSheetState extends State<UpdatePlanSavedSheet> {
           constraints: BoxConstraints(maxHeight: maxHeight),
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,

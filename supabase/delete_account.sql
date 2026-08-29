@@ -18,6 +18,9 @@ begin
   delete from public.expenses where user_id = uid;
   delete from public.budgets where user_id = uid;
   delete from public.plans where user_id = uid;
+  if to_regclass('public.loans') is not null then
+    delete from public.loans where user_id = uid;
+  end if;
   delete from public.profiles where id = uid;
   delete from auth.users where id = uid;
 end;

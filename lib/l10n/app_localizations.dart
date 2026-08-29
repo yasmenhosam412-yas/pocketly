@@ -101,6 +101,90 @@ abstract class AppLocalizations {
   /// **'imrpo'**
   String get appTitle;
 
+  /// No description provided for @exitPressTwiceMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Press back 2 more times to exit'**
+  String get exitPressTwiceMore;
+
+  /// No description provided for @exitPressOnceMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Press back once more to exit'**
+  String get exitPressOnceMore;
+
+  /// No description provided for @homeGuideNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get homeGuideNext;
+
+  /// No description provided for @homeGuideDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get homeGuideDone;
+
+  /// No description provided for @homeGuideTabsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your money tabs'**
+  String get homeGuideTabsTitle;
+
+  /// No description provided for @homeGuideTabsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch between Incomes, Expenses, Balance, Loans, and Plans.'**
+  String get homeGuideTabsBody;
+
+  /// No description provided for @homeGuideIncomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first income'**
+  String get homeGuideIncomeTitle;
+
+  /// No description provided for @homeGuideIncomeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Add Income to record a salary, freelance payment, or any money coming in.'**
+  String get homeGuideIncomeBody;
+
+  /// No description provided for @homeGuideExpenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track spending'**
+  String get homeGuideExpenseTitle;
+
+  /// No description provided for @homeGuideExpenseBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Expenses and tap Add Expense whenever you spend.'**
+  String get homeGuideExpenseBody;
+
+  /// No description provided for @homeGuideImportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from SMS'**
+  String get homeGuideImportTitle;
+
+  /// No description provided for @homeGuideImportBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Use Import to pull transactions from messages instead of typing them.'**
+  String get homeGuideImportBody;
+
+  /// No description provided for @homeGuideSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get homeGuideSettingsTitle;
+
+  /// No description provided for @homeGuideSettingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Change currency, language, theme, and app lock from here. 3-month charts are in Settings and the Stats chip on Home.'**
+  String get homeGuideSettingsBody;
+
   /// No description provided for @onboardingSkip.
   ///
   /// In en, this message translates to:
@@ -185,6 +269,12 @@ abstract class AppLocalizations {
   /// **'Stats'**
   String get tabStatistics;
 
+  /// No description provided for @tabLoans.
+  ///
+  /// In en, this message translates to:
+  /// **'Loans'**
+  String get tabLoans;
+
   /// No description provided for @statisticsLast3Months.
   ///
   /// In en, this message translates to:
@@ -244,6 +334,276 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add incomes and expenses to see your 3-month charts.'**
   String get statisticsEmpty;
+
+  /// No description provided for @loanNewFab.
+  ///
+  /// In en, this message translates to:
+  /// **'New loan'**
+  String get loanNewFab;
+
+  /// No description provided for @loanAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add loan'**
+  String get loanAddTitle;
+
+  /// No description provided for @loanEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit loan'**
+  String get loanEditTitle;
+
+  /// No description provided for @loanPersonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Person'**
+  String get loanPersonLabel;
+
+  /// No description provided for @loanPersonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Who is this loan with?'**
+  String get loanPersonHint;
+
+  /// No description provided for @loanDirectionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get loanDirectionLabel;
+
+  /// No description provided for @loanDirectionGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'I lent'**
+  String get loanDirectionGiven;
+
+  /// No description provided for @loanDirectionReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'I borrowed'**
+  String get loanDirectionReceived;
+
+  /// No description provided for @loanPrincipalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get loanPrincipalLabel;
+
+  /// No description provided for @loanRepaidLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Already repaid'**
+  String get loanRepaidLabel;
+
+  /// No description provided for @loanDueDateOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Due date (optional)'**
+  String get loanDueDateOptional;
+
+  /// No description provided for @loanNotesOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes (optional)'**
+  String get loanNotesOptional;
+
+  /// No description provided for @loanNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Reason, terms, or anything to remember'**
+  String get loanNotesHint;
+
+  /// No description provided for @loanSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save loan'**
+  String get loanSave;
+
+  /// No description provided for @loanUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Update loan'**
+  String get loanUpdate;
+
+  /// No description provided for @loanRecordPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Record payment'**
+  String get loanRecordPayment;
+
+  /// No description provided for @loanPaymentAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment amount'**
+  String get loanPaymentAmount;
+
+  /// No description provided for @loanPaymentSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Save payment'**
+  String get loanPaymentSubmit;
+
+  /// No description provided for @loanOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Loan position'**
+  String get loanOverview;
+
+  /// No description provided for @loanOwedToYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Owed to you'**
+  String get loanOwedToYou;
+
+  /// No description provided for @loanYouOwe.
+  ///
+  /// In en, this message translates to:
+  /// **'You owe'**
+  String get loanYouOwe;
+
+  /// No description provided for @loanNetPositive.
+  ///
+  /// In en, this message translates to:
+  /// **'Net: people owe you more'**
+  String get loanNetPositive;
+
+  /// No description provided for @loanNetNegative.
+  ///
+  /// In en, this message translates to:
+  /// **'Net: you owe more'**
+  String get loanNetNegative;
+
+  /// No description provided for @loanOpenCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get loanOpenCount;
+
+  /// No description provided for @loanOverdueCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get loanOverdueCount;
+
+  /// No description provided for @loanSettledCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Settled'**
+  String get loanSettledCount;
+
+  /// No description provided for @loanRemainingOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{remaining} left of {principal}'**
+  String loanRemainingOf(String remaining, String principal);
+
+  /// No description provided for @loanOfPrincipal.
+  ///
+  /// In en, this message translates to:
+  /// **'of {amount}'**
+  String loanOfPrincipal(String amount);
+
+  /// No description provided for @loanTapToEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to edit loan'**
+  String get loanTapToEdit;
+
+  /// No description provided for @loanSettledBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Settled'**
+  String get loanSettledBadge;
+
+  /// No description provided for @loanOverdueBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get loanOverdueBadge;
+
+  /// No description provided for @loanEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track money you lent or borrowed'**
+  String get loanEmptyTitle;
+
+  /// No description provided for @loanEmptySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a loan, record payments, and see what is still outstanding.'**
+  String get loanEmptySubtitle;
+
+  /// No description provided for @loanFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get loanFilterAll;
+
+  /// No description provided for @loanFilterGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'Lent'**
+  String get loanFilterGiven;
+
+  /// No description provided for @loanFilterReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Borrowed'**
+  String get loanFilterReceived;
+
+  /// No description provided for @loanFilterOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Overdue'**
+  String get loanFilterOverdue;
+
+  /// No description provided for @loanFilterSettled.
+  ///
+  /// In en, this message translates to:
+  /// **'Settled'**
+  String get loanFilterSettled;
+
+  /// No description provided for @loanFilterEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in this filter yet.'**
+  String get loanFilterEmpty;
+
+  /// No description provided for @loansSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loans'**
+  String get loansSectionTitle;
+
+  /// No description provided for @errorEnterPersonName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the person\'s name'**
+  String get errorEnterPersonName;
+
+  /// No description provided for @errorEnterLoanAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid loan amount'**
+  String get errorEnterLoanAmount;
+
+  /// No description provided for @errorRepaidExceedsPrincipal.
+  ///
+  /// In en, this message translates to:
+  /// **'Repaid cannot be more than the loan amount'**
+  String get errorRepaidExceedsPrincipal;
+
+  /// No description provided for @errorEnterPaymentAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid payment amount'**
+  String get errorEnterPaymentAmount;
+
+  /// No description provided for @errorPaymentExceedsRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment cannot be more than the remaining amount'**
+  String get errorPaymentExceedsRemaining;
 
   /// No description provided for @associationPersonal.
   ///
@@ -2680,6 +3040,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please enter a valid amount'**
   String get errorEnterValidAmount;
+
+  /// No description provided for @pocketInsufficientFunds.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough in your pocket. Available: {amount}'**
+  String pocketInsufficientFunds(String amount);
 
   /// No description provided for @errorEnterCategoryName.
   ///

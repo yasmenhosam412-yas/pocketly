@@ -132,8 +132,6 @@ class _AddIncomeSheetState extends State<AddIncomeSheet> {
               constraints: BoxConstraints(maxHeight: maxHeight),
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -3,6 +3,7 @@ import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/services/onboarding_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
+import 'package:imrpo/core/widgets/triple_back_to_exit.dart';
 import 'package:imrpo/features/auth/presentation/pages/login_screen.dart';
 import 'package:imrpo/features/home/presentation/pages/home_screen.dart';
 import 'package:imrpo/features/onboarding/presentation/widgets/onboarding_page_content.dart';
@@ -99,130 +100,132 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     final pages = _pages(l10n);
     final isLast = _pageIndex >= _pageCount - 1;
     final bottomInset = MediaQuery.paddingOf(context).bottom;
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 4, 16, 0),
-              child: Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: TextButton(
-                  onPressed: _finish,
-                  child: Text(
-                    l10n.onboardingSkip,
-                    style: TextStyle(
-                      color: AppColors.textMuted,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
+    return TripleBackToExit(
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 4, 16, 0),
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: TextButton(
+                    onPressed: _finish,
+                    child: Text(
+                      l10n.onboardingSkip,
+                      style: TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              child: Column(
-                children: [
-                  const SizedBox(height: 28),
-                  OnboardingPinnedIcon(pageIndex: _pageIndex),
-                  const SizedBox(height: 28),
-                  Expanded(
-                    child: PageView.builder(
-                      controller: _pageController,
-                      itemCount: _pageCount,
-                      physics: const BouncingScrollPhysics(),
-                      onPageChanged: (i) => _goToPage(i),
-                      itemBuilder: (context, index) {
-                        final p = pages[index];
-                        return OnboardingPageContent(
-                          key: ValueKey('${_pageIndex}_$index'),
-                          title: p.title,
-                          body: p.body,
-                          forward: _forward,
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            FadeTransition(
-              opacity: _footerFade,
-              child: SlideTransition(
-                position: _footerSlide,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(28, 0, 28, 20 + bottomInset),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(_pageCount, (i) {
-                          final active = i == _pageIndex;
-                          return AnimatedContainer(
-                            duration: const Duration(milliseconds: 350),
-                            curve: Curves.easeOutCubic,
-                            width: active ? 22 : 7,
-                            height: active ? 7 : 7,
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: active
-                                  ? AppColors.primary
-                                  : AppColors.border,
-                            ),
+              Expanded(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 28),
+                    OnboardingPinnedIcon(pageIndex: _pageIndex),
+                    const SizedBox(height: 28),
+                    Expanded(
+                      child: PageView.builder(
+                        controller: _pageController,
+                        itemCount: _pageCount,
+                        physics: const BouncingScrollPhysics(),
+                        onPageChanged: (i) => _goToPage(i),
+                        itemBuilder: (context, index) {
+                          final p = pages[index];
+                          return OnboardingPageContent(
+                            key: ValueKey('${_pageIndex}_$index'),
+                            title: p.title,
+                            body: p.body,
+                            forward: _forward,
                           );
-                        }),
+                        },
                       ),
-                      const SizedBox(height: 28),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 52,
-                        child: FilledButton(
-                          onPressed: _onNext,
-                          style: FilledButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: AppColors.onWarm,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(26),
+                    ),
+                  ],
+                ),
+              ),
+              FadeTransition(
+                opacity: _footerFade,
+                child: SlideTransition(
+                  position: _footerSlide,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(28, 0, 28, 20 + bottomInset),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(_pageCount, (i) {
+                            final active = i == _pageIndex;
+                            return AnimatedContainer(
+                              duration: const Duration(milliseconds: 350),
+                              curve: Curves.easeOutCubic,
+                              width: active ? 22 : 7,
+                              height: active ? 7 : 7,
+                              margin: const EdgeInsets.symmetric(horizontal: 4),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: active
+                                    ? AppColors.primary
+                                    : AppColors.border,
+                              ),
+                            );
+                          }),
+                        ),
+                        const SizedBox(height: 28),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 52,
+                          child: FilledButton(
+                            onPressed: _onNext,
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              foregroundColor: AppColors.onWarm,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(26),
+                              ),
                             ),
-                          ),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 280),
-                            switchInCurve: Curves.easeOut,
-                            switchOutCurve: Curves.easeIn,
-                            transitionBuilder: (child, animation) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: SlideTransition(
-                                  position: Tween<Offset>(
-                                    begin: const Offset(0, 0.35),
-                                    end: Offset.zero,
-                                  ).animate(animation),
-                                  child: child,
+                            child: AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 280),
+                              switchInCurve: Curves.easeOut,
+                              switchOutCurve: Curves.easeIn,
+                              transitionBuilder: (child, animation) {
+                                return FadeTransition(
+                                  opacity: animation,
+                                  child: SlideTransition(
+                                    position: Tween<Offset>(
+                                      begin: const Offset(0, 0.35),
+                                      end: Offset.zero,
+                                    ).animate(animation),
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                isLast
+                                    ? l10n.onboardingGetStarted
+                                    : l10n.onboardingNext,
+                                key: ValueKey(isLast),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                              );
-                            },
-                            child: Text(
-                              isLast
-                                  ? l10n.onboardingGetStarted
-                                  : l10n.onboardingNext,
-                              key: ValueKey(isLast),
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

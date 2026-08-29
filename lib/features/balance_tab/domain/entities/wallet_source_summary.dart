@@ -13,7 +13,10 @@ class WalletSourceSummary extends Equatable {
     required this.spent,
   });
 
-  double get remaining => initial + income - spent;
+  double get remaining {
+    final net = initial + income - spent;
+    return net < 0 ? 0 : net;
+  }
 
   @override
   List<Object?> get props => [source, initial, income, spent];

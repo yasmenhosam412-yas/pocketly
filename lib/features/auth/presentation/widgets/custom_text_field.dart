@@ -9,6 +9,13 @@ class CustomFormField extends StatelessWidget {
   final IconData icon;
   final Widget? suffixIcon;
   final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onFieldSubmitted;
+  final FocusNode? focusNode;
+  final Iterable<String>? autofillHints;
+  final TextCapitalization textCapitalization;
+  final bool autocorrect;
+  final bool enableSuggestions;
   final String? Function(String?)? validator;
 
   const CustomFormField({
@@ -20,6 +27,13 @@ class CustomFormField extends StatelessWidget {
     required this.icon,
     this.suffixIcon,
     this.keyboardType,
+    this.textInputAction,
+    this.onFieldSubmitted,
+    this.focusNode,
+    this.autofillHints,
+    this.textCapitalization = TextCapitalization.none,
+    this.autocorrect = true,
+    this.enableSuggestions = true,
     this.validator,
   });
 
@@ -41,8 +55,15 @@ class CustomFormField extends StatelessWidget {
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
+          focusNode: focusNode,
           obscureText: obscure,
           keyboardType: keyboardType,
+          textInputAction: textInputAction,
+          onFieldSubmitted: onFieldSubmitted,
+          autofillHints: autofillHints,
+          textCapitalization: textCapitalization,
+          autocorrect: autocorrect,
+          enableSuggestions: enableSuggestions,
           validator: validator,
           style: TextStyle(
             fontSize: 15,

@@ -22,11 +22,14 @@ import 'package:imrpo/features/balance_tab/presentation/pages/balance_tab.dart';
 import 'package:imrpo/features/expenses_tab/presentation/pages/expenses_tab.dart';
 import 'package:imrpo/features/incomes_tab/presentation/pages/incomes_tab.dart';
 import 'package:imrpo/features/plans_tab/presentation/pages/plans_tab.dart';
-import 'package:imrpo/features/statistics_tab/presentation/pages/statistics_tab.dart';
+import 'package:imrpo/features/loans_tab/presentation/pages/loans_tab.dart';
 import 'package:imrpo/core/config/app_router.dart';
 import 'package:imrpo/core/services/notification_inbox_store.dart';
 import 'package:imrpo/core/widgets/notification_icon_badge.dart';
+import 'package:imrpo/core/services/onboarding_preferences.dart';
+import 'package:imrpo/core/widgets/triple_back_to_exit.dart';
 import 'package:imrpo/core/widgets/offline_banner.dart';
+import 'package:imrpo/features/home/presentation/widgets/home_first_run_guide.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -57,12 +60,16 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Future<void> _bootstrapSession() async {
-    if (SupabaseAuthHelper.isSignedIn) {
-      final associations = getIt<AssociationContext>();
-      if (!associations.isLoaded) {
-        await associations.load();
+    try {
+      if (SupabaseAuthHelper.isSignedIn) {
+        final associations = getIt<AssociationContext>();
+        if (!associations.isLoaded) {
+          await associations.load();
+        }
+        await getIt<InitialBalanceStore>().load();
       }
-      await getIt<InitialBalanceStore>().load();
+    } catch (_) {
+      // Ledger/auth hiccups must not crash Home.
     }
     if (!mounted) return;
     if (!getIt<AssociationContext>().isOffline) {
@@ -77,7 +84,11 @@ class _HomeScreenState extends State<HomeScreen>
     if (!SupabaseAuthHelper.isSignedIn || !mounted) return;
     final associations = getIt<AssociationContext>();
     if (!associations.isOffline) return;
-    await associations.load(forceNetwork: true);
+    try {
+      await associations.load(forceNetwork: true);
+    } catch (_) {
+      return;
+    }
     if (!mounted || associations.isOffline) return;
     context.read<HomeBloc>().add(const LoadUserProfileEvent());
     await UserSession.syncOfflineTransactionsAndReload(context);
@@ -106,38 +117,54 @@ class _HomeTabBody extends StatefulWidget {
 }
 
 class _HomeTabBodyState extends State<_HomeTabBody> {
+  bool _showGuide = false;
+
   List<_HomeTabItem> _tabs(AppLocalizations l10n) => [
-        _HomeTabItem(
-          label: l10n.tabIncomes,
-          icon: Icons.south_west_rounded,
-          color: AppColors.income,
-        ),
-        _HomeTabItem(
-          label: l10n.tabExpenses,
-          icon: Icons.north_east_rounded,
-          color: AppColors.expense,
-        ),
-        _HomeTabItem(
-          label: l10n.tabBalance,
-          icon: Icons.account_balance_wallet_outlined,
-          color: AppColors.balance,
-        ),
-        _HomeTabItem(
-          label: l10n.tabStatistics,
-          icon: Icons.bar_chart_rounded,
-          color: AppColors.secondary,
-        ),
-        _HomeTabItem(
-          label: l10n.tabPlans,
-          icon: Icons.flag_outlined,
-          color: AppColors.plans,
-        ),
-      ];
+    _HomeTabItem(
+      label: l10n.tabIncomes,
+      icon: Icons.south_west_rounded,
+      color: AppColors.income,
+    ),
+    _HomeTabItem(
+      label: l10n.tabExpenses,
+      icon: Icons.north_east_rounded,
+      color: AppColors.expense,
+    ),
+    _HomeTabItem(
+      label: l10n.tabBalance,
+      icon: Icons.account_balance_wallet_outlined,
+      color: AppColors.balance,
+    ),
+    _HomeTabItem(
+      label: l10n.tabLoans,
+      icon: Icons.handshake_outlined,
+      color: AppColors.loans,
+    ),
+    _HomeTabItem(
+      label: l10n.tabPlans,
+      icon: Icons.flag_outlined,
+      color: AppColors.plans,
+    ),
+  ];
 
   @override
   void initState() {
     super.initState();
     widget.tabController.addListener(_onTabChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeStartGuide());
+  }
+
+  Future<void> _maybeStartGuide() async {
+    await Future<void>.delayed(const Duration(milliseconds: 700));
+    if (!mounted) return;
+    if (getIt<OnboardingPreferences>().homeGuideCompleted) return;
+    setState(() => _showGuide = true);
+  }
+
+  Future<void> _finishGuide() async {
+    await getIt<OnboardingPreferences>().setHomeGuideCompleted();
+    if (!mounted) return;
+    setState(() => _showGuide = false);
   }
 
   @override
@@ -164,57 +191,70 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
       ]),
       builder: (context, _) {
         final palette = context.appPalette;
-        return Scaffold(
-          backgroundColor: palette.scaffold,
-          body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverToBoxAdapter(
-                child: _HomeHeader(
-                  selectedTab: selectedTab,
-                  tabController: widget.tabController,
-                ),
-              ),
-              const SliverToBoxAdapter(
-                child: OfflineBanner(),
-              ),
-              const SliverToBoxAdapter(
-                child: AssociationLedgerBanner(),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Row(
-                    children: List.generate(tabs.length, (index) {
-                      final tab = tabs[index];
-                      final isSelected = selected == index;
-                      return Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            left: index == 0 ? 0 : 4,
-                            right: index == tabs.length - 1 ? 0 : 4,
-                          ),
-                          child: _TabChip(
-                            tab: tab,
-                            isSelected: isSelected,
-                            onTap: () => widget.tabController.animateTo(index),
+        return TripleBackToExit(
+          child: Stack(
+            children: [
+              Scaffold(
+                backgroundColor: palette.scaffold,
+                body: NestedScrollView(
+                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                    SliverToBoxAdapter(
+                      child: _HomeHeader(
+                        selectedTab: selectedTab,
+                        tabController: widget.tabController,
+                      ),
+                    ),
+                    const SliverToBoxAdapter(child: OfflineBanner()),
+                    const SliverToBoxAdapter(child: AssociationLedgerBanner()),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        child: KeyedSubtree(
+                          key: HomeGuideTargets.tabs,
+                          child: Row(
+                            children: List.generate(tabs.length, (index) {
+                              final tab = tabs[index];
+                              final isSelected = selected == index;
+                              return Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    left: index == 0 ? 0 : 4,
+                                    right: index == tabs.length - 1 ? 0 : 4,
+                                  ),
+                                  child: _TabChip(
+                                    tab: tab,
+                                    isSelected: isSelected,
+                                    onTap: () =>
+                                        widget.tabController.animateTo(index),
+                                  ),
+                                ),
+                              );
+                            }),
                           ),
                         ),
-                      );
-                    }),
+                      ),
+                    ),
+                  ],
+                  body: TabBarView(
+                    controller: widget.tabController,
+                    children: const [
+                      IncomesTab(),
+                      ExpensesTab(),
+                      BalanceTab(),
+                      LoansTab(),
+                      PlansTab(),
+                    ],
                   ),
                 ),
               ),
+              if (_showGuide)
+                Positioned.fill(
+                  child: HomeFirstRunGuide(
+                    tabController: widget.tabController,
+                    onFinished: _finishGuide,
+                  ),
+                ),
             ],
-            body: TabBarView(
-              controller: widget.tabController,
-              children: const [
-                IncomesTab(),
-                ExpensesTab(),
-                BalanceTab(),
-                StatisticsTab(),
-                PlansTab(),
-              ],
-            ),
           ),
         );
       },
@@ -238,10 +278,7 @@ class _HomeHeader extends StatelessWidget {
   final _HomeTabItem selectedTab;
   final TabController tabController;
 
-  const _HomeHeader({
-    required this.selectedTab,
-    required this.tabController,
-  });
+  const _HomeHeader({required this.selectedTab, required this.tabController});
 
   @override
   Widget build(BuildContext context) {
@@ -254,8 +291,8 @@ class _HomeHeader extends StatelessWidget {
       builder: (context, homeState) {
         final profile = homeState.profile;
         final isInitialLoading = homeState.isInitialLoading;
-        final isRefreshingProfile = homeState.isRefreshingProfile ||
-            homeState.isUpdatingUsername;
+        final isRefreshingProfile =
+            homeState.isRefreshingProfile || homeState.isUpdatingUsername;
         final headerTheme = HomeHeaderTheme.resolve(context, accent);
 
         return Container(
@@ -296,169 +333,184 @@ class _HomeHeader extends StatelessWidget {
             child: HomeHeaderScope(
               theme: headerTheme,
               child: Stack(
-              children: [
-                Positioned(
-                  top: -40,
-                  right: -20,
-                  child: _HeaderDecorCircle(
-                    size: 140,
-                    color: headerTheme.decorSoft,
-                  ),
-                ),
-                Positioned(
-                  bottom: -30,
-                  left: -24,
-                  child: _HeaderDecorCircle(
-                    size: 110,
-                    color: accent.withValues(
-                      alpha: headerTheme.isDark ? 0.18 : 0.22,
+                children: [
+                  Positioned(
+                    top: -40,
+                    right: -20,
+                    child: _HeaderDecorCircle(
+                      size: 140,
+                      color: headerTheme.decorSoft,
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(20, topPadding + 14, 20, 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _UserAvatar(
-                            profile: profile,
-                            isInitialLoading: isInitialLoading,
-                            isRefreshing: isRefreshingProfile,
-                            onTap: profile != null && !isInitialLoading
-                                ? () =>
-                                    showUserSettingsSheet(context, profile)
-                                : null,
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _welcomeLine(
-                                    l10n,
-                                    profile,
-                                    isInitialLoading,
-                                  ),
-                                  style: TextStyle(
-                                    color: headerTheme.foregroundMuted,
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  l10n.homeFinanceOverview,
-                                  style: TextStyle(
-                                    color: headerTheme.foreground,
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: -0.4,
-                                    height: 1.2,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 6),
-                                _ActiveTabBadge(tab: selectedTab),
-                              ],
-                            ),
-                          ),
-                          _HeaderIconButton(
-                            icon: Icons.search_rounded,
-                            tooltip: l10n.globalSearchTitle,
-                            onTap: () => Navigator.of(context).pushNamed(
-                              AppRoutes.search,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          ListenableBuilder(
-                            listenable: getIt<NotificationInboxStore>(),
-                            builder: (context, _) {
-                              return _HeaderIconButton(
-                                icon: Icons.notifications_outlined,
-                                tooltip: l10n.notificationsTitle,
-                                badgeCount:
-                                    getIt<NotificationInboxStore>().unreadCount,
-                                onTap: () => Navigator.of(context).pushNamed(
-                                  AppRoutes.notifications,
-                                ),
-                              );
-                            },
-                          ),
-                          const SizedBox(width: 4),
-                          if (profile != null && !isInitialLoading)
-                            _HeaderIconButton(
-                              icon: Icons.settings_outlined,
-                              tooltip: l10n.accountSettingsTitle,
-                              onTap: () =>
-                                  showUserSettingsSheet(context, profile),
-                            ),
-                        ],
+                  Positioned(
+                    bottom: -30,
+                    left: -24,
+                    child: _HeaderDecorCircle(
+                      size: 110,
+                      color: accent.withValues(
+                        alpha: headerTheme.isDark ? 0.18 : 0.22,
                       ),
-                      const SizedBox(height: 16),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, topPadding + 14, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            AssociationSelector(
-                              lightStyle: !headerTheme.isDark,
+                            _UserAvatar(
+                              profile: profile,
+                              isInitialLoading: isInitialLoading,
+                              isRefreshing: isRefreshingProfile,
+                              onTap: profile != null && !isInitialLoading
+                                  ? () =>
+                                        showUserSettingsSheet(context, profile)
+                                  : null,
                             ),
-                            const SizedBox(width: 8),
-                            const HomeWalletHeaderButton(),
-                            const SizedBox(width: 8),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _welcomeLine(
+                                      l10n,
+                                      profile,
+                                      isInitialLoading,
+                                    ),
+                                    style: TextStyle(
+                                      color: headerTheme.foregroundMuted,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    l10n.homeFinanceOverview,
+                                    style: TextStyle(
+                                      color: headerTheme.foreground,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: -0.4,
+                                      height: 1.2,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 6),
+                                  _ActiveTabBadge(tab: selectedTab),
+                                ],
+                              ),
+                            ),
+                            _HeaderIconButton(
+                              icon: Icons.search_rounded,
+                              tooltip: l10n.globalSearchTitle,
+                              onTap: () => Navigator.of(
+                                context,
+                              ).pushNamed(AppRoutes.search),
+                            ),
+                            const SizedBox(width: 4),
                             ListenableBuilder(
-                              listenable: dateFilter,
+                              listenable: getIt<NotificationInboxStore>(),
                               builder: (context, _) {
-                                return _HeaderActionChip(
-                                  icon: dateFilter.isAllMode
-                                      ? Icons.date_range_outlined
-                                      : dateFilter.isDayMode
-                                          ? Icons.today_outlined
-                                          : Icons.calendar_month_outlined,
-                                  label: dateFilter.headerLabel(context),
-                                  isHighlighted: dateFilter.isFiltered,
-                                  trailingIcon: Icons.expand_more_rounded,
-                                  onTap: () =>
-                                      showHomeDateFilterSheet(context),
+                                return _HeaderIconButton(
+                                  icon: Icons.notifications_outlined,
+                                  tooltip: l10n.notificationsTitle,
+                                  badgeCount: getIt<NotificationInboxStore>()
+                                      .unreadCount,
+                                  onTap: () => Navigator.of(
+                                    context,
+                                  ).pushNamed(AppRoutes.notifications),
                                 );
                               },
                             ),
-                            const SizedBox(width: 8),
-                            _HeaderActionChip(
-                              icon: Icons.document_scanner_outlined,
-                              label: l10n.smartImportShort,
-                              trailingIcon: Icons.arrow_forward_rounded,
-                              onTap: () => Navigator.of(context).pushNamed(
-                                AppRoutes.smartImport,
+                            const SizedBox(width: 4),
+                            if (profile != null && !isInitialLoading)
+                              KeyedSubtree(
+                                key: HomeGuideTargets.settings,
+                                child: _HeaderIconButton(
+                                  icon: Icons.settings_outlined,
+                                  tooltip: l10n.accountSettingsTitle,
+                                  onTap: () =>
+                                      showUserSettingsSheet(context, profile),
+                                ),
                               ),
-                            ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (isRefreshingProfile)
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: LinearProgressIndicator(
-                      minHeight: 2,
-                      color: headerTheme.foreground,
-                      backgroundColor: headerTheme.foreground.withValues(
-                        alpha: 0.24,
-                      ),
+                        const SizedBox(height: 16),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              AssociationSelector(
+                                lightStyle: !headerTheme.isDark,
+                              ),
+                              const SizedBox(width: 8),
+                              const HomeWalletHeaderButton(),
+                              const SizedBox(width: 8),
+                              ListenableBuilder(
+                                listenable: dateFilter,
+                                builder: (context, _) {
+                                  return _HeaderActionChip(
+                                    icon: dateFilter.isAllMode
+                                        ? Icons.date_range_outlined
+                                        : dateFilter.isDayMode
+                                        ? Icons.today_outlined
+                                        : Icons.calendar_month_outlined,
+                                    label: dateFilter.headerLabel(context),
+                                    isHighlighted: dateFilter.isFiltered,
+                                    trailingIcon: Icons.expand_more_rounded,
+                                    onTap: () =>
+                                        showHomeDateFilterSheet(context),
+                                  );
+                                },
+                              ),
+                              const SizedBox(width: 8),
+                              KeyedSubtree(
+                                key: HomeGuideTargets.smartImport,
+                                child: _HeaderActionChip(
+                                  icon: Icons.document_scanner_outlined,
+                                  label: l10n.smartImportShort,
+                                  trailingIcon: Icons.arrow_forward_rounded,
+                                  onTap: () => Navigator.of(
+                                    context,
+                                  ).pushNamed(AppRoutes.smartImport),
+                                ),
+                              ),
+                              // const SizedBox(width: 8),
+                              // _HeaderActionChip(
+                              //   icon: Icons.bar_chart_rounded,
+                              //   label: l10n.tabStatistics,
+                              //   trailingIcon: Icons.arrow_forward_rounded,
+                              //   onTap: () => Navigator.of(
+                              //     context,
+                              //   ).pushNamed(AppRoutes.statistics),
+                              // ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-              ],
-            ),
+                  if (isRefreshingProfile)
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: LinearProgressIndicator(
+                        minHeight: 2,
+                        color: headerTheme.foreground,
+                        backgroundColor: headerTheme.foreground.withValues(
+                          alpha: 0.24,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         );
@@ -603,9 +655,7 @@ class _HeaderActionChip extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
           decoration: BoxDecoration(
-            color: isHighlighted
-                ? theme.chipFillHighlighted
-                : theme.chipFill,
+            color: isHighlighted ? theme.chipFillHighlighted : theme.chipFill,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: isHighlighted
@@ -628,11 +678,7 @@ class _HeaderActionChip extends StatelessWidget {
               ),
               if (trailingIcon != null) ...[
                 const SizedBox(width: 2),
-                Icon(
-                  trailingIcon,
-                  size: 18,
-                  color: theme.foregroundMuted,
-                ),
+                Icon(trailingIcon, size: 18, color: theme.foregroundMuted),
               ],
             ],
           ),
@@ -771,8 +817,9 @@ class _TabChip extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: (isSelected ? tab.color : palette.stroke)
-                    .withValues(alpha: isSelected ? 0.28 : 0.08),
+                color: (isSelected ? tab.color : palette.stroke).withValues(
+                  alpha: isSelected ? 0.28 : 0.08,
+                ),
                 blurRadius: 0,
                 offset: const Offset(0, 3),
               ),

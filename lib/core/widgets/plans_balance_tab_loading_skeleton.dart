@@ -131,14 +131,9 @@ class _PlansDashboardMock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
+    return ThemedSummaryCard(
+      accent: AppColors.plans,
       padding: const EdgeInsets.all(22),
-      decoration: AppDecorations.summaryCard([
-        AppColors.plans,
-        AppColors.plansDark,
-        AppColors.secondary,
-      ]),
       child: Column(
         children: [
           Row(
@@ -564,32 +559,8 @@ class _BalanceNetCardMock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.balanceDark,
-            AppColors.balance,
-            AppColors.secondary,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.stroke.withValues(alpha: 0.12),
-          width: 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.balance.withValues(alpha: 0.25),
-            blurRadius: 0,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return ThemedSummaryCard(
+      accent: AppColors.balance,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

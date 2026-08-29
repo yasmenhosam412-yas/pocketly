@@ -282,6 +282,18 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                       },
                     ),
                     _SettingsTile(
+                      icon: Icons.bar_chart_rounded,
+                      label: l10n.tabStatistics,
+                      onTap: actionsLocked
+                          ? null
+                          : () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pushNamed(
+                                AppRoutes.statistics,
+                              );
+                            },
+                    ),
+                    _SettingsTile(
                       icon: Icons.assessment_outlined,
                       label: l10n.monthlyReportTitle,
                       onTap: actionsLocked

@@ -92,8 +92,10 @@ class _WalletOverviewDialog extends StatelessWidget {
     return null;
   }
 
-  double get _total =>
-      _holdings.fold<double>(0, (sum, row) => sum + row.remaining);
+  double get _total {
+    final sum = _holdings.fold<double>(0, (sum, row) => sum + row.remaining);
+    return sum < 0 ? 0 : sum;
+  }
 
   @override
   Widget build(BuildContext context) {

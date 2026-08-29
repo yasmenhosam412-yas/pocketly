@@ -89,30 +89,60 @@ class AssociationContext extends ChangeNotifier {
 
     _loadError = null;
     try {
-      await _ensurePersonalAndFetch();
-      if (_items.isEmpty) {
-        await _ensurePersonalAndFetch();
-      }
-      await _restoreActiveSelection();
-      _available = _activeId != null && _activeId!.isNotEmpty;
-      _loaded = true;
-      await _clearPersistedOfflineFlag();
-      notifyListeners();
+      await _loadFromNetwork();
     } on PostgrestException catch (e) {
       if (_isSchemaMissing(e)) {
         _setUnavailableLedgerMode();
         return;
       }
+      if (SupabaseAuthHelper.isJwtClockSkew(e)) {
+        await _retryAfterJwtClockSkew();
+        return;
+      }
       _loadError = e.message;
-      rethrow;
+      await _setOfflineLedgerMode();
     } catch (e) {
+      if (SupabaseAuthHelper.isJwtClockSkew(e)) {
+        await _retryAfterJwtClockSkew();
+        return;
+      }
       if (isNetworkError(e)) {
         await _persistOfflineFlag();
         await _setOfflineLedgerMode();
         return;
       }
-      rethrow;
+      _loadError = e.toString();
+      await _setOfflineLedgerMode();
     }
+  }
+
+  Future<void> _loadFromNetwork() async {
+    await _ensurePersonalAndFetch();
+    if (_items.isEmpty) {
+      await _ensurePersonalAndFetch();
+    }
+    await _restoreActiveSelection();
+    _available = _activeId != null && _activeId!.isNotEmpty;
+    _loaded = true;
+    await _clearPersistedOfflineFlag();
+    notifyListeners();
+  }
+
+  Future<void> _retryAfterJwtClockSkew() async {
+    final recovered = await SupabaseAuthHelper.recoverFromJwtClockSkew();
+    if (recovered) {
+      try {
+        await _loadFromNetwork();
+        return;
+      } catch (e) {
+        if (isNetworkError(e)) {
+          await _persistOfflineFlag();
+          await _setOfflineLedgerMode();
+          return;
+        }
+      }
+    }
+    await _setOfflineLedgerMode();
   }
 
   Future<void> _ensurePersonalAndFetch() async {

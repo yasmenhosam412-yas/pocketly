@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
+import 'package:imrpo/core/services/onboarding_preferences.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:imrpo/features/auth/presentation/pages/forget_password_screen.dart';
 import 'package:imrpo/features/auth/presentation/pages/login_screen.dart';
@@ -14,6 +16,7 @@ import 'package:imrpo/features/smart_import/presentation/pages/smart_import_scre
 import 'package:imrpo/features/csv_import/presentation/pages/csv_import_screen.dart';
 import 'package:imrpo/features/notifications/presentation/pages/notifications_screen.dart';
 import 'package:imrpo/features/zakat/presentation/pages/zakat_screen.dart';
+import 'package:imrpo/features/statistics_tab/presentation/pages/statistics_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/features/bill_reminders/presentation/bloc/bill_reminders_bloc.dart';
@@ -30,6 +33,7 @@ class AppRoutes {
   static const String billReminders = '/bill-reminders';
   static const String notifications = '/notifications';
   static const String zakat = '/zakat';
+  static const String statistics = '/statistics';
   static const String onboarding = '/onboarding';
   static const String login = '/login';
   static const String signup = '/signup';
@@ -37,11 +41,38 @@ class AppRoutes {
   static const String verifyOtp = '/verify-otp';
 }
 
+class AppLaunch {
+  static String get routeName {
+    if (!getIt<OnboardingPreferences>().completed) {
+      return AppRoutes.onboarding;
+    }
+    return SupabaseAuthHelper.isSignedIn ? AppRoutes.home : AppRoutes.login;
+  }
+
+  static Widget get screen {
+    switch (routeName) {
+      case AppRoutes.onboarding:
+        return const OnboardingScreen();
+      case AppRoutes.home:
+        return const HomeScreen();
+      default:
+        return const LoginScreen();
+    }
+  }
+}
+
 class AppRouter {
   static MaterialPageRoute generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case '/':
+        return MaterialPageRoute(
+          settings: RouteSettings(name: AppLaunch.routeName),
+          builder: (_) => AppLaunch.screen,
+        );
       case AppRoutes.home:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        return MaterialPageRoute(
+          builder: (_) => AppLaunch.screen,
+        );
       case AppRoutes.search:
         return MaterialPageRoute(builder: (_) => const GlobalSearchScreen());
       case AppRoutes.smartImport:
@@ -69,6 +100,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const NotificationsScreen());
       case AppRoutes.zakat:
         return MaterialPageRoute(builder: (_) => const ZakatScreen());
+      case AppRoutes.statistics:
+        return MaterialPageRoute(builder: (_) => const StatisticsScreen());
       case AppRoutes.onboarding:
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
       case AppRoutes.login:

@@ -12,6 +12,7 @@ import 'package:imrpo/core/widgets/tab_centered_scroll.dart';
 import 'package:imrpo/core/widgets/transaction_tab_loading_skeleton.dart';
 import 'package:imrpo/core/widgets/tab_refresh_overlay.dart';
 import 'package:imrpo/core/utils/money_format.dart';
+import 'package:imrpo/features/home/presentation/widgets/home_first_run_guide.dart';
 import 'package:imrpo/features/incomes_tab/domain/entities/income.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
 import 'package:imrpo/features/incomes_tab/presentation/widgets/add_income_sheet.dart';
@@ -58,6 +59,7 @@ class _IncomesTabState extends State<IncomesTab>
             return const SizedBox.shrink();
           }
           return FloatingActionButton.extended(
+            key: HomeGuideTargets.addIncome,
             heroTag: 'fab-incomes',
             onPressed: _openAddSheet,
             backgroundColor: AppColors.income,
@@ -134,227 +136,277 @@ class _IncomesTabState extends State<IncomesTab>
         ],
         child: BlocBuilder<IncomesTabBloc, IncomesTabState>(
           builder: (context, state) {
-          if (state.incomes.isEmpty &&
-              state.status == IncomesTabStatus.loadingAll &&
-              !_initialLoadDone) {
-            return const TransactionTabLoadingSkeleton(forIncome: true);
-          }
+            if (state.incomes.isEmpty &&
+                state.status == IncomesTabStatus.loadingAll &&
+                !_initialLoadDone) {
+              return const TransactionTabLoadingSkeleton(forIncome: true);
+            }
 
-          if (state.incomes.isEmpty &&
-              state.status == IncomesTabStatus.loadingAll) {
-            return tabCenteredScroll(
-              Stack(
-                children: [
-                  _EmptyState(onAdd: _openAddSheet),
-                  const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.income,
+            if (state.incomes.isEmpty &&
+                state.status == IncomesTabStatus.loadingAll) {
+              return tabCenteredScroll(
+                Stack(
+                  children: [
+                    _EmptyState(onAdd: _openAddSheet),
+                    const Center(
+                      child: CircularProgressIndicator(color: AppColors.income),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          final sorted = [...state.incomes]
-            ..sort((a, b) => b.date.compareTo(a.date));
-
-          final isRefreshing = state.incomes.isNotEmpty &&
-              state.status == IncomesTabStatus.loadingAll;
-          final isClearingAll =
-              state.status == IncomesTabStatus.loadingClearAll;
-
-          return ListenableBuilder(
-            listenable: getIt<HomeDateFilter>(),
-            builder: (context, _) {
-              final dateFilter = getIt<HomeDateFilter>();
-              final dateFiltered = sorted
-                  .where((income) => dateFilter.matches(income.date))
-                  .toList();
-              final availableSources = dateFiltered
-                  .map(_sourceKey)
-                  .toSet()
-                  .toList()
-                ..sort();
-              final activeSource =
-                  _selectedSource != null &&
-                      availableSources.contains(_selectedSource)
-                  ? _selectedSource
-                  : null;
-              final filtered = activeSource == null
-                  ? dateFiltered
-                  : dateFiltered
-                        .where((income) => _sourceKey(income) == activeSource)
-                        .toList();
-              final periodTotal = filtered.fold<double>(
-                0,
-                (sum, income) => sum + income.amount,
+                  ],
+                ),
               );
-              final sourceTotals = _totalsBySource(dateFiltered);
-              final sourceEntryCounts = _entryCountsBySource(dateFiltered);
+            }
 
-              return Stack(
-            children: [
-              TabRefreshOverlay(
-            isRefreshing: isRefreshing,
-            indicatorColor: AppColors.income,
-            child: RefreshIndicator(
-              color: AppColors.income,
-              onRefresh: () async {
-                context.read<IncomesTabBloc>().add(const LoadIncomesEvent());
-                await Future.delayed(const Duration(milliseconds: 350));
+            final sorted = [...state.incomes]
+              ..sort((a, b) => b.date.compareTo(a.date));
+
+            final isRefreshing =
+                state.incomes.isNotEmpty &&
+                state.status == IncomesTabStatus.loadingAll;
+            final isClearingAll =
+                state.status == IncomesTabStatus.loadingClearAll;
+
+            return ListenableBuilder(
+              listenable: getIt<HomeDateFilter>(),
+              builder: (context, _) {
+                final dateFilter = getIt<HomeDateFilter>();
+                final dateFiltered = sorted
+                    .where((income) => dateFilter.matches(income.date))
+                    .toList();
+                final availableSources =
+                    dateFiltered.map(_sourceKey).toSet().toList()..sort();
+                final activeSource =
+                    _selectedSource != null &&
+                        availableSources.contains(_selectedSource)
+                    ? _selectedSource
+                    : null;
+                final filtered = activeSource == null
+                    ? dateFiltered
+                    : dateFiltered
+                          .where((income) => _sourceKey(income) == activeSource)
+                          .toList();
+                final periodTotal = filtered.fold<double>(
+                  0,
+                  (sum, income) => sum + income.amount,
+                );
+                final sourceTotals = _totalsBySource(dateFiltered);
+                final sourceEntryCounts = _entryCountsBySource(dateFiltered);
+
+                return Stack(
+                  children: [
+                    TabRefreshOverlay(
+                      isRefreshing: isRefreshing,
+                      indicatorColor: AppColors.income,
+                      child: RefreshIndicator(
+                        color: AppColors.income,
+                        onRefresh: () async {
+                          context.read<IncomesTabBloc>().add(
+                            const LoadIncomesEvent(),
+                          );
+                          await Future.delayed(
+                            const Duration(milliseconds: 350),
+                          );
+                        },
+                        child: CustomScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          slivers: [
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  20,
+                                  20,
+                                  20,
+                                  8,
+                                ),
+                                child: _SummaryCard(
+                                  total: periodTotal,
+                                  periodLabel: dateFilter.summaryPeriodLabel(
+                                    context,
+                                  ),
+                                  sourceLabel: activeSource == null
+                                      ? null
+                                      : localizeIncomeCategory(
+                                          l10n,
+                                          activeSource,
+                                        ),
+                                ),
+                              ),
+                            ),
+
+                            if (availableSources.length > 1)
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    20,
+                                    12,
+                                    20,
+                                    0,
+                                  ),
+                                  child: _SourceFilterBar(
+                                    sources: availableSources,
+                                    selectedSource: activeSource,
+                                    onSelected: (source) {
+                                      setState(() => _selectedSource = source);
+                                    },
+                                  ),
+                                ),
+                              ),
+
+                            if (sourceTotals.isNotEmpty)
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    20,
+                                    8,
+                                    20,
+                                    0,
+                                  ),
+                                  child: _SourceBreakdown(
+                                    sourceTotals: sourceTotals,
+                                    sourceEntryCounts: sourceEntryCounts,
+                                    selectedSource: activeSource,
+                                    isBusy:
+                                        state.status ==
+                                        IncomesTabStatus.loadingSource,
+                                    onSourceSelected: (source) {
+                                      setState(() {
+                                        _selectedSource = activeSource == source
+                                            ? null
+                                            : source;
+                                      });
+                                    },
+                                    onRenameSource:
+                                        AssociationLedgerAccess.canEdit
+                                        ? (source) => _renameIncomeSource(
+                                            source,
+                                            availableSources,
+                                          )
+                                        : null,
+                                    onRemoveSource:
+                                        AssociationLedgerAccess.canEdit
+                                        ? (source, count) =>
+                                              _removeIncomeSource(source, count)
+                                        : null,
+                                  ),
+                                ),
+                              ),
+
+                            SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  20,
+                                  16,
+                                  20,
+                                  8,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        l10n.recentIncomes,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.textColor,
+                                        ),
+                                      ),
+                                    ),
+                                    if (sorted.isNotEmpty &&
+                                        AssociationLedgerAccess.canEdit) ...[
+                                      TextButton(
+                                        onPressed: isClearingAll
+                                            ? null
+                                            : () => _confirmClearAll(
+                                                sorted.length,
+                                              ),
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: AppColors.income,
+                                          visualDensity: VisualDensity.compact,
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          ),
+                                        ),
+                                        child: Text(l10n.clearAllIncomes),
+                                      ),
+                                      const SizedBox(width: 4),
+                                    ],
+                                    Text(
+                                      l10n.listEntryCount(filtered.length),
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: AppColors.textColor.withValues(
+                                          alpha: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            if (filtered.isEmpty)
+                              SliverFillRemaining(
+                                hasScrollBody: false,
+                                child: sorted.isEmpty
+                                    ? _EmptyState(onAdd: _openAddSheet)
+                                    : _FilteredEmptyState(
+                                        message: activeSource != null
+                                            ? l10n.incomeFilterNoSourceEntries
+                                            : l10n.homeFilterNoEntries,
+                                        onClearFilter: activeSource != null
+                                            ? () => setState(
+                                                () => _selectedSource = null,
+                                              )
+                                            : null,
+                                      ),
+                              )
+                            else
+                              SliverPadding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  20,
+                                  0,
+                                  20,
+                                  100,
+                                ),
+                                sliver: SliverList(
+                                  delegate: SliverChildBuilderDelegate((
+                                    context,
+                                    index,
+                                  ) {
+                                    final income = filtered[index];
+
+                                    final canEdit =
+                                        AssociationLedgerAccess.canEdit;
+                                    return IncomeListTile(
+                                      income: income,
+                                      onTap: canEdit
+                                          ? () => _openEditSheet(income)
+                                          : null,
+                                      onDelete: canEdit
+                                          ? () {
+                                              context
+                                                  .read<IncomesTabBloc>()
+                                                  .add(
+                                                    DeleteIncomeEvent(
+                                                      income.id,
+                                                    ),
+                                                  );
+                                            }
+                                          : null,
+                                    );
+                                  }, childCount: filtered.length),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (isClearingAll)
+                      const TabBusyOverlay(indicatorColor: AppColors.income),
+                  ],
+                );
               },
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-                  child: _SummaryCard(
-                    total: periodTotal,
-                    periodLabel: dateFilter.summaryPeriodLabel(context),
-                    sourceLabel: activeSource == null
-                        ? null
-                        : localizeIncomeCategory(
-                            l10n,
-                            activeSource,
-                          ),
-                  ),
-                ),
-              ),
-
-              if (availableSources.length > 1)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                    child: _SourceFilterBar(
-                      sources: availableSources,
-                      selectedSource: activeSource,
-                      onSelected: (source) {
-                        setState(() => _selectedSource = source);
-                      },
-                    ),
-                  ),
-                ),
-
-              if (sourceTotals.isNotEmpty)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-                    child: _SourceBreakdown(
-                      sourceTotals: sourceTotals,
-                      sourceEntryCounts: sourceEntryCounts,
-                      selectedSource: activeSource,
-                      isBusy: state.status == IncomesTabStatus.loadingSource,
-                      onSourceSelected: (source) {
-                        setState(() {
-                          _selectedSource =
-                              activeSource == source ? null : source;
-                        });
-                      },
-                      onRenameSource: AssociationLedgerAccess.canEdit
-                          ? (source) => _renameIncomeSource(
-                              source,
-                              availableSources,
-                            )
-                          : null,
-                      onRemoveSource: AssociationLedgerAccess.canEdit
-                          ? (source, count) =>
-                              _removeIncomeSource(source, count)
-                          : null,
-                    ),
-                  ),
-                ),
-
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          l10n.recentIncomes,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.textColor,
-                          ),
-                        ),
-                      ),
-                      if (sorted.isNotEmpty &&
-                          AssociationLedgerAccess.canEdit) ...[
-                        TextButton(
-                          onPressed: isClearingAll
-                              ? null
-                              : () => _confirmClearAll(sorted.length),
-                          style: TextButton.styleFrom(
-                            foregroundColor: AppColors.income,
-                            visualDensity: VisualDensity.compact,
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                          ),
-                          child: Text(l10n.clearAllIncomes),
-                        ),
-                        const SizedBox(width: 4),
-                      ],
-                      Text(
-                        l10n.listEntryCount(filtered.length),
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: AppColors.textColor.withValues(alpha: 0.5),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              if (filtered.isEmpty)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: sorted.isEmpty
-                      ? _EmptyState(onAdd: _openAddSheet)
-                      : _FilteredEmptyState(
-                          message: activeSource != null
-                              ? l10n.incomeFilterNoSourceEntries
-                              : l10n.homeFilterNoEntries,
-                          onClearFilter: activeSource != null
-                              ? () => setState(() => _selectedSource = null)
-                              : null,
-                        ),
-                )
-              else
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final income = filtered[index];
-
-                      final canEdit = AssociationLedgerAccess.canEdit;
-                      return IncomeListTile(
-                        income: income,
-                        onTap: canEdit ? () => _openEditSheet(income) : null,
-                        onDelete: canEdit
-                            ? () {
-                                context.read<IncomesTabBloc>().add(
-                                  DeleteIncomeEvent(income.id),
-                                );
-                              }
-                            : null,
-                      );
-                    }, childCount: filtered.length),
-                  ),
-                ),
-              ],
-            ),
-            ),
-          ),
-              if (isClearingAll)
-                const TabBusyOverlay(indicatorColor: AppColors.income),
-            ],
-          );
-            },
-          );
-        },
+            );
+          },
         ),
       ),
     );
@@ -422,8 +474,8 @@ class _IncomesTabState extends State<IncomesTab>
     if (newName == null || !mounted) return;
 
     context.read<IncomesTabBloc>().add(
-          RenameIncomeSourceEvent(fromSource: source, toSource: newName),
-        );
+      RenameIncomeSourceEvent(fromSource: source, toSource: newName),
+    );
 
     if (_selectedSource == source) {
       setState(() => _selectedSource = newName);
@@ -436,7 +488,7 @@ class _IncomesTabState extends State<IncomesTab>
 
     final action = await showModalBottomSheet<String>(
       context: context,
-shape: const RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) => Padding(
@@ -503,8 +555,8 @@ shape: const RoundedRectangleBorder(
 
     if (action == 'move') {
       context.read<IncomesTabBloc>().add(
-            RenameIncomeSourceEvent(fromSource: source, toSource: 'Other'),
-          );
+        RenameIncomeSourceEvent(fromSource: source, toSource: 'Other'),
+      );
       if (_selectedSource == source) {
         setState(() => _selectedSource = 'Other');
       }
@@ -547,7 +599,7 @@ shape: const RoundedRectangleBorder(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-shape: const RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (sheetContext) => AnimatedPadding(
@@ -701,15 +753,15 @@ class _SourceBreakdown extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               child: Container(
                 margin: const EdgeInsets.only(bottom: 8),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
                 decoration: AppDecorations.card(
                   borderColor: isSelected
                       ? AppColors.income
                       : AppColors.income.withValues(alpha: 0.12),
-                ).copyWith(
-                  color: isSelected ? AppColors.incomeLight : null,
-                ),
+                ).copyWith(color: isSelected ? AppColors.incomeLight : null),
                 child: Row(
                   children: [
                     Container(
@@ -766,48 +818,48 @@ class _SourceBreakdown extends StatelessWidget {
                     ),
                     if (onRenameSource != null || onRemoveSource != null)
                       PopupMenuButton<String>(
-                      enabled: !isBusy,
-                      icon: Icon(
-                        Icons.more_vert_rounded,
-                        color: AppColors.textColor.withValues(alpha: 0.45),
+                        enabled: !isBusy,
+                        icon: Icon(
+                          Icons.more_vert_rounded,
+                          color: AppColors.textColor.withValues(alpha: 0.45),
+                        ),
+                        onSelected: (value) {
+                          if (value == 'edit') {
+                            onRenameSource?.call(entry.key);
+                          } else if (value == 'remove') {
+                            onRemoveSource?.call(entry.key, count);
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          PopupMenuItem(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                const Icon(Icons.edit_outlined, size: 20),
+                                const SizedBox(width: 10),
+                                Text(l10n.incomeSourceManageEdit),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'remove',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.delete_outline_rounded,
+                                  size: 20,
+                                  color: AppColors.errorColor,
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  l10n.incomeSourceManageRemove,
+                                  style: TextStyle(color: AppColors.errorColor),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      onSelected: (value) {
-                        if (value == 'edit') {
-                          onRenameSource?.call(entry.key);
-                        } else if (value == 'remove') {
-                          onRemoveSource?.call(entry.key, count);
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        PopupMenuItem(
-                          value: 'edit',
-                          child: Row(
-                            children: [
-                              const Icon(Icons.edit_outlined, size: 20),
-                              const SizedBox(width: 10),
-                              Text(l10n.incomeSourceManageEdit),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem(
-                          value: 'remove',
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.delete_outline_rounded,
-                                size: 20,
-                                color: AppColors.errorColor,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                l10n.incomeSourceManageRemove,
-                                style: TextStyle(color: AppColors.errorColor),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
@@ -833,14 +885,8 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: AppDecorations.summaryCard([
-        AppColors.incomeDark,
-        AppColors.income,
-        AppColors.incomeBill,
-      ]),
+    return ThemedSummaryCard(
+      accent: AppColors.income,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -925,10 +971,7 @@ class _FilteredEmptyState extends StatelessWidget {
   final String message;
   final VoidCallback? onClearFilter;
 
-  const _FilteredEmptyState({
-    required this.message,
-    this.onClearFilter,
-  });
+  const _FilteredEmptyState({required this.message, this.onClearFilter});
 
   @override
   Widget build(BuildContext context) {

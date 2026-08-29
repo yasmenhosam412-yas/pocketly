@@ -243,10 +243,6 @@ shape: const RoundedRectangleBorder(
   }
 }
 
-/// Opens bill reminders and requests notification permission when enabling.
-///
-/// Uses [rootNavigatorKey] so navigation still works after the settings sheet
-/// is popped (its [BuildContext] is deactivated).
 Future<void> openBillRemindersScreen() async {
   final prefs = getIt<BillReminderPreferences>();
   if (prefs.enabled) {

@@ -17,8 +17,9 @@ class CurrencyPreferences extends ChangeNotifier {
   Future<void> load() async {
     _displayCode = CurrencyConverter.defaultDisplayCode;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_storageKey, _displayCode);
-    notifyListeners();
+    if (prefs.getString(_storageKey) != _displayCode) {
+      await prefs.setString(_storageKey, _displayCode);
+    }
   }
 
   set displayCode(String code) {

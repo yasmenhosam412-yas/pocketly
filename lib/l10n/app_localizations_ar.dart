@@ -12,6 +12,48 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appTitle => 'imrpo';
 
   @override
+  String get exitPressTwiceMore => 'اضغط رجوع مرتين كمان للخروج';
+
+  @override
+  String get exitPressOnceMore => 'اضغط رجوع مرة كمان للخروج';
+
+  @override
+  String get homeGuideNext => 'التالي';
+
+  @override
+  String get homeGuideDone => 'تمام';
+
+  @override
+  String get homeGuideTabsTitle => 'تبويبات فلوسك';
+
+  @override
+  String get homeGuideTabsBody => 'تنقل بين الدخل، المصاريف، الرصيد، القروض، والخطط.';
+
+  @override
+  String get homeGuideIncomeTitle => 'ضيف أول دخل';
+
+  @override
+  String get homeGuideIncomeBody => 'اضغط إضافة دخل وسجّل مرتب أو شغل حر أو أي فلوس داخلة.';
+
+  @override
+  String get homeGuideExpenseTitle => 'سجّل المصاريف';
+
+  @override
+  String get homeGuideExpenseBody => 'من تبويب المصاريف اضغط إضافة مصروف أول ما تصرف.';
+
+  @override
+  String get homeGuideImportTitle => 'استورد من الرسائل';
+
+  @override
+  String get homeGuideImportBody => 'من استيراد تقدر تجيب المعاملات من الرسائل من غير ما تكتبها بإيدك.';
+
+  @override
+  String get homeGuideSettingsTitle => 'الإعدادات';
+
+  @override
+  String get homeGuideSettingsBody => 'من هنا تغيّر العملة واللغة والمظهر وقفل التطبيق. رسوم آخر 3 شهور من الإعدادات أو شريحة الإحصائيات في الرئيسية.';
+
+  @override
   String get onboardingSkip => 'تخطي';
 
   @override
@@ -54,6 +96,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tabStatistics => 'إحصائيات';
 
   @override
+  String get tabLoans => 'القروض';
+
+  @override
   String get statisticsLast3Months => 'آخر 3 شهور';
 
   @override
@@ -84,6 +129,145 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get statisticsEmpty => 'سجّل دخل ومصاريف عشان تشوف رسوم آخر 3 شهور.';
+
+  @override
+  String get loanNewFab => 'قرض جديد';
+
+  @override
+  String get loanAddTitle => 'إضافة قرض';
+
+  @override
+  String get loanEditTitle => 'تعديل القرض';
+
+  @override
+  String get loanPersonLabel => 'الشخص';
+
+  @override
+  String get loanPersonHint => 'مع مين القرض؟';
+
+  @override
+  String get loanDirectionLabel => 'النوع';
+
+  @override
+  String get loanDirectionGiven => 'أنا سلفت';
+
+  @override
+  String get loanDirectionReceived => 'أنا استلفت';
+
+  @override
+  String get loanPrincipalLabel => 'المبلغ';
+
+  @override
+  String get loanRepaidLabel => 'اتسدد منه';
+
+  @override
+  String get loanDueDateOptional => 'تاريخ الاستحقاق (اختياري)';
+
+  @override
+  String get loanNotesOptional => 'ملاحظات (اختياري)';
+
+  @override
+  String get loanNotesHint => 'السبب أو أي حاجة تفتكرها';
+
+  @override
+  String get loanSave => 'حفظ القرض';
+
+  @override
+  String get loanUpdate => 'تحديث القرض';
+
+  @override
+  String get loanRecordPayment => 'تسجيل دفعة';
+
+  @override
+  String get loanPaymentAmount => 'مبلغ الدفعة';
+
+  @override
+  String get loanPaymentSubmit => 'حفظ الدفعة';
+
+  @override
+  String get loanOverview => 'وضع القروض';
+
+  @override
+  String get loanOwedToYou => 'مستحق لك';
+
+  @override
+  String get loanYouOwe => 'عليك';
+
+  @override
+  String get loanNetPositive => 'الصافي: الناس مديونة لك أكتر';
+
+  @override
+  String get loanNetNegative => 'الصافي: أنت مديون أكتر';
+
+  @override
+  String get loanOpenCount => 'مفتوحة';
+
+  @override
+  String get loanOverdueCount => 'متأخرة';
+
+  @override
+  String get loanSettledCount => 'اتسددت';
+
+  @override
+  String loanRemainingOf(String remaining, String principal) {
+    return '$remaining متبقي من $principal';
+  }
+
+  @override
+  String loanOfPrincipal(String amount) {
+    return 'من $amount';
+  }
+
+  @override
+  String get loanTapToEdit => 'اضغط لتعديل القرض';
+
+  @override
+  String get loanSettledBadge => 'اتسدد';
+
+  @override
+  String get loanOverdueBadge => 'متأخر';
+
+  @override
+  String get loanEmptyTitle => 'تابع الفلوس اللي سلفتها أو استلفتها';
+
+  @override
+  String get loanEmptySubtitle => 'ضيف قرض، سجّل الدفعات، وشوف اللي لسه مستحق.';
+
+  @override
+  String get loanFilterAll => 'الكل';
+
+  @override
+  String get loanFilterGiven => 'سلفت';
+
+  @override
+  String get loanFilterReceived => 'استلفت';
+
+  @override
+  String get loanFilterOverdue => 'متأخر';
+
+  @override
+  String get loanFilterSettled => 'اتسدد';
+
+  @override
+  String get loanFilterEmpty => 'مفيش حاجة في الفلتر ده.';
+
+  @override
+  String get loansSectionTitle => 'القروض';
+
+  @override
+  String get errorEnterPersonName => 'اكتب اسم الشخص';
+
+  @override
+  String get errorEnterLoanAmount => 'اكتب مبلغ قرض صحيح';
+
+  @override
+  String get errorRepaidExceedsPrincipal => 'المسدد مش ممكن يزيد عن مبلغ القرض';
+
+  @override
+  String get errorEnterPaymentAmount => 'اكتب مبلغ دفعة صحيح';
+
+  @override
+  String get errorPaymentExceedsRemaining => 'الدفعة مش ممكن تزيد عن المبلغ المتبقي';
 
   @override
   String get associationPersonal => 'شخصي';
@@ -1406,6 +1590,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorEnterValidAmount => 'اكتب مبلغ صح';
+
+  @override
+  String pocketInsufficientFunds(String amount) {
+    return 'مفيش كفاية في المحفظة. المتاح: $amount';
+  }
 
   @override
   String get errorEnterCategoryName => 'اكتب اسم التصنيف';
