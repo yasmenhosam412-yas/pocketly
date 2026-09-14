@@ -1,4 +1,6 @@
 import 'package:imrpo/core/models/parsed_financial_entry.dart';
+import 'package:imrpo/core/services/merchant_memory_store.dart';
+import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/sms_import_service.dart';
 import 'package:imrpo/core/services/transaction_text_parser.dart';
 import 'package:imrpo/core/services/sms_imported_registry.dart';
@@ -91,14 +93,23 @@ class SmsBulkImportService {
       final date = entry.date ?? DateTime.now();
 
       if (entry.type == FinancialEntryType.expense) {
+        final category = entry.expenseCategory ?? resolvedExpenseCategory;
+        final paidFrom = entry.paidFrom ?? expensePaidFrom;
         final result = await _addExpense(
           title,
-          entry.expenseCategory ?? resolvedExpenseCategory,
+          category,
           baseAmount,
           date,
-          incomeSource: entry.paidFrom ?? expensePaidFrom,
+          incomeSource: paidFrom,
         );
-        result.fold((_) => failed++, (_) => expenseCount++);
+        result.fold((_) => failed++, (_) {
+          expenseCount++;
+          getIt<MerchantMemoryStore>().remember(
+            title: title,
+            category: category,
+            paidFrom: paidFrom,
+          );
+        });
       } else {
         final result = await _addIncome(
           title,
@@ -156,23 +167,31 @@ class SmsBulkImportService {
       final date = item.parsed.date ?? item.date;
 
       if (item.parsed.type == FinancialEntryType.expense) {
+        final category =
+            item.parsed.expenseCategory ?? resolvedExpenseCategory;
+        final paidFrom = item.parsed.paidFrom ?? expensePaidFrom;
         final result = await _addExpense(
           title,
-          resolvedExpenseCategory,
+          category,
           baseAmount,
           date,
-          incomeSource: expensePaidFrom,
+          incomeSource: paidFrom,
         );
         result.fold((_) => failed++, (_) {
           expenseCount++;
           importedIds.add(item.id);
+          getIt<MerchantMemoryStore>().remember(
+            title: title,
+            category: category,
+            paidFrom: paidFrom,
+          );
         });
       } else {
         final result = await _addIncome(
           title,
           baseAmount,
           date,
-          resolvedIncomeSource,
+          item.parsed.incomeSource ?? resolvedIncomeSource,
         );
         result.fold((_) => failed++, (_) {
           incomeCount++;

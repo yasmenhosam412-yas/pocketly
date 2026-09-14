@@ -11,7 +11,7 @@ class BulkImportCategories {
   final String? expenseCategory;
   /// Income row category (source name on income records).
   final String? incomeSource;
-  /// Expense [incomeSource] (paid from), chosen in the sheet only.
+  /// Expense [incomeSource] (paid from). Bulk sheet default; per-SMS value preferred.
   final String? expensePaidFrom;
 
   const BulkImportCategories({

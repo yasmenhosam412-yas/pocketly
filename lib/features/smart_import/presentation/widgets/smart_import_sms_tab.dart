@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/core/models/parsed_financial_entry.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
@@ -144,6 +145,17 @@ class _SmartImportSmsTabState extends State<SmartImportSmsTab> {
     _selectedIds.removeWhere((id) => !_messages.any((m) => m.id == id));
   }
 
+  String? _majorityValue(Iterable<String?> values) {
+    final counts = <String, int>{};
+    for (final value in values) {
+      final trimmed = value?.trim();
+      if (trimmed == null || trimmed.isEmpty) continue;
+      counts[trimmed] = (counts[trimmed] ?? 0) + 1;
+    }
+    if (counts.isEmpty) return null;
+    return counts.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
+  }
+
   void _swapType(SmsMessageItem item) {
     final nextType = item.parsed.type == FinancialEntryType.expense
         ? FinancialEntryType.income
@@ -257,6 +269,21 @@ class _SmartImportSmsTabState extends State<SmartImportSmsTab> {
       context,
       hasExpense: hasExpense,
       hasIncome: hasIncome,
+      initialExpenseCategory: _majorityValue(
+        items
+            .where((m) => m.parsed.type == FinancialEntryType.expense)
+            .map((m) => m.parsed.expenseCategory),
+      ),
+      initialExpensePaidFrom: _majorityValue(
+        items
+            .where((m) => m.parsed.type == FinancialEntryType.expense)
+            .map((m) => m.parsed.paidFrom),
+      ),
+      initialIncomeSource: _majorityValue(
+        items
+            .where((m) => m.parsed.type == FinancialEntryType.income)
+            .map((m) => m.parsed.incomeSource),
+      ),
     );
     if (categories == null || !mounted) return;
 
@@ -339,6 +366,9 @@ class _SmartImportSmsTabState extends State<SmartImportSmsTab> {
       title: item.displayTitle(fallback),
       amountInBase: item.parsed.amountInBase,
       date: item.parsed.date ?? item.date,
+      expenseCategory: item.parsed.expenseCategory,
+      paidFrom: item.parsed.paidFrom,
+      incomeSource: item.parsed.incomeSource,
     );
 
     if (isSmartImportSheetSuccess(result)) {
@@ -753,7 +783,7 @@ class _SmsPaginationFooter extends StatelessWidget {
   }
 }
 
-class _SmsListTile extends StatelessWidget {
+class _SmsListTile extends StatefulWidget {
   final SmsMessageItem item;
   final bool isImported;
   final bool canImport;
@@ -779,31 +809,60 @@ class _SmsListTile extends StatelessWidget {
   });
 
   @override
+  State<_SmsListTile> createState() => _SmsListTileState();
+}
+
+class _SmsListTileState extends State<_SmsListTile> {
+  bool _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).toString();
+    final item = widget.item;
     final parsed = item.parsed;
     final isExpense = parsed.type == FinancialEntryType.expense;
     final accent = isExpense ? AppColors.expense : AppColors.income;
+    final bodyText = item.body.trim().isNotEmpty
+        ? item.body.trim()
+        : parsed.rawText.trim();
+    final metaLabel = isExpense
+        ? [
+            if (parsed.expenseCategory != null &&
+                parsed.expenseCategory!.trim().isNotEmpty)
+              localizeExpenseCategory(l10n, parsed.expenseCategory!),
+            if (parsed.paidFrom != null && parsed.paidFrom!.trim().isNotEmpty)
+              '${l10n.expensePaidFromField}: ${localizeIncomeCategory(l10n, parsed.paidFrom!)}',
+          ].join(' · ')
+        : (parsed.incomeSource != null &&
+                parsed.incomeSource!.trim().isNotEmpty
+            ? localizeIncomeCategory(l10n, parsed.incomeSource!)
+            : '');
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: disabled || isImported ? null : (onToggleSelect ?? onAdd),
-        onLongPress: disabled || !canImport || isImported ? null : onAdd,
+        onTap: widget.disabled || widget.isImported
+            ? null
+            : (widget.onToggleSelect ?? widget.onAdd),
+        onLongPress: widget.disabled ||
+                !widget.canImport ||
+                widget.isImported
+            ? null
+            : widget.onAdd,
         borderRadius: BorderRadius.circular(16),
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: AppDecorations.card(
-            borderColor: isImported
+            borderColor: widget.isImported
                 ? AppColors.border
-                : selected
+                : widget.selected
                     ? AppColors.primary
                     : accent.withValues(alpha: 0.18),
           ).copyWith(
-            color: isImported
+            color: widget.isImported
                 ? AppColors.surface
-                : selected
+                : widget.selected
                     ? AppColors.primaryInk.withValues(alpha: 0.05)
                     : AppColors.card,
           ),
@@ -813,12 +872,12 @@ class _SmsListTile extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (canImport)
+                  if (widget.canImport)
                     Checkbox(
-                      value: selected,
-                      onChanged: disabled
+                      value: widget.selected,
+                      onChanged: widget.disabled
                           ? null
-                          : (_) => onToggleSelect?.call(),
+                          : (_) => widget.onToggleSelect?.call(),
                       activeColor: AppColors.primaryInk,
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       visualDensity: VisualDensity.compact,
@@ -880,6 +939,19 @@ class _SmsListTile extends StatelessWidget {
                             color: AppColors.textColor.withValues(alpha: 0.5),
                           ),
                         ),
+                        if (metaLabel.isNotEmpty) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            metaLabel,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: accent.withValues(alpha: 0.85),
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -895,10 +967,12 @@ class _SmsListTile extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (!disabled && canImport && !isImported) ...[
+                  if (!widget.disabled &&
+                      widget.canImport &&
+                      !widget.isImported) ...[
                     const SizedBox(width: 4),
                     IconButton(
-                      onPressed: onAdd,
+                      onPressed: widget.onAdd,
                       icon: const Icon(Icons.open_in_new_rounded),
                       color: AppColors.primaryInk,
                       tooltip: l10n.smartImportTapToImport,
@@ -912,7 +986,7 @@ class _SmsListTile extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.only(left: canImport ? 40 : 12),
+                padding: EdgeInsets.only(left: widget.canImport ? 40 : 12),
                 child: Row(
                   children: [
                     Icon(
@@ -931,11 +1005,13 @@ class _SmsListTile extends StatelessWidget {
                         color: AppColors.textColor.withValues(alpha: 0.55),
                       ),
                     ),
-                    if (isImported) ...[
+                    if (widget.isImported) ...[
                       const Spacer(),
-                      if (canReimport && onAddAgain != null && !disabled)
+                      if (widget.canReimport &&
+                          widget.onAddAgain != null &&
+                          !widget.disabled)
                         TextButton(
-                          onPressed: onAddAgain,
+                          onPressed: widget.onAddAgain,
                           style: TextButton.styleFrom(
                             foregroundColor: AppColors.primaryInk,
                             padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -980,7 +1056,7 @@ class _SmsListTile extends StatelessWidget {
                             ],
                           ),
                         ),
-                    ] else if (!canImport) ...[
+                    ] else if (!widget.canImport) ...[
                       const Spacer(),
                       Text(
                         '—',
@@ -1002,13 +1078,72 @@ class _SmsListTile extends StatelessWidget {
                   ],
                 ),
               ),
+              if (bodyText.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Padding(
+                  padding: EdgeInsets.only(left: widget.canImport ? 40 : 12),
+                  child: Material(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    child: InkWell(
+                      onTap: () => setState(() => _expanded = !_expanded),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              bodyText,
+                              style: TextStyle(
+                                fontSize: 13,
+                                height: 1.45,
+                                color: AppColors.textColor.withValues(
+                                  alpha: 0.78,
+                                ),
+                              ),
+                              maxLines: _expanded ? null : 3,
+                              overflow: _expanded
+                                  ? TextOverflow.visible
+                                  : TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Icon(
+                                  _expanded
+                                      ? Icons.expand_less_rounded
+                                      : Icons.expand_more_rounded,
+                                  size: 18,
+                                  color: AppColors.primaryInk,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  _expanded
+                                      ? l10n.smartImportSmsHideBody
+                                      : l10n.smartImportSmsShowBody,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.primaryInk,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
               const SizedBox(height: 8),
               Padding(
-                padding: EdgeInsets.only(left: canImport ? 40 : 12),
+                padding: EdgeInsets.only(left: widget.canImport ? 40 : 12),
                 child: SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    onPressed: disabled ? null : onSwapType,
+                    onPressed: widget.disabled ? null : widget.onSwapType,
                     icon: const Icon(Icons.swap_horiz_rounded, size: 16),
                     label: Text(
                       isExpense

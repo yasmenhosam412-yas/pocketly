@@ -575,6 +575,132 @@ abstract class AppLocalizations {
   /// **'Loans'**
   String get loansSectionTitle;
 
+  /// No description provided for @walletSplitTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Split a payment'**
+  String get walletSplitTitle;
+
+  /// No description provided for @walletSplitFabSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You paid via InstaPay or wallet — track who owes you.'**
+  String get walletSplitFabSubtitle;
+
+  /// No description provided for @walletSplitSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Logs the full amount as an expense, then creates a loan for each person who should pay you back.'**
+  String get walletSplitSubtitle;
+
+  /// No description provided for @walletSplitWhatFor.
+  ///
+  /// In en, this message translates to:
+  /// **'What was it for?'**
+  String get walletSplitWhatFor;
+
+  /// No description provided for @walletSplitWhatForHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Dinner, groceries, trip…'**
+  String get walletSplitWhatForHint;
+
+  /// No description provided for @walletSplitYouPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'You paid'**
+  String get walletSplitYouPaid;
+
+  /// No description provided for @walletSplitPaidFromHint.
+  ///
+  /// In en, this message translates to:
+  /// **'InstaPay, Vodafone Cash, Visa, Cash…'**
+  String get walletSplitPaidFromHint;
+
+  /// No description provided for @walletSplitIncludeMe.
+  ///
+  /// In en, this message translates to:
+  /// **'I was part of this'**
+  String get walletSplitIncludeMe;
+
+  /// No description provided for @walletSplitIncludeMeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your share is not added as a loan — only others who owe you.'**
+  String get walletSplitIncludeMeHint;
+
+  /// No description provided for @walletSplitEqualShares.
+  ///
+  /// In en, this message translates to:
+  /// **'Split equally'**
+  String get walletSplitEqualShares;
+
+  /// No description provided for @walletSplitYourShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Your share: {amount}'**
+  String walletSplitYourShare(String amount);
+
+  /// No description provided for @walletSplitPeopleSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Who owes you'**
+  String get walletSplitPeopleSection;
+
+  /// No description provided for @walletSplitAddPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Add person'**
+  String get walletSplitAddPerson;
+
+  /// No description provided for @walletSplitPersonHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Friend’s name'**
+  String get walletSplitPersonHint;
+
+  /// No description provided for @walletSplitNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional note or transfer reference'**
+  String get walletSplitNotesHint;
+
+  /// No description provided for @walletSplitSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save split'**
+  String get walletSplitSave;
+
+  /// No description provided for @walletSplitTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter what the payment was for'**
+  String get walletSplitTitleRequired;
+
+  /// No description provided for @walletSplitPersonRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter each person’s name'**
+  String get walletSplitPersonRequired;
+
+  /// No description provided for @walletSplitAmountsExceedTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'People’s shares are more than the total you paid'**
+  String get walletSplitAmountsExceedTotal;
+
+  /// No description provided for @walletSplitAmountsMustMatchTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'People’s shares must add up to the total'**
+  String get walletSplitAmountsMustMatchTotal;
+
+  /// No description provided for @walletSplitSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved expense and {count} loan(s)'**
+  String walletSplitSuccess(int count);
+
   /// No description provided for @errorEnterPersonName.
   ///
   /// In en, this message translates to:
@@ -1949,6 +2075,18 @@ abstract class AppLocalizations {
   /// **'Calculator'**
   String get settingsCalculator;
 
+  /// No description provided for @settingsRateApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rate on Google Play'**
+  String get settingsRateApp;
+
+  /// No description provided for @settingsRateAppFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t open Google Play. Try again later.'**
+  String get settingsRateAppFailed;
+
   /// No description provided for @calculatorTitle.
   ///
   /// In en, this message translates to:
@@ -2482,6 +2620,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'InstaPay'**
   String get paymentPresetInstaPay;
+
+  /// No description provided for @walletUsdLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'USD Wallet'**
+  String get walletUsdLabel;
+
+  /// No description provided for @walletEurLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'EUR Wallet'**
+  String get walletEurLabel;
+
+  /// No description provided for @salaryDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary day'**
+  String get salaryDayTitle;
+
+  /// No description provided for @salaryDaySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Split your paycheck into rent, bills, plans, and leftover spending money.'**
+  String get salaryDaySubtitle;
+
+  /// No description provided for @salaryDayPaydayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Payday: day {day} of each month'**
+  String salaryDayPaydayLabel(int day);
+
+  /// No description provided for @salaryDayAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary amount'**
+  String get salaryDayAmountLabel;
+
+  /// No description provided for @salaryDayRentPct.
+  ///
+  /// In en, this message translates to:
+  /// **'Rent'**
+  String get salaryDayRentPct;
+
+  /// No description provided for @salaryDayBillsPct.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills'**
+  String get salaryDayBillsPct;
+
+  /// No description provided for @salaryDayPlansPct.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans / savings'**
+  String get salaryDayPlansPct;
+
+  /// No description provided for @salaryDayLeftoverPct.
+  ///
+  /// In en, this message translates to:
+  /// **'Leftover · {pct}%'**
+  String salaryDayLeftoverPct(String pct);
+
+  /// No description provided for @salaryDayPromptToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open this after I add a Salary income'**
+  String get salaryDayPromptToggle;
+
+  /// No description provided for @salaryDayPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Allocation preview'**
+  String get salaryDayPreview;
+
+  /// No description provided for @salaryDayPreviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a salary amount to preview the split.'**
+  String get salaryDayPreviewEmpty;
+
+  /// No description provided for @salaryDayLeftoverHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Stays in your Salary pocket — not booked as an expense'**
+  String get salaryDayLeftoverHint;
+
+  /// No description provided for @salaryDayApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply allocation'**
+  String get salaryDayApply;
+
+  /// No description provided for @salaryDaySaveRulesOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Save rules only'**
+  String get salaryDaySaveRulesOnly;
+
+  /// No description provided for @salaryDayRulesSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Salary day rules saved'**
+  String get salaryDayRulesSaved;
+
+  /// No description provided for @salaryDaySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Allocated into {count} expense(s)'**
+  String salaryDaySuccess(int count);
+
+  /// No description provided for @yearInReviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Year in review'**
+  String get yearInReviewTitle;
+
+  /// No description provided for @yearInReviewHero.
+  ///
+  /// In en, this message translates to:
+  /// **'Your {year} money story'**
+  String yearInReviewHero(int year);
+
+  /// No description provided for @yearInReviewHeroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You earned {income} and spent {expenses}.'**
+  String yearInReviewHeroBody(String income, String expenses);
+
+  /// No description provided for @yearInReviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No income or expenses logged for this year yet.'**
+  String get yearInReviewEmpty;
+
+  /// No description provided for @yearInReviewNet.
+  ///
+  /// In en, this message translates to:
+  /// **'Net'**
+  String get yearInReviewNet;
+
+  /// No description provided for @yearInReviewSavingsRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings rate'**
+  String get yearInReviewSavingsRate;
+
+  /// No description provided for @yearInReviewLoansClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Loans closed'**
+  String get yearInReviewLoansClosed;
+
+  /// No description provided for @yearInReviewLoansOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Loans open'**
+  String get yearInReviewLoansOpen;
+
+  /// No description provided for @yearInReviewBestMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Best month'**
+  String get yearInReviewBestMonth;
+
+  /// No description provided for @yearInReviewToughMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Toughest month'**
+  String get yearInReviewToughMonth;
+
+  /// No description provided for @yearInReviewMonthNet.
+  ///
+  /// In en, this message translates to:
+  /// **'{month} · net {amount}'**
+  String yearInReviewMonthNet(String month, String amount);
+
+  /// No description provided for @yearInReviewTopCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Top categories'**
+  String get yearInReviewTopCategories;
+
+  /// No description provided for @yearInReviewTopMerchants.
+  ///
+  /// In en, this message translates to:
+  /// **'Top merchants'**
+  String get yearInReviewTopMerchants;
+
+  /// No description provided for @yearInReviewIncomeSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Income sources'**
+  String get yearInReviewIncomeSources;
 
   /// No description provided for @incomeBySource.
   ///
@@ -4295,6 +4625,18 @@ abstract class AppLocalizations {
   /// **'Bank income'**
   String get smartImportSmsTitleIncome;
 
+  /// No description provided for @smartImportSmsShowBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Show full message'**
+  String get smartImportSmsShowBody;
+
+  /// No description provided for @smartImportSmsHideBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide message'**
+  String get smartImportSmsHideBody;
+
   /// No description provided for @smartImportTapToImport.
   ///
   /// In en, this message translates to:
@@ -4340,19 +4682,19 @@ abstract class AppLocalizations {
   /// No description provided for @smartImportBulkCategorySheetHint.
   ///
   /// In en, this message translates to:
-  /// **'Choose category and source here. SMS text is only used for titles, not for income source or paid-from.'**
+  /// **'Choose category and source. We suggest values from the message when we can — change if needed.'**
   String get smartImportBulkCategorySheetHint;
 
   /// No description provided for @smartImportBulkExpensePaidFromHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap a source for imported expenses (not read from SMS).'**
+  /// **'Suggested from SMS when possible — change if needed.'**
   String get smartImportBulkExpensePaidFromHint;
 
   /// No description provided for @smartImportBulkIncomeSourceHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap a source for imported incomes (not read from SMS).'**
+  /// **'Suggested from SMS when possible — change if needed.'**
   String get smartImportBulkIncomeSourceHint;
 
   /// No description provided for @smartImportBulkSelectPaidFrom.
@@ -4673,131 +5015,59 @@ abstract class AppLocalizations {
   /// **'Choose a photo (JPG, PNG, or WebP). Videos are not supported.'**
   String get expenseReceiptInvalidType;
 
-  /// No description provided for @csvImportTitle.
+  /// No description provided for @subscriptionsTitle.
   ///
   /// In en, this message translates to:
-  /// **'Import from CSV'**
-  String get csvImportTitle;
+  /// **'Subscriptions'**
+  String get subscriptionsTitle;
 
-  /// No description provided for @csvImportPickHint.
+  /// No description provided for @subscriptionsAdd.
   ///
   /// In en, this message translates to:
-  /// **'Import expenses and incomes from a spreadsheet export. Map columns on the next step.'**
-  String get csvImportPickHint;
+  /// **'Add subscription'**
+  String get subscriptionsAdd;
 
-  /// No description provided for @csvImportPickFile.
+  /// No description provided for @subscriptionsEmptyTitle.
   ///
   /// In en, this message translates to:
-  /// **'Choose CSV file'**
-  String get csvImportPickFile;
+  /// **'Track Netflix, gym, and bills'**
+  String get subscriptionsEmptyTitle;
 
-  /// No description provided for @csvImportFileSelected.
+  /// No description provided for @subscriptionsEmptySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Selected: {name}'**
-  String csvImportFileSelected(String name);
+  /// **'Add monthly subscriptions to see what’s due this week and your total spend.'**
+  String get subscriptionsEmptySubtitle;
 
-  /// No description provided for @csvImportEmpty.
+  /// No description provided for @subscriptionsMonthlyTotal.
   ///
   /// In en, this message translates to:
-  /// **'The file has no rows to import.'**
-  String get csvImportEmpty;
+  /// **'Monthly total'**
+  String get subscriptionsMonthlyTotal;
 
-  /// No description provided for @csvImportParseFailed.
+  /// No description provided for @subscriptionsCount.
   ///
   /// In en, this message translates to:
-  /// **'Could not read this CSV file.'**
-  String get csvImportParseFailed;
+  /// **'{count} subscriptions'**
+  String subscriptionsCount(int count);
 
-  /// No description provided for @csvImportFirstRowHeader.
+  /// No description provided for @subscriptionsDueThisWeek.
   ///
   /// In en, this message translates to:
-  /// **'First row is column headers'**
-  String get csvImportFirstRowHeader;
+  /// **'Due this week'**
+  String get subscriptionsDueThisWeek;
 
-  /// No description provided for @csvImportCurrencyHint.
+  /// No description provided for @subscriptionsAll.
   ///
   /// In en, this message translates to:
-  /// **'Amounts in file are in:'**
-  String get csvImportCurrencyHint;
+  /// **'All subscriptions'**
+  String get subscriptionsAll;
 
-  /// No description provided for @csvImportMapColumns.
+  /// No description provided for @subscriptionsDueOn.
   ///
   /// In en, this message translates to:
-  /// **'Map columns'**
-  String get csvImportMapColumns;
-
-  /// No description provided for @csvImportFieldSkip.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip'**
-  String get csvImportFieldSkip;
-
-  /// No description provided for @csvImportFieldType.
-  ///
-  /// In en, this message translates to:
-  /// **'Income or expense'**
-  String get csvImportFieldType;
-
-  /// No description provided for @csvImportBack.
-  ///
-  /// In en, this message translates to:
-  /// **'Back'**
-  String get csvImportBack;
-
-  /// No description provided for @csvImportPreview.
-  ///
-  /// In en, this message translates to:
-  /// **'Preview'**
-  String get csvImportPreview;
-
-  /// No description provided for @csvImportPreviewSummary.
-  ///
-  /// In en, this message translates to:
-  /// **'{total} rows ready ({expenses} expenses, {incomes} incomes)'**
-  String csvImportPreviewSummary(int total, int expenses, int incomes);
-
-  /// No description provided for @csvImportTypeExpense.
-  ///
-  /// In en, this message translates to:
-  /// **'Expense'**
-  String get csvImportTypeExpense;
-
-  /// No description provided for @csvImportTypeIncome.
-  ///
-  /// In en, this message translates to:
-  /// **'Income'**
-  String get csvImportTypeIncome;
-
-  /// No description provided for @csvImportMoreRows.
-  ///
-  /// In en, this message translates to:
-  /// **'+ {count} more rows'**
-  String csvImportMoreRows(int count);
-
-  /// No description provided for @csvImportRun.
-  ///
-  /// In en, this message translates to:
-  /// **'Import all'**
-  String get csvImportRun;
-
-  /// No description provided for @csvImportProgress.
-  ///
-  /// In en, this message translates to:
-  /// **'Importing…'**
-  String get csvImportProgress;
-
-  /// No description provided for @csvImportSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Imported {count} transactions'**
-  String csvImportSuccess(int count);
-
-  /// No description provided for @csvImportPartial.
-  ///
-  /// In en, this message translates to:
-  /// **'Imported {ok}, {failed} failed'**
-  String csvImportPartial(int ok, int failed);
+  /// **'Due {date}'**
+  String subscriptionsDueOn(String date);
 
   /// No description provided for @zakatTitle.
   ///

@@ -291,7 +291,7 @@ class _BalanceTabState extends State<BalanceTab>
                       color: AppColors.balance,
                       onRefresh: _refreshTransactions,
                       child: CustomScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
+                        physics: kHomeTabScrollPhysics,
                         slivers: [
                           SliverToBoxAdapter(
                             child: Padding(

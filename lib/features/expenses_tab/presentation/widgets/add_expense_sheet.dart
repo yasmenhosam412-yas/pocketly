@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:imrpo/features/expenses_tab/data/models/expense_model.dart';
 import 'package:intl/intl.dart';
 import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
+import 'package:imrpo/core/services/merchant_memory_store.dart';
 import 'package:imrpo/core/services/receipt_storage_service.dart';
 import 'package:imrpo/core/utils/receipt_image_validator.dart';
 import 'package:imrpo/core/services/service_locator.dart';
@@ -26,6 +28,8 @@ class AddExpenseSheet extends StatefulWidget {
   final String? initialTitle;
   final double? initialAmount;
   final DateTime? initialDate;
+  final String? initialCategory;
+  final String? initialPaidFrom;
 
   const AddExpenseSheet({
     super.key,
@@ -33,6 +37,8 @@ class AddExpenseSheet extends StatefulWidget {
     this.initialTitle,
     this.initialAmount,
     this.initialDate,
+    this.initialCategory,
+    this.initialPaidFrom,
   });
 
   @override
@@ -120,6 +126,19 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
       }
       if (widget.initialDate != null) {
         _date = widget.initialDate!;
+      }
+      final initialCategory = widget.initialCategory?.trim();
+      if (initialCategory != null && initialCategory.isNotEmpty) {
+        if (_categories.contains(initialCategory)) {
+          _category = initialCategory;
+        } else {
+          _category = _otherCategory;
+          _otherCategoryController.text = initialCategory;
+        }
+      }
+      final paidFrom = widget.initialPaidFrom?.trim();
+      if (paidFrom != null && paidFrom.isNotEmpty) {
+        _paidFromSource = paidFrom;
       }
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -476,6 +495,14 @@ class _AddExpenseSheetState extends State<AddExpenseSheet> {
           ),
         );
       }
+      // Learn merchant → category / paid-from for future SMS imports.
+      unawaited(
+        getIt<MerchantMemoryStore>().remember(
+          title: title,
+          category: category,
+          paidFrom: _paidFromSource,
+        ),
+      );
     } catch (_) {
       if (!mounted) return;
       setState(() => _awaitingSubmitResult = false);

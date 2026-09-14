@@ -72,6 +72,10 @@ String localizeIncomeCategory(AppLocalizations l10n, String stored) {
       return l10n.paymentPresetVodafoneCash;
     case 'InstaPay':
       return l10n.paymentPresetInstaPay;
+    case 'USD Wallet':
+      return l10n.walletUsdLabel;
+    case 'EUR Wallet':
+      return l10n.walletEurLabel;
     default:
       return stored;
   }

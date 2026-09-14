@@ -130,31 +130,37 @@ class _HomeTabBody extends StatefulWidget {
 class _HomeTabBodyState extends State<_HomeTabBody> {
   bool _showGuide = false;
   bool _openingExpenseFromWidget = false;
+  int _displayedTabIndex = 0;
 
   List<_HomeTabItem> _tabs(AppLocalizations l10n) => [
     _HomeTabItem(
       label: l10n.tabIncomes,
-      icon: Icons.south_west_rounded,
+      icon: Icons.trending_up_rounded,
+      selectedIcon: Icons.trending_up_rounded,
       color: AppColors.income,
     ),
     _HomeTabItem(
       label: l10n.tabExpenses,
-      icon: Icons.north_east_rounded,
+      icon: Icons.trending_down_rounded,
+      selectedIcon: Icons.trending_down_rounded,
       color: AppColors.expense,
     ),
     _HomeTabItem(
       label: l10n.tabBalance,
       icon: Icons.account_balance_wallet_outlined,
+      selectedIcon: Icons.account_balance_wallet_rounded,
       color: AppColors.balance,
     ),
     _HomeTabItem(
       label: l10n.tabLoans,
       icon: Icons.handshake_outlined,
+      selectedIcon: Icons.handshake_rounded,
       color: AppColors.loans,
     ),
     _HomeTabItem(
       label: l10n.tabPlans,
       icon: Icons.flag_outlined,
+      selectedIcon: Icons.flag_rounded,
       color: AppColors.plans,
     ),
   ];
@@ -162,6 +168,7 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
   @override
   void initState() {
     super.initState();
+    _displayedTabIndex = widget.tabController.index;
     widget.tabController.addListener(_onTabChanged);
     PocketlyHomeWidget.addExpenseLaunch.addListener(_onAddExpenseLaunch);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -222,7 +229,11 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
   }
 
   void _onTabChanged() {
-    if (mounted) setState(() {});
+    if (!mounted) return;
+    final index = widget.tabController.index;
+    if (index == _displayedTabIndex) return;
+    _displayedTabIndex = index;
+    setState(() {});
   }
 
   @override
@@ -245,7 +256,8 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
               Scaffold(
                 backgroundColor: palette.scaffold,
                 body: NestedScrollView(
-                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                  physics: const ClampingScrollPhysics(),
+                  headerSliverBuilder: (context, _) => [
                     SliverToBoxAdapter(
                       child: _HomeHeader(
                         selectedTab: selectedTab,
@@ -259,28 +271,41 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
                     const SliverToBoxAdapter(child: AssociationLedgerBanner()),
                     SliverToBoxAdapter(
                       child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                        padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
                         child: KeyedSubtree(
                           key: HomeGuideTargets.tabs,
-                          child: Row(
-                            children: List.generate(tabs.length, (index) {
-                              final tab = tabs[index];
-                              final isSelected = selected == index;
-                              return Expanded(
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                    left: index == 0 ? 0 : 4,
-                                    right: index == tabs.length - 1 ? 0 : 4,
-                                  ),
+                          child: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: palette.card,
+                              borderRadius: BorderRadius.circular(22),
+                              border: Border.all(
+                                color: palette.stroke.withValues(alpha: 0.1),
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: palette.stroke.withValues(alpha: 0.07),
+                                  blurRadius: 0,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              children: List.generate(tabs.length, (index) {
+                                final tab = tabs[index];
+                                final isSelected = selected == index;
+                                return Expanded(
+                                  flex: isSelected ? 14 : 10,
                                   child: _TabChip(
                                     tab: tab,
                                     isSelected: isSelected,
                                     onTap: () =>
                                         widget.tabController.animateTo(index),
                                   ),
-                                ),
-                              );
-                            }),
+                                );
+                              }),
+                            ),
                           ),
                         ),
                       ),
@@ -316,11 +341,13 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
 class _HomeTabItem {
   final String label;
   final IconData icon;
+  final IconData selectedIcon;
   final Color color;
 
   const _HomeTabItem({
     required this.label,
     required this.icon,
+    required this.selectedIcon,
     required this.color,
   });
 }
@@ -885,59 +912,78 @@ class _TabChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final palette = context.appPalette;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final ink = ColorContrast.asInk(tab.color, onDarkSurface: isDark);
+    final onAccent = ColorContrast.onColor(tab.color);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(17),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
+          duration: const Duration(milliseconds: 240),
           curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          margin: const EdgeInsets.symmetric(horizontal: 2),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
           decoration: BoxDecoration(
-            color: isSelected ? tab.color : palette.card,
-            borderRadius: BorderRadius.circular(16),
+            color: isSelected
+                ? tab.color.withValues(alpha: isDark ? 0.28 : 0.16)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(17),
             border: Border.all(
               color: isSelected
-                  ? palette.stroke.withValues(alpha: 0.18)
-                  : palette.stroke.withValues(alpha: 0.1),
-              width: 1.5,
+                  ? tab.color.withValues(alpha: 0.45)
+                  : Colors.transparent,
+              width: 1.4,
             ),
-            boxShadow: [
-              BoxShadow(
-                color: (isSelected ? tab.color : palette.stroke).withValues(
-                  alpha: isSelected ? 0.28 : 0.08,
-                ),
-                blurRadius: 0,
-                offset: const Offset(0, 3),
-              ),
-            ],
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                tab.icon,
-                size: 20,
-                color: isSelected
-                    ? ColorContrast.onColor(tab.color)
-                    : ColorContrast.asInk(
-                        tab.color,
-                        onDarkSurface:
-                            Theme.of(context).brightness == Brightness.dark,
-                      ),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 240),
+                curve: Curves.easeOutCubic,
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: isSelected ? tab.color : palette.scaffold,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isSelected
+                        ? tab.color
+                        : tab.color.withValues(alpha: 0.28),
+                    width: 1.3,
+                  ),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: tab.color.withValues(alpha: 0.35),
+                            blurRadius: 0,
+                            offset: const Offset(0, 2),
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Icon(
+                  isSelected ? tab.selectedIcon : tab.icon,
+                  size: isSelected ? 17 : 16,
+                  color: isSelected ? onAccent : ink,
+                ),
               ),
               const SizedBox(height: 6),
               Text(
                 tab.label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
+                  fontSize: isSelected ? 11 : 10,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  letterSpacing: isSelected ? 0.1 : 0,
                   color: isSelected
-                      ? ColorContrast.onColor(tab.color)
-                      : palette.textPrimary,
+                      ? ink
+                      : palette.textMuted.withValues(alpha: 0.9),
                 ),
               ),
             ],

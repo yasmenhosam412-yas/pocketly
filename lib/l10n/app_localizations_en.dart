@@ -255,6 +255,73 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loansSectionTitle => 'Loans';
 
   @override
+  String get walletSplitTitle => 'Split a payment';
+
+  @override
+  String get walletSplitFabSubtitle => 'You paid via InstaPay or wallet — track who owes you.';
+
+  @override
+  String get walletSplitSubtitle => 'Logs the full amount as an expense, then creates a loan for each person who should pay you back.';
+
+  @override
+  String get walletSplitWhatFor => 'What was it for?';
+
+  @override
+  String get walletSplitWhatForHint => 'Dinner, groceries, trip…';
+
+  @override
+  String get walletSplitYouPaid => 'You paid';
+
+  @override
+  String get walletSplitPaidFromHint => 'InstaPay, Vodafone Cash, Visa, Cash…';
+
+  @override
+  String get walletSplitIncludeMe => 'I was part of this';
+
+  @override
+  String get walletSplitIncludeMeHint => 'Your share is not added as a loan — only others who owe you.';
+
+  @override
+  String get walletSplitEqualShares => 'Split equally';
+
+  @override
+  String walletSplitYourShare(String amount) {
+    return 'Your share: $amount';
+  }
+
+  @override
+  String get walletSplitPeopleSection => 'Who owes you';
+
+  @override
+  String get walletSplitAddPerson => 'Add person';
+
+  @override
+  String get walletSplitPersonHint => 'Friend’s name';
+
+  @override
+  String get walletSplitNotesHint => 'Optional note or transfer reference';
+
+  @override
+  String get walletSplitSave => 'Save split';
+
+  @override
+  String get walletSplitTitleRequired => 'Enter what the payment was for';
+
+  @override
+  String get walletSplitPersonRequired => 'Enter each person’s name';
+
+  @override
+  String get walletSplitAmountsExceedTotal => 'People’s shares are more than the total you paid';
+
+  @override
+  String get walletSplitAmountsMustMatchTotal => 'People’s shares must add up to the total';
+
+  @override
+  String walletSplitSuccess(int count) {
+    return 'Saved expense and $count loan(s)';
+  }
+
+  @override
   String get errorEnterPersonName => 'Enter the person\'s name';
 
   @override
@@ -1008,6 +1075,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsCalculator => 'Calculator';
 
   @override
+  String get settingsRateApp => 'Rate on Google Play';
+
+  @override
+  String get settingsRateAppFailed => 'Couldn’t open Google Play. Try again later.';
+
+  @override
   String get calculatorTitle => 'Calculator';
 
   @override
@@ -1283,6 +1356,114 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paymentPresetInstaPay => 'InstaPay';
+
+  @override
+  String get walletUsdLabel => 'USD Wallet';
+
+  @override
+  String get walletEurLabel => 'EUR Wallet';
+
+  @override
+  String get salaryDayTitle => 'Salary day';
+
+  @override
+  String get salaryDaySubtitle => 'Split your paycheck into rent, bills, plans, and leftover spending money.';
+
+  @override
+  String salaryDayPaydayLabel(int day) {
+    return 'Payday: day $day of each month';
+  }
+
+  @override
+  String get salaryDayAmountLabel => 'Salary amount';
+
+  @override
+  String get salaryDayRentPct => 'Rent';
+
+  @override
+  String get salaryDayBillsPct => 'Bills';
+
+  @override
+  String get salaryDayPlansPct => 'Plans / savings';
+
+  @override
+  String salaryDayLeftoverPct(String pct) {
+    return 'Leftover · $pct%';
+  }
+
+  @override
+  String get salaryDayPromptToggle => 'Open this after I add a Salary income';
+
+  @override
+  String get salaryDayPreview => 'Allocation preview';
+
+  @override
+  String get salaryDayPreviewEmpty => 'Enter a salary amount to preview the split.';
+
+  @override
+  String get salaryDayLeftoverHint => 'Stays in your Salary pocket — not booked as an expense';
+
+  @override
+  String get salaryDayApply => 'Apply allocation';
+
+  @override
+  String get salaryDaySaveRulesOnly => 'Save rules only';
+
+  @override
+  String get salaryDayRulesSaved => 'Salary day rules saved';
+
+  @override
+  String salaryDaySuccess(int count) {
+    return 'Allocated into $count expense(s)';
+  }
+
+  @override
+  String get yearInReviewTitle => 'Year in review';
+
+  @override
+  String yearInReviewHero(int year) {
+    return 'Your $year money story';
+  }
+
+  @override
+  String yearInReviewHeroBody(String income, String expenses) {
+    return 'You earned $income and spent $expenses.';
+  }
+
+  @override
+  String get yearInReviewEmpty => 'No income or expenses logged for this year yet.';
+
+  @override
+  String get yearInReviewNet => 'Net';
+
+  @override
+  String get yearInReviewSavingsRate => 'Savings rate';
+
+  @override
+  String get yearInReviewLoansClosed => 'Loans closed';
+
+  @override
+  String get yearInReviewLoansOpen => 'Loans open';
+
+  @override
+  String get yearInReviewBestMonth => 'Best month';
+
+  @override
+  String get yearInReviewToughMonth => 'Toughest month';
+
+  @override
+  String yearInReviewMonthNet(String month, String amount) {
+    return '$month · net $amount';
+  }
+
+  @override
+  String get yearInReviewTopCategories => 'Top categories';
+
+  @override
+  String get yearInReviewTopMerchants => 'Top merchants';
+
+  @override
+  String get yearInReviewIncomeSources => 'Income sources';
 
   @override
   String get incomeBySource => 'By source';
@@ -2269,6 +2450,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smartImportSmsTitleIncome => 'Bank income';
 
   @override
+  String get smartImportSmsShowBody => 'Show full message';
+
+  @override
+  String get smartImportSmsHideBody => 'Hide message';
+
+  @override
   String get smartImportTapToImport => 'Tap to import';
 
   @override
@@ -2296,13 +2483,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smartImportBulkCategorySheetTitle => 'Category for import';
 
   @override
-  String get smartImportBulkCategorySheetHint => 'Choose category and source here. SMS text is only used for titles, not for income source or paid-from.';
+  String get smartImportBulkCategorySheetHint => 'Choose category and source. We suggest values from the message when we can — change if needed.';
 
   @override
-  String get smartImportBulkExpensePaidFromHint => 'Tap a source for imported expenses (not read from SMS).';
+  String get smartImportBulkExpensePaidFromHint => 'Suggested from SMS when possible — change if needed.';
 
   @override
-  String get smartImportBulkIncomeSourceHint => 'Tap a source for imported incomes (not read from SMS).';
+  String get smartImportBulkIncomeSourceHint => 'Suggested from SMS when possible — change if needed.';
 
   @override
   String get smartImportBulkSelectPaidFrom => 'Select paid from';
@@ -2470,76 +2657,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get expenseReceiptInvalidType => 'Choose a photo (JPG, PNG, or WebP). Videos are not supported.';
 
   @override
-  String get csvImportTitle => 'Import from CSV';
+  String get subscriptionsTitle => 'Subscriptions';
 
   @override
-  String get csvImportPickHint => 'Import expenses and incomes from a spreadsheet export. Map columns on the next step.';
+  String get subscriptionsAdd => 'Add subscription';
 
   @override
-  String get csvImportPickFile => 'Choose CSV file';
+  String get subscriptionsEmptyTitle => 'Track Netflix, gym, and bills';
 
   @override
-  String csvImportFileSelected(String name) {
-    return 'Selected: $name';
+  String get subscriptionsEmptySubtitle => 'Add monthly subscriptions to see what’s due this week and your total spend.';
+
+  @override
+  String get subscriptionsMonthlyTotal => 'Monthly total';
+
+  @override
+  String subscriptionsCount(int count) {
+    return '$count subscriptions';
   }
 
   @override
-  String get csvImportEmpty => 'The file has no rows to import.';
+  String get subscriptionsDueThisWeek => 'Due this week';
 
   @override
-  String get csvImportParseFailed => 'Could not read this CSV file.';
+  String get subscriptionsAll => 'All subscriptions';
 
   @override
-  String get csvImportFirstRowHeader => 'First row is column headers';
-
-  @override
-  String get csvImportCurrencyHint => 'Amounts in file are in:';
-
-  @override
-  String get csvImportMapColumns => 'Map columns';
-
-  @override
-  String get csvImportFieldSkip => 'Skip';
-
-  @override
-  String get csvImportFieldType => 'Income or expense';
-
-  @override
-  String get csvImportBack => 'Back';
-
-  @override
-  String get csvImportPreview => 'Preview';
-
-  @override
-  String csvImportPreviewSummary(int total, int expenses, int incomes) {
-    return '$total rows ready ($expenses expenses, $incomes incomes)';
-  }
-
-  @override
-  String get csvImportTypeExpense => 'Expense';
-
-  @override
-  String get csvImportTypeIncome => 'Income';
-
-  @override
-  String csvImportMoreRows(int count) {
-    return '+ $count more rows';
-  }
-
-  @override
-  String get csvImportRun => 'Import all';
-
-  @override
-  String get csvImportProgress => 'Importing…';
-
-  @override
-  String csvImportSuccess(int count) {
-    return 'Imported $count transactions';
-  }
-
-  @override
-  String csvImportPartial(int ok, int failed) {
-    return 'Imported $ok, $failed failed';
+  String subscriptionsDueOn(String date) {
+    return 'Due $date';
   }
 
   @override

@@ -16,6 +16,8 @@ class PaymentMethodsStore extends ChangeNotifier {
     'Bank transfer',
     'Vodafone Cash',
     'InstaPay',
+    'USD Wallet',
+    'EUR Wallet',
     'Freelance',
     'Business',
     'Investment',

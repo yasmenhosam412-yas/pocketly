@@ -23,7 +23,11 @@ import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/expense_shortcuts_store.dart';
 import 'package:imrpo/core/services/smart_import_draft_store.dart';
 import 'package:imrpo/core/services/shared_text_import_store.dart';
+import 'package:imrpo/core/services/merchant_memory_store.dart';
 import 'package:imrpo/core/services/payment_methods_store.dart';
+import 'package:imrpo/core/services/salary_day_preferences.dart';
+import 'package:imrpo/core/services/wallet_currency_store.dart';
+import 'package:imrpo/features/salary_day/domain/salary_day_allocator.dart';
 import 'package:imrpo/core/services/locale_preferences.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
 import 'package:imrpo/core/services/association_invite_disclaimer_prefs.dart';
@@ -107,6 +111,7 @@ import 'package:imrpo/features/loans_tab/domain/usecases/delete_loan_usecase.dar
 import 'package:imrpo/features/loans_tab/domain/usecases/get_all_loans_usecase.dart';
 import 'package:imrpo/features/loans_tab/domain/usecases/update_loan_repaid_usecase.dart';
 import 'package:imrpo/features/loans_tab/domain/usecases/update_loan_usecase.dart';
+import 'package:imrpo/features/loans_tab/domain/services/wallet_split_service.dart';
 import 'package:imrpo/features/loans_tab/presentation/bloc/loans_tab_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -171,6 +176,15 @@ void setupServiceLocator() {
     () => SharedTextImportStore(),
   );
   getIt.registerLazySingleton<PaymentMethodsStore>(() => PaymentMethodsStore());
+  getIt.registerLazySingleton<WalletCurrencyStore>(() => WalletCurrencyStore());
+  getIt.registerLazySingleton<MerchantMemoryStore>(() => MerchantMemoryStore());
+  getIt.registerLazySingleton<SalaryDayPreferences>(() => SalaryDayPreferences());
+  getIt.registerLazySingleton(
+    () => SalaryDayAllocator(
+      addExpenseUsecase: getIt<AddExpenseUsecase>(),
+      updatePlanSavedUsecase: getIt<UpdatePlanSavedUsecase>(),
+    ),
+  );
   getIt.registerLazySingleton<ExpenseShortcutsStore>(() => ExpenseShortcutsStore());
   getIt.registerLazySingleton<SmsImportService>(() => SmsImportService());
 
@@ -505,6 +519,13 @@ void setupServiceLocator() {
 
   getIt.registerLazySingleton(
     () => GetAllLoansUsecase(loanRepository: getIt<LoanRepository>()),
+  );
+
+  getIt.registerLazySingleton(
+    () => WalletSplitService(
+      addExpenseUsecase: getIt<AddExpenseUsecase>(),
+      addLoanUsecase: getIt<AddLoanUsecase>(),
+    ),
   );
 
   getIt.registerFactory<LoansTabBloc>(

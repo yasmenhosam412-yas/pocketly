@@ -15,14 +15,17 @@ import 'package:imrpo/core/services/offline_transaction_store.dart';
 import 'package:imrpo/core/services/offline_transaction_sync_service.dart';
 import 'package:imrpo/core/services/onboarding_preferences.dart';
 import 'package:imrpo/core/services/payment_methods_store.dart';
+import 'package:imrpo/core/services/salary_day_preferences.dart';
+import 'package:imrpo/core/services/merchant_memory_store.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/share_text_import_bridge.dart';
 import 'package:imrpo/core/services/sms_imported_registry.dart';
 import 'package:imrpo/core/services/theme_preferences.dart';
+import 'package:imrpo/core/services/wallet_currency_store.dart';
 import 'package:imrpo/core/utils/locale_date_format.dart';
 import 'package:imrpo/features/recurring_transactions/data/recurring_transaction_post_service.dart';
 
-/// Route, theme, locale, and lock — must finish before [runApp].
+/// Theme, locale, onboarding, and lock flag — needed before the first route.
 Future<void> loadCriticalAppStartup() {
   return Future.wait([
     getIt<LocalePreferences>().load(),
@@ -41,6 +44,9 @@ Future<void> runDeferredAppStartup() async {
     getIt<CurrencyPreferences>().load(),
     getIt<ExpenseShortcutsStore>().load(),
     getIt<PaymentMethodsStore>().load(),
+    getIt<WalletCurrencyStore>().load(),
+    getIt<MerchantMemoryStore>().load(),
+    getIt<SalaryDayPreferences>().load(),
     getIt<SmsImportedRegistry>().load(),
     getIt<NotificationInboxStore>().load(),
   ]);

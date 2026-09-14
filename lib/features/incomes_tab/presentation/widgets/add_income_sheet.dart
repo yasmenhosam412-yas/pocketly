@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
+import 'package:imrpo/core/services/salary_day_preferences.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/widgets/app_toast.dart';
@@ -20,6 +21,7 @@ class AddIncomeSheet extends StatefulWidget {
   final String? initialTitle;
   final double? initialAmount;
   final DateTime? initialDate;
+  final String? initialSource;
 
   const AddIncomeSheet({
     super.key,
@@ -27,6 +29,7 @@ class AddIncomeSheet extends StatefulWidget {
     this.initialTitle,
     this.initialAmount,
     this.initialDate,
+    this.initialSource,
   });
 
   @override
@@ -67,6 +70,10 @@ class _AddIncomeSheetState extends State<AddIncomeSheet> {
       if (widget.initialDate != null) {
         _date = widget.initialDate!;
       }
+      final initialSource = widget.initialSource?.trim();
+      if (initialSource != null && initialSource.isNotEmpty) {
+        _sourceController.text = initialSource;
+      }
       if (_sourceController.text.trim().isEmpty) {
         _sourceController.text = PaymentMethodsStore.defaultPresets.first;
       }
@@ -74,6 +81,7 @@ class _AddIncomeSheetState extends State<AddIncomeSheet> {
   }
 
   bool _didPop = false;
+  String _successResult = 'added';
 
   void _closeSheetOnSuccess() {
     if (_didPop) return;
@@ -81,7 +89,7 @@ class _AddIncomeSheetState extends State<AddIncomeSheet> {
     FocusManager.instance.primaryFocus?.unfocus();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      Navigator.of(context).pop(_isEditing ? 'updated' : 'added');
+      Navigator.of(context).pop(_isEditing ? 'updated' : _successResult);
     });
   }
 
@@ -313,6 +321,14 @@ class _AddIncomeSheetState extends State<AddIncomeSheet> {
         ? null
         : _currencyCode;
     final entryAmount = entryCurrency != null ? amount : null;
+
+    final sourceLooksSalary = source.toLowerCase().contains('salary') ||
+        source.toLowerCase().contains('راتب') ||
+        source.toLowerCase().contains('مرتب');
+    final prompt = getIt<SalaryDayPreferences>().promptOnSalaryIncome;
+    _successResult = (!_isEditing && sourceLooksSalary && prompt)
+        ? 'added_salary:$baseAmount'
+        : 'added';
 
     final bloc = context.read<IncomesTabBloc>();
     if (_isEditing) {

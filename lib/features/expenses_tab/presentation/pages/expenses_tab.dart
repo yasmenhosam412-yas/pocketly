@@ -488,7 +488,7 @@ class _ExpensesTabState extends State<ExpensesTab>
                           );
                         },
                         child: CustomScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(),
+                          physics: kHomeTabScrollPhysics,
                           slivers: [
                             SliverToBoxAdapter(
                               child: Padding(

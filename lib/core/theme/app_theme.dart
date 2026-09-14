@@ -8,9 +8,19 @@ import 'package:imrpo/core/utils/app_colors.dart';
 class AppTheme {
   AppTheme._();
 
-  static ThemeData get light => _build(AppColorScheme.light);
+  static ThemeData? _light;
+  static ThemeData? _dark;
 
-  static ThemeData get dark => _build(AppColorScheme.dark);
+  static void invalidate() {
+    _light = null;
+    _dark = null;
+  }
+
+  static ThemeData get light => _light ??= _build(AppColorScheme.light);
+
+  static ThemeData get dark => _dark ??= _build(AppColorScheme.dark);
+
+  static ThemeData of({required bool isDark}) => isDark ? dark : light;
 
   static TextTheme _textTheme(TextTheme base, AppColorScheme scheme) {
     final quicksand = GoogleFonts.quicksandTextTheme(base);

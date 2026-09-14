@@ -1,5 +1,7 @@
 import 'package:imrpo/core/models/parsed_financial_entry.dart';
 import 'package:imrpo/core/services/currency_converter.dart';
+import 'package:imrpo/core/services/merchant_memory_store.dart';
+import 'package:imrpo/core/services/service_locator.dart';
 
 /// Extracts amount, title, date, and type from OCR or SMS text (Arabic + English).
 class TransactionTextParser {
@@ -564,8 +566,7 @@ class TransactionTextParser {
     return cleaned.length >= 11;
   }
 
-  /// Maps SMS text to an income-source label for expense [incomeSource] (paid from).
-  /// Returns names aligned with add-expense chips (e.g. Visa Card, Cash).
+  /// Maps SMS text to an expense paid-from label (add-expense chips).
   static String? inferExpensePaidFrom({
     required String body,
     String? sender,
@@ -583,7 +584,23 @@ class TransactionTextParser {
 
     if (_isAtmWithdrawal(lower)) return 'Cash';
 
+    if (_mentionsInstaPay(lower) || _isInstantOutgoingTransfer(lower)) {
+      return 'InstaPay';
+    }
+
     if (_isVodafoneCashExpense(lower) ||
+        _isVodafoneCashMessage(lower) ||
+        (sender != null && _senderLooksLikeVodafone(sender))) {
+      if (!_isWalletIncomingTransfer(lower) &&
+          !_isVodafoneWalletCredit(lower) &&
+          !_isEnglishWalletReceive(lower)) {
+        return 'Vodafone Cash';
+      }
+    }
+
+    if (_isEtisalatCashMessage(lower) ||
+        _isOrangeCashMessage(lower) ||
+        _isWePayMessage(lower) ||
         (_isAnyMobileWalletMessage(lower) &&
             !_isWalletIncomingTransfer(lower) &&
             !_isVodafoneWalletCredit(lower) &&
@@ -596,11 +613,188 @@ class TransactionTextParser {
         isMobileWalletSender(sender) &&
         !_isWalletIncomingTransfer(lower) &&
         !_isVodafoneWalletCredit(lower)) {
-      return 'Cash';
+      return _senderLooksLikeVodafone(sender) ? 'Vodafone Cash' : 'Cash';
+    }
+
+    if (_isBankAccountTransaction(lower) ||
+        lower.contains('تحويل') ||
+        lower.contains('transfer') ||
+        lower.contains('debited from your account')) {
+      return 'Bank transfer';
     }
 
     return null;
   }
+
+  /// Maps merchant / bill keywords in SMS to a preset expense category.
+  static String? inferExpenseCategory({
+    required String body,
+    String? title,
+  }) {
+    final lower = _normalizeSmsText(body).toLowerCase();
+    final haystack = '$lower ${title?.toLowerCase() ?? ''}';
+
+    if (_isBillPayment(lower) ||
+        _isCardBillPayment(lower) ||
+        lower.contains('فاتورة') ||
+        lower.contains('فاتوره')) {
+      return 'Bills';
+    }
+
+    if (_isAtmWithdrawal(lower)) return 'Other';
+
+    var best = '';
+    var bestScore = 0;
+    for (final entry in _expenseCategoryKeywords.entries) {
+      final score = entry.value.where(haystack.contains).length;
+      if (score > bestScore) {
+        best = entry.key;
+        bestScore = score;
+      }
+    }
+    if (bestScore > 0) return best;
+    return null;
+  }
+
+  /// Maps incoming SMS to an income-source chip label.
+  static String? inferIncomeSource({
+    required String body,
+    String? sender,
+  }) {
+    final lower = _normalizeSmsText(body).toLowerCase();
+
+    if (_isSalaryBonusCredit(lower)) return 'Salary';
+
+    if (_mentionsInstaPay(lower)) return 'InstaPay';
+
+    if (_isVodafoneCashIncome(lower) ||
+        _isVodafoneWalletCredit(lower) ||
+        _isEnglishWalletReceive(lower) ||
+        (sender != null && _senderLooksLikeVodafone(sender))) {
+      return 'Vodafone Cash';
+    }
+
+    if (_isEtisalatCashMessage(lower) ||
+        _isOrangeCashMessage(lower) ||
+        _isWePayMessage(lower) ||
+        _isWalletIncomingTransfer(lower)) {
+      return 'Cash';
+    }
+
+    if (_isCardBillPayment(lower)) return 'Visa Card';
+
+    if (_isBankAccountTransaction(lower) ||
+        lower.contains('credited') ||
+        lower.contains('ايداع') ||
+        lower.contains('إيداع')) {
+      return 'Bank transfer';
+    }
+
+    return null;
+  }
+
+  static bool _mentionsInstaPay(String lower) {
+    return lower.contains('instapay') ||
+        lower.contains('insta pay') ||
+        lower.contains('انستاباي') ||
+        lower.contains('إنستاباي');
+  }
+
+  static bool _senderLooksLikeVodafone(String sender) {
+    final s = sender.toLowerCase();
+    return s.contains('vodafone') ||
+        s.contains('vf-cash') ||
+        s.contains('vfcash') ||
+        s.contains('فودافون');
+  }
+
+  static const _expenseCategoryKeywords = <String, List<String>>{
+    'Food': [
+      'talabat',
+      'tawbakh',
+      'starbucks',
+      'mcdonald',
+      'kfc',
+      'pizza',
+      'burger',
+      'restaurant',
+      'cafe',
+      'café',
+      'grocery',
+      'supermarket',
+      'carrefour',
+      'spinneys',
+      'كارفور',
+      'تالاباط',
+      'طلب',
+      'مطعم',
+      'قهوة',
+      'قهوه',
+      'سوبرماركت',
+      'شاورما',
+      'كشري',
+    ],
+    'Transport': [
+      'uber',
+      'careem',
+      'didi',
+      'taxi',
+      'metro',
+      'parking',
+      'petrol',
+      'fuel',
+      'shell',
+      'total energies',
+      'أوبر',
+      'اوبر',
+      'كريم',
+      'تاكسي',
+      'مترو',
+      'بنزين',
+      'سولار',
+      'مواصلات',
+    ],
+    'Shopping': [
+      'amazon',
+      'noon',
+      'jumia',
+      'ikea',
+      'zara',
+      'hm.com',
+      'mall',
+      'btech',
+      'راية',
+      'نون',
+      'أمازون',
+      'امازون',
+      'جوميا',
+      'تسوق',
+      'ملابس',
+    ],
+    'Rent': [
+      'rent',
+      'rental',
+      'إيجار',
+      'ايجار',
+    ],
+    'Bills': [
+      'electric',
+      'electricity',
+      'water',
+      'internet',
+      'wifi',
+      'we internet',
+      'orange dsl',
+      'vodafone dsl',
+      'utility',
+      'كهربا',
+      'كهرباء',
+      'مياه',
+      'انترنت',
+      'إنترنت',
+      'غاز',
+    ],
+  };
 
   /// Best title for lists/forms — never a call-center short code.
   static String? resolveSmsTitle({
@@ -995,18 +1189,44 @@ class TransactionTextParser {
     final amount = _extractAmount(normalized);
     if (amount == null || amount <= 0) return null;
 
+    final title = resolveSmsTitle(
+      parsedTitle: resolveTitleFromBody(normalized),
+      body: normalized,
+      sender: sender,
+    );
+
+    String? expenseCategory;
+    String? paidFrom;
+    String? incomeSource;
+    if (type == FinancialEntryType.expense) {
+      final memory = _merchantMemoryLookup(title);
+      expenseCategory =
+          memory?.category ?? inferExpenseCategory(body: normalized, title: title);
+      paidFrom = memory?.paidFrom ??
+          inferExpensePaidFrom(body: normalized, sender: sender);
+    } else {
+      incomeSource = inferIncomeSource(body: normalized, sender: sender);
+    }
+
     return ParsedFinancialEntry(
-      title: resolveSmsTitle(
-        parsedTitle: resolveTitleFromBody(normalized),
-        body: normalized,
-        sender: sender,
-      ),
+      title: title,
       amount: amount,
       currencyCode: _extractCurrency(normalized) ?? defaultCurrencyCode,
       date: _extractDate(normalized, reference: reference) ?? reference,
       type: type,
       rawText: normalized,
+      expenseCategory: expenseCategory,
+      paidFrom: paidFrom,
+      incomeSource: incomeSource,
     );
+  }
+
+  static MerchantMemoryEntry? _merchantMemoryLookup(String? title) {
+    try {
+      return getIt<MerchantMemoryStore>().lookup(title);
+    } catch (_) {
+      return null;
+    }
   }
 
   /// OCR / invoice parsing (broader than SMS).

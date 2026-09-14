@@ -4,6 +4,7 @@ import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/payment_methods_store.dart';
 import 'package:imrpo/core/services/service_locator.dart';
+import 'package:imrpo/core/services/wallet_currency_store.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/widgets/payment_method_chips_section.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
@@ -62,10 +63,9 @@ class _EditInitialBalanceSheetState extends State<EditInitialBalanceSheet> {
       );
     } else {
       for (final entry in store.entries) {
-        final display = CurrencyConverter.fromBase(
-          entry.amount,
-          CurrencyConverter.defaultDisplayCode,
-        );
+        final currency =
+            getIt<WalletCurrencyStore>().currencyFor(entry.source);
+        final display = CurrencyConverter.fromBase(entry.amount, currency);
         final text = display == display.roundToDouble()
             ? display.toInt().toString()
             : display.toStringAsFixed(2);
@@ -119,13 +119,12 @@ class _EditInitialBalanceSheetState extends State<EditInitialBalanceSheet> {
         return;
       }
       if (source.isEmpty) continue;
+      final currency =
+          getIt<WalletCurrencyStore>().currencyFor(source);
       parsed.add(
         InitialBalanceEntry(
           source: source,
-          amount: CurrencyConverter.toBase(
-            amount,
-            CurrencyConverter.defaultDisplayCode,
-          ),
+          amount: CurrencyConverter.toBase(amount, currency),
         ),
       );
     }

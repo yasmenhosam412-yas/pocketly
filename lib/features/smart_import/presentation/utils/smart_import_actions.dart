@@ -73,12 +73,18 @@ Future<BulkImportCategories?> requestBulkImportCategories(
   BuildContext context, {
   required bool hasExpense,
   required bool hasIncome,
+  String? initialExpenseCategory,
+  String? initialIncomeSource,
+  String? initialExpensePaidFrom,
 }) {
   if (!hasExpense && !hasIncome) return Future.value(null);
   return showSmartImportBulkCategorySheet(
     context,
     needsExpenseCategory: hasExpense,
     needsIncomeSource: hasIncome,
+    initialExpenseCategory: initialExpenseCategory,
+    initialIncomeSource: initialIncomeSource,
+    initialExpensePaidFrom: initialExpensePaidFrom,
   );
 }
 
@@ -88,6 +94,9 @@ Future<String?> showSmartImportEntrySheet(
   String? title,
   double? amountInBase,
   DateTime? date,
+  String? expenseCategory,
+  String? paidFrom,
+  String? incomeSource,
 }) async {
   if (!context.mounted) return null;
 
@@ -106,11 +115,14 @@ Future<String?> showSmartImportEntrySheet(
               initialTitle: title,
               initialAmount: displayAmount,
               initialDate: date,
+              initialCategory: expenseCategory,
+              initialPaidFrom: paidFrom,
             )
           : AddIncomeSheet(
               initialTitle: title,
               initialAmount: displayAmount,
               initialDate: date,
+              initialSource: incomeSource,
             );
 
       return AnimatedPadding(

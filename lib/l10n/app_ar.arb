@@ -96,6 +96,37 @@
   "loanFilterSettled": "اتسدد",
   "loanFilterEmpty": "مفيش حاجة في الفلتر ده.",
   "loansSectionTitle": "القروض",
+  "walletSplitTitle": "قسّم دفعة",
+  "walletSplitFabSubtitle": "دفعت بـ InstaPay أو محفظة — سجّل مين عليه فلوس.",
+  "walletSplitSubtitle": "بنسجّل المبلغ كله كمصروف، وبعدين نعمل قرض لكل واحد المفروض يرجعلك.",
+  "walletSplitWhatFor": "دفعت على إيه؟",
+  "walletSplitWhatForHint": "عشا، سوبرماركت، نزهة…",
+  "walletSplitYouPaid": "أنت دفعت",
+  "walletSplitPaidFromHint": "InstaPay، فودافون كاش، فيزا، كاش…",
+  "walletSplitIncludeMe": "أنا كنت معاكم",
+  "walletSplitIncludeMeHint": "نصيبك مش بيتسجل كقرض — بس اللي عليهم فلوس.",
+  "walletSplitEqualShares": "تقسيم بالتساوي",
+  "walletSplitYourShare": "نصيبك: {amount}",
+  "@walletSplitYourShare": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "walletSplitPeopleSection": "مين عليه فلوس",
+  "walletSplitAddPerson": "ضيف شخص",
+  "walletSplitPersonHint": "اسم صاحبك",
+  "walletSplitNotesHint": "ملاحظة أو رقم التحويل (اختياري)",
+  "walletSplitSave": "حفظ التقسيم",
+  "walletSplitTitleRequired": "اكتب دفعت على إيه",
+  "walletSplitPersonRequired": "اكتب اسم كل واحد",
+  "walletSplitAmountsExceedTotal": "حصص الناس أكبر من اللي دفعته",
+  "walletSplitAmountsMustMatchTotal": "حصص الناس لازم تساوي المبلغ كله",
+  "walletSplitSuccess": "اتسجل مصروف و{count} قرض",
+  "@walletSplitSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "errorEnterPersonName": "اكتب اسم الشخص",
   "errorEnterLoanAmount": "اكتب مبلغ قرض صحيح",
   "errorRepaidExceedsPrincipal": "المسدد مش ممكن يزيد عن مبلغ القرض",
@@ -454,6 +485,8 @@
   "appearanceGradientWave": "موج",
   "appearanceGradientSoft": "ناعم",
   "settingsCalculator": "الآلة الحاسبة",
+  "settingsRateApp": "قيّم على Google Play",
+  "settingsRateAppFailed": "ما قدرناش نفتح Google Play. جرّب تاني.",
   "calculatorTitle": "الآلة الحاسبة",
   "languageEnglish": "إنجليزي",
   "languageArabic": "عربي",
@@ -555,6 +588,62 @@
   "paymentPresetBankTransfer": "تحويل بنك",
   "paymentPresetVodafoneCash": "فودافون كاش",
   "paymentPresetInstaPay": "إنستاباي",
+  "walletUsdLabel": "محفظة دولار",
+  "walletEurLabel": "محفظة يورو",
+  "salaryDayTitle": "يوم الراتب",
+  "salaryDaySubtitle": "قسّم راتبك على إيجار وفواتير وخطط، والباقي للصرف.",
+  "salaryDayPaydayLabel": "يوم الراتب: يوم {day} من كل شهر",
+  "@salaryDayPaydayLabel": {
+    "placeholders": { "day": { "type": "int" } }
+  },
+  "salaryDayAmountLabel": "مبلغ الراتب",
+  "salaryDayRentPct": "إيجار",
+  "salaryDayBillsPct": "فواتير",
+  "salaryDayPlansPct": "خطط / ادخار",
+  "salaryDayLeftoverPct": "الباقي · {pct}%",
+  "@salaryDayLeftoverPct": {
+    "placeholders": { "pct": { "type": "String" } }
+  },
+  "salaryDayPromptToggle": "افتح ده بعد ما أضيف دخل من نوع راتب",
+  "salaryDayPreview": "معاينة التقسيم",
+  "salaryDayPreviewEmpty": "اكتب مبلغ الراتب عشان تشوف التقسيم.",
+  "salaryDayLeftoverHint": "يفضل في جيب الراتب — مش بيتسجل كمصروف",
+  "salaryDayApply": "طبّق التقسيم",
+  "salaryDaySaveRulesOnly": "احفظ القواعد بس",
+  "salaryDayRulesSaved": "اتحفظت قواعد يوم الراتب",
+  "salaryDaySuccess": "اتوزع على {count} مصروف",
+  "@salaryDaySuccess": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "yearInReviewTitle": "مراجعة السنة",
+  "yearInReviewHero": "قصة فلوسك في {year}",
+  "@yearInReviewHero": {
+    "placeholders": { "year": { "type": "int" } }
+  },
+  "yearInReviewHeroBody": "كسبت {income} وصرفت {expenses}.",
+  "@yearInReviewHeroBody": {
+    "placeholders": {
+      "income": { "type": "String" },
+      "expenses": { "type": "String" }
+    }
+  },
+  "yearInReviewEmpty": "مفيش دخل أو مصاريف متسجلة للسنة دي لسه.",
+  "yearInReviewNet": "الصافي",
+  "yearInReviewSavingsRate": "نسبة الادخار",
+  "yearInReviewLoansClosed": "قروض اتسددت",
+  "yearInReviewLoansOpen": "قروض مفتوحة",
+  "yearInReviewBestMonth": "أحسن شهر",
+  "yearInReviewToughMonth": "أصعب شهر",
+  "yearInReviewMonthNet": "{month} · صافي {amount}",
+  "@yearInReviewMonthNet": {
+    "placeholders": {
+      "month": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "yearInReviewTopCategories": "أعلى التصنيفات",
+  "yearInReviewTopMerchants": "أعلى التجار",
+  "yearInReviewIncomeSources": "مصادر الدخل",
   "incomeBySource": "حسب المصدر",
   "balanceRemainingBySource": "الباقي حسب المصدر",
   "balanceWalletTitle": "الباقي في كل مصدر",
@@ -1072,6 +1161,8 @@
   "smartImportUnknownSender": "مرسل مش معروف",
   "smartImportSmsTitleExpense": "مصروف بنك",
   "smartImportSmsTitleIncome": "دخل بنك",
+  "smartImportSmsShowBody": "اعرض الرسالة كاملة",
+  "smartImportSmsHideBody": "اخفي الرسالة",
   "smartImportTapToImport": "اضغط للاستيراد",
   "smartImportAddAllExpenses": "ضيف كل المصاريف ({count})",
   "@smartImportAddAllExpenses": {
@@ -1094,9 +1185,9 @@
   "smartImportSelectAll": "حدّد الكل",
   "smartImportClearSelection": "الغِ التحديد",
   "smartImportBulkCategorySheetTitle": "التصنيف للاستيراد",
-  "smartImportBulkCategorySheetHint": "اختار التصنيف والمصدر هنا. نص الرسالة للعنوان بس، مش لمصدر الدخل ولا «دفعت من».",
-  "smartImportBulkExpensePaidFromHint": "اختار مصدر الدفع للمصاريف المستوردة (مش بيقرا من SMS).",
-  "smartImportBulkIncomeSourceHint": "اختار مصدر الدخل للدخل المستورد (مش بيقرا من SMS).",
+  "smartImportBulkCategorySheetHint": "اختار التصنيف والمصدر. بنقترح من الرسالة لما نقدر، وتقدر تغيّر.",
+  "smartImportBulkExpensePaidFromHint": "مقترح من الرسالة لو قدرنا — غيّره لو محتاج.",
+  "smartImportBulkIncomeSourceHint": "مقترح من الرسالة لو قدرنا — غيّره لو محتاج.",
   "smartImportBulkSelectPaidFrom": "اختار «دفعت من»",
   "smartImportBulkSelectIncomeSource": "اختار مصدر الدخل",
   "smartImportBulkExpenseCategory": "تصنيف المصروف",
@@ -1167,48 +1258,20 @@
   "expenseReceiptRemove": "إزالة",
   "expenseReceiptUploadFailed": "تعذّر رفع الإيصال. حاول مرة أخرى.",
   "expenseReceiptInvalidType": "اختر صورة (JPG أو PNG أو WebP). الفيديو غير مدعوم.",
-  "csvImportTitle": "استيراد من CSV",
-  "csvImportPickHint": "استورد المصاريف والدخل من ملف جدول. في الخطوة التالية حدّد الأعمدة.",
-  "csvImportPickFile": "اختر ملف CSV",
-  "csvImportFileSelected": "المحدد: {name}",
-  "@csvImportFileSelected": {
-    "placeholders": { "name": { "type": "String" } }
-  },
-  "csvImportEmpty": "الملف لا يحتوي على صفوف للاستيراد.",
-  "csvImportParseFailed": "تعذّر قراءة ملف CSV.",
-  "csvImportFirstRowHeader": "الصف الأول عناوين أعمدة",
-  "csvImportCurrencyHint": "المبالغ في الملف بـ:",
-  "csvImportMapColumns": "ربط الأعمدة",
-  "csvImportFieldSkip": "تخطي",
-  "csvImportFieldType": "دخل أو مصروف",
-  "csvImportBack": "رجوع",
-  "csvImportPreview": "معاينة",
-  "csvImportPreviewSummary": "{total} صف جاهز ({expenses} مصاريف، {incomes} دخل)",
-  "@csvImportPreviewSummary": {
-    "placeholders": {
-      "total": { "type": "int" },
-      "expenses": { "type": "int" },
-      "incomes": { "type": "int" }
-    }
-  },
-  "csvImportTypeExpense": "مصروف",
-  "csvImportTypeIncome": "دخل",
-  "csvImportMoreRows": "+ {count} صفوف أخرى",
-  "@csvImportMoreRows": {
+  "subscriptionsTitle": "الاشتراكات",
+  "subscriptionsAdd": "ضيف اشتراك",
+  "subscriptionsEmptyTitle": "تابع نتفلكس والجيم والفواتير",
+  "subscriptionsEmptySubtitle": "ضيف اشتراكات شهرية عشان تشوف اللي مستحق الأسبوع ده وإجمالي الصرف.",
+  "subscriptionsMonthlyTotal": "الإجمالي الشهري",
+  "subscriptionsCount": "{count} اشتراك",
+  "@subscriptionsCount": {
     "placeholders": { "count": { "type": "int" } }
   },
-  "csvImportRun": "استيراد الكل",
-  "csvImportProgress": "جاري الاستيراد…",
-  "csvImportSuccess": "تم استيراد {count} معاملة",
-  "@csvImportSuccess": {
-    "placeholders": { "count": { "type": "int" } }
-  },
-  "csvImportPartial": "تم {ok}، فشل {failed}",
-  "@csvImportPartial": {
-    "placeholders": {
-      "ok": { "type": "int" },
-      "failed": { "type": "int" }
-    }
+  "subscriptionsDueThisWeek": "مستحق الأسبوع ده",
+  "subscriptionsAll": "كل الاشتراكات",
+  "subscriptionsDueOn": "مستحق {date}",
+  "@subscriptionsDueOn": {
+    "placeholders": { "date": { "type": "String" } }
   },
   "zakatTitle": "حاسبة الزكاة",
   "zakatDisclaimer": "تقدير فقط (٢٫٥٪ على صافي المال الزكوي). أدخل الذهب والفضة بالوزن بالجرام؛ القيمة = الجرام × السعر. استشر عالماً لحالتك.",

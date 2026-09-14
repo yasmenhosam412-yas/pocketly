@@ -13,12 +13,15 @@ import 'package:imrpo/core/widgets/transaction_tab_loading_skeleton.dart';
 import 'package:imrpo/core/widgets/tab_refresh_overlay.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/features/home/presentation/widgets/home_first_run_guide.dart';
+import 'package:imrpo/features/expenses_tab/presentation/bloc/expenses_tab_bloc.dart';
 import 'package:imrpo/features/incomes_tab/domain/entities/income.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
 import 'package:imrpo/features/incomes_tab/presentation/widgets/add_income_sheet.dart';
 import 'package:imrpo/features/incomes_tab/presentation/widgets/income_list_tile.dart';
 import 'package:imrpo/features/incomes_tab/presentation/widgets/manage_income_source_sheet.dart';
 import 'package:imrpo/core/models/parsed_financial_entry.dart';
+import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
+import 'package:imrpo/features/salary_day/presentation/widgets/salary_day_sheet.dart';
 import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_ai_tab.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
@@ -212,7 +215,7 @@ class _IncomesTabState extends State<IncomesTab>
                           );
                         },
                         child: CustomScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(),
+                          physics: kHomeTabScrollPhysics,
                           slivers: [
                             SliverToBoxAdapter(
                               child: Padding(
@@ -628,6 +631,20 @@ class _IncomesTabState extends State<IncomesTab>
     );
 
     if (!mounted || result == null) return;
+
+    if (result.startsWith('added_salary:')) {
+      AppToast.success(context, l10n.incomeAddedSuccess);
+      final amount = double.tryParse(result.substring('added_salary:'.length));
+      final plans = context.read<PlansTabBloc>();
+      final expenses = context.read<ExpensesTabBloc>();
+      await showSalaryDaySheet(
+        context,
+        initialAmountInBase: amount,
+        plansBloc: plans,
+        expensesBloc: expenses,
+      );
+      return;
+    }
 
     final message = switch (result) {
       'added' => l10n.incomeAddedSuccess,

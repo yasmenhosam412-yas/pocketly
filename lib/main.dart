@@ -23,6 +23,7 @@ import 'package:imrpo/features/home/presentation/bloc/home_bloc.dart';
 import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
 import 'package:imrpo/features/loans_tab/presentation/bloc/loans_tab_bloc.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
+import 'package:imrpo/core/widgets/upgrade_alert_when_ready.dart';
 import 'package:app_upgrader_flutter/app_upgrader_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -37,73 +38,64 @@ Future<void> main() async {
     ]),
   );
 
+  final supabaseReady = _initializeSupabase();
   setupServiceLocator();
-  await Future.wait([
-    Supabase.initialize(
-      url: 'https://xtilikvogevzshsliwzp.supabase.co',
-      anonKey: 'sb_publishable_hhAelFYJErvvdq9_HAkHgw_bwLBSG1K',
-      authOptions: const FlutterAuthClientOptions(detectSessionInUri: true),
-    ),
-    loadCriticalAppStartup(),
-  ]);
+  await loadCriticalAppStartup();
   getIt<ThemePreferences>().updatePlatformBrightness(
     WidgetsBinding.instance.platformDispatcher.platformBrightness,
   );
 
-  runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => getIt<AuthBloc>()),
-        BlocProvider(create: (_) => getIt<HomeBloc>()),
-        BlocProvider(create: (_) => getIt<IncomesTabBloc>()),
-        BlocProvider(create: (_) => getIt<BalanceTabBloc>()),
-        BlocProvider(create: (_) => getIt<ExpensesTabBloc>()),
-        BlocProvider(create: (_) => getIt<BudgetsBloc>()),
-        BlocProvider(create: (_) => getIt<PlansTabBloc>()),
-        BlocProvider(create: (_) => getIt<LoansTabBloc>()),
-        BlocProvider(create: (_) => getIt<BillRemindersBloc>()),
-        BlocProvider(create: (_) => getIt<RecurringTransactionsBloc>()),
-      ],
-      child: const MainApp(),
-    ),
+  runApp(MainApp(supabaseReady: supabaseReady));
+}
+
+Future<void> _initializeSupabase() {
+  return Supabase.initialize(
+    url: 'https://xtilikvogevzshsliwzp.supabase.co',
+    anonKey: 'sb_publishable_hhAelFYJErvvdq9_HAkHgw_bwLBSG1K',
+    authOptions: const FlutterAuthClientOptions(detectSessionInUri: true),
   );
 }
 
 class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+  const MainApp({super.key, required this.supabaseReady});
+
+  final Future<void> supabaseReady;
 
   @override
   State<MainApp> createState() => _MainAppState();
 }
 
 class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
-  late Upgrader _upgrader;
-  late String _upgraderLanguage;
+  Upgrader? _upgrader;
+  String? _upgraderLanguage;
+  var _ready = false;
 
   @override
   void initState() {
     super.initState();
-    _upgrader = _createUpgrader(getIt<LocalePreferences>().locale.languageCode);
     WidgetsBinding.instance.addObserver(this);
+    unawaited(_finishStartup());
+  }
+
+  Future<void> _finishStartup() async {
+    await widget.supabaseReady;
+    if (!mounted) return;
+    setState(() => _ready = true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      runDeferredAppStartup();
+      unawaited(runDeferredAppStartup());
     });
   }
 
   Upgrader _createUpgrader(String languageCode) {
     _upgraderLanguage = languageCode;
-    return Upgrader(
-      languageCode: languageCode,
-      countryCode: 'EG',
-      messages: UpgraderMessages(code: languageCode),
-    );
+    return createPocketlyUpgrader(languageCode: languageCode);
   }
 
   Upgrader _upgraderFor(String languageCode) {
-    if (_upgraderLanguage != languageCode) {
+    if (_upgrader == null || _upgraderLanguage != languageCode) {
       _upgrader = _createUpgrader(languageCode);
     }
-    return _upgrader;
+    return _upgrader!;
   }
 
   @override
@@ -121,58 +113,105 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: Listenable.merge([
-        getIt<LocalePreferences>(),
-        getIt<ThemePreferences>(),
-      ]),
-      builder: (context, _) {
-        final locale = getIt<LocalePreferences>().locale;
-        final themePrefs = getIt<ThemePreferences>();
+    if (!_ready) {
+      return const _StartupSplash();
+    }
 
-        return MaterialApp(
-          title: "Pocketly",
-          navigatorKey: rootNavigatorKey,
-          locale: locale,
-          onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          themeMode: themePrefs.themeMode,
-          debugShowCheckedModeBanner: false,
-          onGenerateRoute: AppRouter.generateRoute,
-          onGenerateInitialRoutes: (_) {
-            return [
-              AppRouter.generateRoute(RouteSettings(name: AppLaunch.routeName)),
-            ];
-          },
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          builder: (context, child) {
-            return Directionality(
-              textDirection: locale.languageCode == 'ar'
-                  ? TextDirection.rtl
-                  : TextDirection.ltr,
-              child: AppUpgradeAlert(
-                key: ValueKey(_upgraderLanguage),
-                navigatorKey: rootNavigatorKey,
-                appUpgrader: _upgraderFor(locale.languageCode),
-                child: AppLockGate(
-                  child: SharedTextImportGate(
-                    child: BillReminderGate(
-                      child: HomeWidgetSyncGate(child: child!),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => getIt<AuthBloc>()),
+        BlocProvider(create: (_) => getIt<HomeBloc>()),
+        BlocProvider(create: (_) => getIt<IncomesTabBloc>()),
+        BlocProvider(create: (_) => getIt<BalanceTabBloc>()),
+        BlocProvider(create: (_) => getIt<ExpensesTabBloc>()),
+        BlocProvider(create: (_) => getIt<BudgetsBloc>()),
+        BlocProvider(create: (_) => getIt<PlansTabBloc>()),
+        BlocProvider(create: (_) => getIt<LoansTabBloc>()),
+        BlocProvider(create: (_) => getIt<BillRemindersBloc>()),
+        BlocProvider(create: (_) => getIt<RecurringTransactionsBloc>()),
+      ],
+      child: ListenableBuilder(
+        listenable: Listenable.merge([
+          getIt<LocalePreferences>(),
+          getIt<ThemePreferences>(),
+        ]),
+        builder: (context, _) {
+          final locale = getIt<LocalePreferences>().locale;
+          final themePrefs = getIt<ThemePreferences>();
+          final isDark = themePrefs.isDark;
+          final theme = AppTheme.of(isDark: isDark);
+
+          return MaterialApp(
+            title: "Pocketly",
+            navigatorKey: rootNavigatorKey,
+            locale: locale,
+            onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+            theme: theme,
+            darkTheme: theme,
+            themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+            debugShowCheckedModeBanner: false,
+            onGenerateRoute: AppRouter.generateRoute,
+            onGenerateInitialRoutes: (_) {
+              return [
+                AppRouter.generateRoute(RouteSettings(name: AppLaunch.routeName)),
+              ];
+            },
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            builder: (context, child) {
+              return Directionality(
+                textDirection: locale.languageCode == 'ar'
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
+                child: UpgradeAlertWhenReady(
+                  key: ValueKey('upgrade-${locale.languageCode}'),
+                  navigatorKey: rootNavigatorKey,
+                  appUpgrader: _upgraderFor(locale.languageCode),
+                  child: AppLockGate(
+                    child: SharedTextImportGate(
+                      child: BillReminderGate(
+                        child: HomeWidgetSyncGate(child: child!),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _StartupSplash extends StatelessWidget {
+  const _StartupSplash();
+
+  static const _background = Color(0xFFF7F3EF);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        useMaterial3: true,
+        scaffoldBackgroundColor: _background,
+      ),
+      home: const Scaffold(
+        backgroundColor: _background,
+        body: Center(
+          child: Image(
+            image: AssetImage('assets/wallet.png'),
+            width: 192,
+            height: 192,
+          ),
+        ),
+      ),
     );
   }
 }

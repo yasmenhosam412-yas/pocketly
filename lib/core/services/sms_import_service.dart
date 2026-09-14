@@ -40,7 +40,40 @@ class SmsMessageItem {
   }
 
   SmsMessageItem withType(FinancialEntryType type) {
-    return copyWith(parsed: parsed.copyWith(type: type));
+    final bodyText = parsed.rawText.isNotEmpty ? parsed.rawText : body;
+    final title = TransactionTextParser.resolveSmsTitle(
+      parsedTitle: parsed.title,
+      body: bodyText,
+      sender: header,
+    );
+    return copyWith(
+      parsed: ParsedFinancialEntry(
+        title: title,
+        amount: parsed.amount,
+        currencyCode: parsed.currencyCode,
+        date: parsed.date,
+        type: type,
+        rawText: parsed.rawText,
+        expenseCategory: type == FinancialEntryType.expense
+            ? TransactionTextParser.inferExpenseCategory(
+                body: bodyText,
+                title: title,
+              )
+            : null,
+        paidFrom: type == FinancialEntryType.expense
+            ? TransactionTextParser.inferExpensePaidFrom(
+                body: bodyText,
+                sender: header,
+              )
+            : null,
+        incomeSource: type == FinancialEntryType.income
+            ? TransactionTextParser.inferIncomeSource(
+                body: bodyText,
+                sender: header,
+              )
+            : null,
+      ),
+    );
   }
 
   /// Merchant, person, or bank name — never a hotline like 19123.

@@ -19,9 +19,13 @@ import 'package:imrpo/features/auth/presentation/widgets/custom_text_field.dart'
 import 'package:imrpo/features/home/domain/entities/user_profile.dart';
 import 'package:imrpo/features/home/presentation/bloc/home_bloc.dart';
 import 'package:imrpo/features/notifications/presentation/pages/notifications_screen.dart';
+import 'package:imrpo/features/expenses_tab/presentation/bloc/expenses_tab_bloc.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
+import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
 import 'package:imrpo/features/balance_tab/presentation/widgets/edit_initial_balance_sheet.dart';
+import 'package:imrpo/features/salary_day/presentation/widgets/salary_day_sheet.dart';
 import 'package:imrpo/core/utils/money_format.dart';
+import 'package:imrpo/core/utils/open_play_store.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
 class UserSettingsSheet extends StatefulWidget {
@@ -305,15 +309,35 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                             },
                     ),
                     _SettingsTile(
-                      icon: Icons.table_chart_outlined,
-                      label: l10n.csvImportTitle,
+                      icon: Icons.auto_awesome_rounded,
+                      label: l10n.yearInReviewTitle,
                       onTap: actionsLocked
                           ? null
                           : () {
                               Navigator.of(context).pop();
                               Navigator.of(context).pushNamed(
-                                AppRoutes.csvImport,
+                                AppRoutes.yearInReview,
                               );
+                            },
+                    ),
+                    _SettingsTile(
+                      icon: Icons.payments_outlined,
+                      label: l10n.salaryDayTitle,
+                      onTap: actionsLocked
+                          ? null
+                          : () {
+                              final plans = context.read<PlansTabBloc>();
+                              final expenses = context.read<ExpensesTabBloc>();
+                              Navigator.of(context).pop();
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                final host = rootNavigatorKey.currentContext;
+                                if (host == null || !host.mounted) return;
+                                showSalaryDaySheet(
+                                  host,
+                                  plansBloc: plans,
+                                  expensesBloc: expenses,
+                                );
+                              });
                             },
                     ),
                     _SettingsTile(
@@ -377,6 +401,18 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                             },
                     ),
                     _SettingsTile(
+                      icon: Icons.subscriptions_outlined,
+                      label: l10n.subscriptionsTitle,
+                      onTap: actionsLocked
+                          ? null
+                          : () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).pushNamed(
+                                AppRoutes.subscriptions,
+                              );
+                            },
+                    ),
+                    _SettingsTile(
                       icon: Icons.mosque_outlined,
                       label: l10n.zakatTitle,
                       onTap: actionsLocked
@@ -395,6 +431,25 @@ class _UserSettingsSheetState extends State<UserSettingsSheet> {
                               Navigator.of(context).pop();
                               Navigator.of(context).pushNamed(
                                 AppRoutes.calculator,
+                              );
+                            },
+                    ),
+                    _SettingsTile(
+                      icon: Icons.star_rate_rounded,
+                      label: l10n.settingsRateApp,
+                      onTap: actionsLocked
+                          ? null
+                          : () async {
+                              Navigator.of(context).pop();
+                              final host = rootNavigatorKey.currentContext;
+                              final opened =
+                                  await openPocketlyPlayStoreListing();
+                              if (opened) return;
+                              if (host == null || !host.mounted) return;
+                              AppToast.show(
+                                host,
+                                AppLocalizations.of(host)!.settingsRateAppFailed,
+                                error: true,
                               );
                             },
                     ),

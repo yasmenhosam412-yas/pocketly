@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:imrpo/core/services/currency_converter.dart';
+import 'package:imrpo/core/services/service_locator.dart';
+import 'package:imrpo/core/services/wallet_currency_store.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
@@ -225,13 +228,49 @@ class _WalletSourceCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text(
-                    '${positive ? '' : '−'}${Money.format(remaining.abs())}',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: accent,
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final store = getIt<WalletCurrencyStore>();
+                      final code = store.currencyFor(summary.source);
+                      final prefix = positive ? '' : '−';
+                      if (code == CurrencyConverter.defaultDisplayCode) {
+                        return Text(
+                          '$prefix${Money.format(remaining.abs())}',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: accent,
+                          ),
+                        );
+                      }
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '$prefix${CurrencyConverter.format(
+                              CurrencyConverter.fromBase(
+                                remaining.abs(),
+                                code,
+                              ),
+                              code,
+                            )}',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: accent,
+                            ),
+                          ),
+                          Text(
+                            '≈ $prefix${Money.format(remaining.abs())}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textColor.withValues(alpha: 0.5),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),

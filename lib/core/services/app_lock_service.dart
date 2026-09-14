@@ -48,23 +48,29 @@ class AppLockService extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _enabled = prefs.getBool(_enabledKey) ?? false;
     _biometricEnabled = prefs.getBool(_biometricKey) ?? false;
-
-    final hasPin = await _hasPin();
-    if (_enabled && !hasPin) {
-      _enabled = false;
-      _biometricEnabled = false;
-      await prefs.setBool(_enabledKey, false);
-      await prefs.setBool(_biometricKey, false);
-    }
-
-    _isLocked = _enabled && hasPin;
+    _isLocked = _enabled;
     _loaded = true;
     notifyListeners();
+
+    if (_enabled) {
+      unawaited(_ensurePinOrDisable(prefs));
+    }
     unawaited(
       _refreshBiometricCapability().then((_) {
         if (_loaded) notifyListeners();
       }),
     );
+  }
+
+  Future<void> _ensurePinOrDisable(SharedPreferences prefs) async {
+    final hasPin = await _hasPin();
+    if (hasPin) return;
+    _enabled = false;
+    _biometricEnabled = false;
+    _isLocked = false;
+    await prefs.setBool(_enabledKey, false);
+    await prefs.setBool(_biometricKey, false);
+    if (_loaded) notifyListeners();
   }
 
   Future<void> _refreshBiometricCapability() async {

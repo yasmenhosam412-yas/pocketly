@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:imrpo/core/theme/app_appearance.dart';
+import 'package:imrpo/core/theme/app_theme.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -67,6 +68,7 @@ class ThemePreferences extends ChangeNotifier {
   void _syncPalette() {
     AppColors.applyDarkMode(isDark);
     AppColors.applyPalette(activePalette);
+    AppTheme.invalidate();
   }
 
   void updatePlatformBrightness(Brightness brightness) {

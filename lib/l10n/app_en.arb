@@ -96,6 +96,37 @@
   "loanFilterSettled": "Settled",
   "loanFilterEmpty": "Nothing in this filter yet.",
   "loansSectionTitle": "Loans",
+  "walletSplitTitle": "Split a payment",
+  "walletSplitFabSubtitle": "You paid via InstaPay or wallet — track who owes you.",
+  "walletSplitSubtitle": "Logs the full amount as an expense, then creates a loan for each person who should pay you back.",
+  "walletSplitWhatFor": "What was it for?",
+  "walletSplitWhatForHint": "Dinner, groceries, trip…",
+  "walletSplitYouPaid": "You paid",
+  "walletSplitPaidFromHint": "InstaPay, Vodafone Cash, Visa, Cash…",
+  "walletSplitIncludeMe": "I was part of this",
+  "walletSplitIncludeMeHint": "Your share is not added as a loan — only others who owe you.",
+  "walletSplitEqualShares": "Split equally",
+  "walletSplitYourShare": "Your share: {amount}",
+  "@walletSplitYourShare": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "walletSplitPeopleSection": "Who owes you",
+  "walletSplitAddPerson": "Add person",
+  "walletSplitPersonHint": "Friend’s name",
+  "walletSplitNotesHint": "Optional note or transfer reference",
+  "walletSplitSave": "Save split",
+  "walletSplitTitleRequired": "Enter what the payment was for",
+  "walletSplitPersonRequired": "Enter each person’s name",
+  "walletSplitAmountsExceedTotal": "People’s shares are more than the total you paid",
+  "walletSplitAmountsMustMatchTotal": "People’s shares must add up to the total",
+  "walletSplitSuccess": "Saved expense and {count} loan(s)",
+  "@walletSplitSuccess": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "errorEnterPersonName": "Enter the person's name",
   "errorEnterLoanAmount": "Enter a valid loan amount",
   "errorRepaidExceedsPrincipal": "Repaid cannot be more than the loan amount",
@@ -454,6 +485,8 @@
   "appearanceGradientWave": "Wave",
   "appearanceGradientSoft": "Soft fade",
   "settingsCalculator": "Calculator",
+  "settingsRateApp": "Rate on Google Play",
+  "settingsRateAppFailed": "Couldn’t open Google Play. Try again later.",
   "calculatorTitle": "Calculator",
   "languageEnglish": "English",
   "languageArabic": "Arabic",
@@ -555,6 +588,62 @@
   "paymentPresetBankTransfer": "Bank transfer",
   "paymentPresetVodafoneCash": "Vodafone Cash",
   "paymentPresetInstaPay": "InstaPay",
+  "walletUsdLabel": "USD Wallet",
+  "walletEurLabel": "EUR Wallet",
+  "salaryDayTitle": "Salary day",
+  "salaryDaySubtitle": "Split your paycheck into rent, bills, plans, and leftover spending money.",
+  "salaryDayPaydayLabel": "Payday: day {day} of each month",
+  "@salaryDayPaydayLabel": {
+    "placeholders": { "day": { "type": "int" } }
+  },
+  "salaryDayAmountLabel": "Salary amount",
+  "salaryDayRentPct": "Rent",
+  "salaryDayBillsPct": "Bills",
+  "salaryDayPlansPct": "Plans / savings",
+  "salaryDayLeftoverPct": "Leftover · {pct}%",
+  "@salaryDayLeftoverPct": {
+    "placeholders": { "pct": { "type": "String" } }
+  },
+  "salaryDayPromptToggle": "Open this after I add a Salary income",
+  "salaryDayPreview": "Allocation preview",
+  "salaryDayPreviewEmpty": "Enter a salary amount to preview the split.",
+  "salaryDayLeftoverHint": "Stays in your Salary pocket — not booked as an expense",
+  "salaryDayApply": "Apply allocation",
+  "salaryDaySaveRulesOnly": "Save rules only",
+  "salaryDayRulesSaved": "Salary day rules saved",
+  "salaryDaySuccess": "Allocated into {count} expense(s)",
+  "@salaryDaySuccess": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "yearInReviewTitle": "Year in review",
+  "yearInReviewHero": "Your {year} money story",
+  "@yearInReviewHero": {
+    "placeholders": { "year": { "type": "int" } }
+  },
+  "yearInReviewHeroBody": "You earned {income} and spent {expenses}.",
+  "@yearInReviewHeroBody": {
+    "placeholders": {
+      "income": { "type": "String" },
+      "expenses": { "type": "String" }
+    }
+  },
+  "yearInReviewEmpty": "No income or expenses logged for this year yet.",
+  "yearInReviewNet": "Net",
+  "yearInReviewSavingsRate": "Savings rate",
+  "yearInReviewLoansClosed": "Loans closed",
+  "yearInReviewLoansOpen": "Loans open",
+  "yearInReviewBestMonth": "Best month",
+  "yearInReviewToughMonth": "Toughest month",
+  "yearInReviewMonthNet": "{month} · net {amount}",
+  "@yearInReviewMonthNet": {
+    "placeholders": {
+      "month": { "type": "String" },
+      "amount": { "type": "String" }
+    }
+  },
+  "yearInReviewTopCategories": "Top categories",
+  "yearInReviewTopMerchants": "Top merchants",
+  "yearInReviewIncomeSources": "Income sources",
   "incomeBySource": "By source",
   "balanceRemainingBySource": "Remaining by source",
   "balanceWalletTitle": "What's left per source",
@@ -1072,6 +1161,8 @@
   "smartImportUnknownSender": "Unknown sender",
   "smartImportSmsTitleExpense": "Bank expense",
   "smartImportSmsTitleIncome": "Bank income",
+  "smartImportSmsShowBody": "Show full message",
+  "smartImportSmsHideBody": "Hide message",
   "smartImportTapToImport": "Tap to import",
   "smartImportAddAllExpenses": "Add all expenses ({count})",
   "@smartImportAddAllExpenses": {
@@ -1094,9 +1185,9 @@
   "smartImportSelectAll": "Select all",
   "smartImportClearSelection": "Clear",
   "smartImportBulkCategorySheetTitle": "Category for import",
-  "smartImportBulkCategorySheetHint": "Choose category and source here. SMS text is only used for titles, not for income source or paid-from.",
-  "smartImportBulkExpensePaidFromHint": "Tap a source for imported expenses (not read from SMS).",
-  "smartImportBulkIncomeSourceHint": "Tap a source for imported incomes (not read from SMS).",
+  "smartImportBulkCategorySheetHint": "Choose category and source. We suggest values from the message when we can — change if needed.",
+  "smartImportBulkExpensePaidFromHint": "Suggested from SMS when possible — change if needed.",
+  "smartImportBulkIncomeSourceHint": "Suggested from SMS when possible — change if needed.",
   "smartImportBulkSelectPaidFrom": "Select paid from",
   "smartImportBulkSelectIncomeSource": "Select income source",
   "smartImportBulkExpenseCategory": "Expense category",
@@ -1167,48 +1258,20 @@
   "expenseReceiptRemove": "Remove",
   "expenseReceiptUploadFailed": "Could not upload receipt. Try again.",
   "expenseReceiptInvalidType": "Choose a photo (JPG, PNG, or WebP). Videos are not supported.",
-  "csvImportTitle": "Import from CSV",
-  "csvImportPickHint": "Import expenses and incomes from a spreadsheet export. Map columns on the next step.",
-  "csvImportPickFile": "Choose CSV file",
-  "csvImportFileSelected": "Selected: {name}",
-  "@csvImportFileSelected": {
-    "placeholders": { "name": { "type": "String" } }
-  },
-  "csvImportEmpty": "The file has no rows to import.",
-  "csvImportParseFailed": "Could not read this CSV file.",
-  "csvImportFirstRowHeader": "First row is column headers",
-  "csvImportCurrencyHint": "Amounts in file are in:",
-  "csvImportMapColumns": "Map columns",
-  "csvImportFieldSkip": "Skip",
-  "csvImportFieldType": "Income or expense",
-  "csvImportBack": "Back",
-  "csvImportPreview": "Preview",
-  "csvImportPreviewSummary": "{total} rows ready ({expenses} expenses, {incomes} incomes)",
-  "@csvImportPreviewSummary": {
-    "placeholders": {
-      "total": { "type": "int" },
-      "expenses": { "type": "int" },
-      "incomes": { "type": "int" }
-    }
-  },
-  "csvImportTypeExpense": "Expense",
-  "csvImportTypeIncome": "Income",
-  "csvImportMoreRows": "+ {count} more rows",
-  "@csvImportMoreRows": {
+  "subscriptionsTitle": "Subscriptions",
+  "subscriptionsAdd": "Add subscription",
+  "subscriptionsEmptyTitle": "Track Netflix, gym, and bills",
+  "subscriptionsEmptySubtitle": "Add monthly subscriptions to see what’s due this week and your total spend.",
+  "subscriptionsMonthlyTotal": "Monthly total",
+  "subscriptionsCount": "{count} subscriptions",
+  "@subscriptionsCount": {
     "placeholders": { "count": { "type": "int" } }
   },
-  "csvImportRun": "Import all",
-  "csvImportProgress": "Importing…",
-  "csvImportSuccess": "Imported {count} transactions",
-  "@csvImportSuccess": {
-    "placeholders": { "count": { "type": "int" } }
-  },
-  "csvImportPartial": "Imported {ok}, {failed} failed",
-  "@csvImportPartial": {
-    "placeholders": {
-      "ok": { "type": "int" },
-      "failed": { "type": "int" }
-    }
+  "subscriptionsDueThisWeek": "Due this week",
+  "subscriptionsAll": "All subscriptions",
+  "subscriptionsDueOn": "Due {date}",
+  "@subscriptionsDueOn": {
+    "placeholders": { "date": { "type": "String" } }
   },
   "zakatTitle": "Zakat calculator",
   "zakatDisclaimer": "Estimate only (2.5% on net zakatable wealth). Enter gold and silver by weight in grams; value = grams × price per gram. Consult a scholar for your situation.",

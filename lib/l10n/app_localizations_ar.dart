@@ -255,6 +255,73 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loansSectionTitle => 'القروض';
 
   @override
+  String get walletSplitTitle => 'قسّم دفعة';
+
+  @override
+  String get walletSplitFabSubtitle => 'دفعت بـ InstaPay أو محفظة — سجّل مين عليه فلوس.';
+
+  @override
+  String get walletSplitSubtitle => 'بنسجّل المبلغ كله كمصروف، وبعدين نعمل قرض لكل واحد المفروض يرجعلك.';
+
+  @override
+  String get walletSplitWhatFor => 'دفعت على إيه؟';
+
+  @override
+  String get walletSplitWhatForHint => 'عشا، سوبرماركت، نزهة…';
+
+  @override
+  String get walletSplitYouPaid => 'أنت دفعت';
+
+  @override
+  String get walletSplitPaidFromHint => 'InstaPay، فودافون كاش، فيزا، كاش…';
+
+  @override
+  String get walletSplitIncludeMe => 'أنا كنت معاكم';
+
+  @override
+  String get walletSplitIncludeMeHint => 'نصيبك مش بيتسجل كقرض — بس اللي عليهم فلوس.';
+
+  @override
+  String get walletSplitEqualShares => 'تقسيم بالتساوي';
+
+  @override
+  String walletSplitYourShare(String amount) {
+    return 'نصيبك: $amount';
+  }
+
+  @override
+  String get walletSplitPeopleSection => 'مين عليه فلوس';
+
+  @override
+  String get walletSplitAddPerson => 'ضيف شخص';
+
+  @override
+  String get walletSplitPersonHint => 'اسم صاحبك';
+
+  @override
+  String get walletSplitNotesHint => 'ملاحظة أو رقم التحويل (اختياري)';
+
+  @override
+  String get walletSplitSave => 'حفظ التقسيم';
+
+  @override
+  String get walletSplitTitleRequired => 'اكتب دفعت على إيه';
+
+  @override
+  String get walletSplitPersonRequired => 'اكتب اسم كل واحد';
+
+  @override
+  String get walletSplitAmountsExceedTotal => 'حصص الناس أكبر من اللي دفعته';
+
+  @override
+  String get walletSplitAmountsMustMatchTotal => 'حصص الناس لازم تساوي المبلغ كله';
+
+  @override
+  String walletSplitSuccess(int count) {
+    return 'اتسجل مصروف و$count قرض';
+  }
+
+  @override
   String get errorEnterPersonName => 'اكتب اسم الشخص';
 
   @override
@@ -1008,6 +1075,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsCalculator => 'الآلة الحاسبة';
 
   @override
+  String get settingsRateApp => 'قيّم على Google Play';
+
+  @override
+  String get settingsRateAppFailed => 'ما قدرناش نفتح Google Play. جرّب تاني.';
+
+  @override
   String get calculatorTitle => 'الآلة الحاسبة';
 
   @override
@@ -1283,6 +1356,114 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get paymentPresetInstaPay => 'إنستاباي';
+
+  @override
+  String get walletUsdLabel => 'محفظة دولار';
+
+  @override
+  String get walletEurLabel => 'محفظة يورو';
+
+  @override
+  String get salaryDayTitle => 'يوم الراتب';
+
+  @override
+  String get salaryDaySubtitle => 'قسّم راتبك على إيجار وفواتير وخطط، والباقي للصرف.';
+
+  @override
+  String salaryDayPaydayLabel(int day) {
+    return 'يوم الراتب: يوم $day من كل شهر';
+  }
+
+  @override
+  String get salaryDayAmountLabel => 'مبلغ الراتب';
+
+  @override
+  String get salaryDayRentPct => 'إيجار';
+
+  @override
+  String get salaryDayBillsPct => 'فواتير';
+
+  @override
+  String get salaryDayPlansPct => 'خطط / ادخار';
+
+  @override
+  String salaryDayLeftoverPct(String pct) {
+    return 'الباقي · $pct%';
+  }
+
+  @override
+  String get salaryDayPromptToggle => 'افتح ده بعد ما أضيف دخل من نوع راتب';
+
+  @override
+  String get salaryDayPreview => 'معاينة التقسيم';
+
+  @override
+  String get salaryDayPreviewEmpty => 'اكتب مبلغ الراتب عشان تشوف التقسيم.';
+
+  @override
+  String get salaryDayLeftoverHint => 'يفضل في جيب الراتب — مش بيتسجل كمصروف';
+
+  @override
+  String get salaryDayApply => 'طبّق التقسيم';
+
+  @override
+  String get salaryDaySaveRulesOnly => 'احفظ القواعد بس';
+
+  @override
+  String get salaryDayRulesSaved => 'اتحفظت قواعد يوم الراتب';
+
+  @override
+  String salaryDaySuccess(int count) {
+    return 'اتوزع على $count مصروف';
+  }
+
+  @override
+  String get yearInReviewTitle => 'مراجعة السنة';
+
+  @override
+  String yearInReviewHero(int year) {
+    return 'قصة فلوسك في $year';
+  }
+
+  @override
+  String yearInReviewHeroBody(String income, String expenses) {
+    return 'كسبت $income وصرفت $expenses.';
+  }
+
+  @override
+  String get yearInReviewEmpty => 'مفيش دخل أو مصاريف متسجلة للسنة دي لسه.';
+
+  @override
+  String get yearInReviewNet => 'الصافي';
+
+  @override
+  String get yearInReviewSavingsRate => 'نسبة الادخار';
+
+  @override
+  String get yearInReviewLoansClosed => 'قروض اتسددت';
+
+  @override
+  String get yearInReviewLoansOpen => 'قروض مفتوحة';
+
+  @override
+  String get yearInReviewBestMonth => 'أحسن شهر';
+
+  @override
+  String get yearInReviewToughMonth => 'أصعب شهر';
+
+  @override
+  String yearInReviewMonthNet(String month, String amount) {
+    return '$month · صافي $amount';
+  }
+
+  @override
+  String get yearInReviewTopCategories => 'أعلى التصنيفات';
+
+  @override
+  String get yearInReviewTopMerchants => 'أعلى التجار';
+
+  @override
+  String get yearInReviewIncomeSources => 'مصادر الدخل';
 
   @override
   String get incomeBySource => 'حسب المصدر';
@@ -2269,6 +2450,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get smartImportSmsTitleIncome => 'دخل بنك';
 
   @override
+  String get smartImportSmsShowBody => 'اعرض الرسالة كاملة';
+
+  @override
+  String get smartImportSmsHideBody => 'اخفي الرسالة';
+
+  @override
   String get smartImportTapToImport => 'اضغط للاستيراد';
 
   @override
@@ -2296,13 +2483,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get smartImportBulkCategorySheetTitle => 'التصنيف للاستيراد';
 
   @override
-  String get smartImportBulkCategorySheetHint => 'اختار التصنيف والمصدر هنا. نص الرسالة للعنوان بس، مش لمصدر الدخل ولا «دفعت من».';
+  String get smartImportBulkCategorySheetHint => 'اختار التصنيف والمصدر. بنقترح من الرسالة لما نقدر، وتقدر تغيّر.';
 
   @override
-  String get smartImportBulkExpensePaidFromHint => 'اختار مصدر الدفع للمصاريف المستوردة (مش بيقرا من SMS).';
+  String get smartImportBulkExpensePaidFromHint => 'مقترح من الرسالة لو قدرنا — غيّره لو محتاج.';
 
   @override
-  String get smartImportBulkIncomeSourceHint => 'اختار مصدر الدخل للدخل المستورد (مش بيقرا من SMS).';
+  String get smartImportBulkIncomeSourceHint => 'مقترح من الرسالة لو قدرنا — غيّره لو محتاج.';
 
   @override
   String get smartImportBulkSelectPaidFrom => 'اختار «دفعت من»';
@@ -2470,76 +2657,34 @@ class AppLocalizationsAr extends AppLocalizations {
   String get expenseReceiptInvalidType => 'اختر صورة (JPG أو PNG أو WebP). الفيديو غير مدعوم.';
 
   @override
-  String get csvImportTitle => 'استيراد من CSV';
+  String get subscriptionsTitle => 'الاشتراكات';
 
   @override
-  String get csvImportPickHint => 'استورد المصاريف والدخل من ملف جدول. في الخطوة التالية حدّد الأعمدة.';
+  String get subscriptionsAdd => 'ضيف اشتراك';
 
   @override
-  String get csvImportPickFile => 'اختر ملف CSV';
+  String get subscriptionsEmptyTitle => 'تابع نتفلكس والجيم والفواتير';
 
   @override
-  String csvImportFileSelected(String name) {
-    return 'المحدد: $name';
+  String get subscriptionsEmptySubtitle => 'ضيف اشتراكات شهرية عشان تشوف اللي مستحق الأسبوع ده وإجمالي الصرف.';
+
+  @override
+  String get subscriptionsMonthlyTotal => 'الإجمالي الشهري';
+
+  @override
+  String subscriptionsCount(int count) {
+    return '$count اشتراك';
   }
 
   @override
-  String get csvImportEmpty => 'الملف لا يحتوي على صفوف للاستيراد.';
+  String get subscriptionsDueThisWeek => 'مستحق الأسبوع ده';
 
   @override
-  String get csvImportParseFailed => 'تعذّر قراءة ملف CSV.';
+  String get subscriptionsAll => 'كل الاشتراكات';
 
   @override
-  String get csvImportFirstRowHeader => 'الصف الأول عناوين أعمدة';
-
-  @override
-  String get csvImportCurrencyHint => 'المبالغ في الملف بـ:';
-
-  @override
-  String get csvImportMapColumns => 'ربط الأعمدة';
-
-  @override
-  String get csvImportFieldSkip => 'تخطي';
-
-  @override
-  String get csvImportFieldType => 'دخل أو مصروف';
-
-  @override
-  String get csvImportBack => 'رجوع';
-
-  @override
-  String get csvImportPreview => 'معاينة';
-
-  @override
-  String csvImportPreviewSummary(int total, int expenses, int incomes) {
-    return '$total صف جاهز ($expenses مصاريف، $incomes دخل)';
-  }
-
-  @override
-  String get csvImportTypeExpense => 'مصروف';
-
-  @override
-  String get csvImportTypeIncome => 'دخل';
-
-  @override
-  String csvImportMoreRows(int count) {
-    return '+ $count صفوف أخرى';
-  }
-
-  @override
-  String get csvImportRun => 'استيراد الكل';
-
-  @override
-  String get csvImportProgress => 'جاري الاستيراد…';
-
-  @override
-  String csvImportSuccess(int count) {
-    return 'تم استيراد $count معاملة';
-  }
-
-  @override
-  String csvImportPartial(int ok, int failed) {
-    return 'تم $ok، فشل $failed';
+  String subscriptionsDueOn(String date) {
+    return 'مستحق $date';
   }
 
   @override

@@ -158,6 +158,17 @@ class _SmartImportPasteTabState extends State<SmartImportPasteTab> {
       ..addAll(next);
   }
 
+  String? _majorityParsedValue(Iterable<String?> values) {
+    final counts = <String, int>{};
+    for (final value in values) {
+      final trimmed = value?.trim();
+      if (trimmed == null || trimmed.isEmpty) continue;
+      counts[trimmed] = (counts[trimmed] ?? 0) + 1;
+    }
+    if (counts.isEmpty) return null;
+    return counts.entries.reduce((a, b) => a.value >= b.value ? a : b).key;
+  }
+
   Future<void> _addEntry(ParsedFinancialEntry entry, int index) async {
     final l10n = AppLocalizations.of(context)!;
     final sheetResult = await showSmartImportEntrySheet(
@@ -166,6 +177,9 @@ class _SmartImportPasteTabState extends State<SmartImportPasteTab> {
       title: smartImportFallbackTitle(l10n, entry.title),
       amountInBase: entry.amountInBase,
       date: entry.date,
+      expenseCategory: entry.expenseCategory,
+      paidFrom: entry.paidFrom,
+      incomeSource: entry.incomeSource,
     );
 
     if (!mounted) return;
@@ -206,6 +220,21 @@ class _SmartImportPasteTabState extends State<SmartImportPasteTab> {
       context,
       hasExpense: importable.any((e) => e.type == FinancialEntryType.expense),
       hasIncome: importable.any((e) => e.type == FinancialEntryType.income),
+      initialExpenseCategory: _majorityParsedValue(
+        importable
+            .where((e) => e.type == FinancialEntryType.expense)
+            .map((e) => e.expenseCategory),
+      ),
+      initialExpensePaidFrom: _majorityParsedValue(
+        importable
+            .where((e) => e.type == FinancialEntryType.expense)
+            .map((e) => e.paidFrom),
+      ),
+      initialIncomeSource: _majorityParsedValue(
+        importable
+            .where((e) => e.type == FinancialEntryType.income)
+            .map((e) => e.incomeSource),
+      ),
     );
     if (categories == null || !mounted) return;
 

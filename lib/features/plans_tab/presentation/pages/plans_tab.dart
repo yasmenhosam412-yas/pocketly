@@ -154,7 +154,7 @@ class _PlansTabState extends State<PlansTab> with AutomaticKeepAliveClientMixin 
                 await Future.delayed(const Duration(milliseconds: 350));
               },
               child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
+              physics: kHomeTabScrollPhysics,
               slivers: [
                 SliverToBoxAdapter(
                   child: Padding(

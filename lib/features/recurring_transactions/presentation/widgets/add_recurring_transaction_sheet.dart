@@ -18,8 +18,14 @@ import 'package:intl/intl.dart';
 
 class AddRecurringTransactionSheet extends StatefulWidget {
   final RecurringTransaction? item;
+  /// When set, hides income/expense toggle and locks the kind.
+  final RecurringKind? lockKind;
 
-  const AddRecurringTransactionSheet({super.key, this.item});
+  const AddRecurringTransactionSheet({
+    super.key,
+    this.item,
+    this.lockKind,
+  });
 
   @override
   State<AddRecurringTransactionSheet> createState() =>
@@ -75,10 +81,13 @@ class _AddRecurringTransactionSheetState
           ? display.toInt().toString()
           : display.toStringAsFixed(2);
     } else {
-      _kind = RecurringKind.expense;
+      _kind = widget.lockKind ?? RecurringKind.expense;
       _category = ExpenseCategories.presets.first;
       _incomeSource = null;
       _dayOfMonth = now.day.clamp(1, _maxDayInReferenceMonth);
+    }
+    if (widget.lockKind != null) {
+      _kind = widget.lockKind!;
     }
     _clampDayToReferenceMonth();
   }
@@ -230,30 +239,31 @@ class _AddRecurringTransactionSheetState
               ),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _KindChip(
-                    label: l10n.tabExpenses,
-                    icon: Icons.north_east_rounded,
-                    color: AppColors.expense,
-                    selected: _isExpense,
-                    onTap: () => _setKind(RecurringKind.expense),
+            if (widget.lockKind == null)
+              Row(
+                children: [
+                  Expanded(
+                    child: _KindChip(
+                      label: l10n.tabExpenses,
+                      icon: Icons.north_east_rounded,
+                      color: AppColors.expense,
+                      selected: _isExpense,
+                      onTap: () => _setKind(RecurringKind.expense),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: _KindChip(
-                    label: l10n.tabIncomes,
-                    icon: Icons.south_west_rounded,
-                    color: AppColors.income,
-                    selected: !_isExpense,
-                    onTap: () => _setKind(RecurringKind.income),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _KindChip(
+                      label: l10n.tabIncomes,
+                      icon: Icons.south_west_rounded,
+                      color: AppColors.income,
+                      selected: !_isExpense,
+                      onTap: () => _setKind(RecurringKind.income),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+                ],
+              ),
+            if (widget.lockKind == null) const SizedBox(height: 16),
             Wrap(
               spacing: 8,
               runSpacing: 8,
