@@ -95,9 +95,12 @@ class AppRouter {
       case AppRoutes.search:
         return MaterialPageRoute(builder: (_) => const GlobalSearchScreen());
       case AppRoutes.smartImport:
+        final initialTab = settings.arguments is int
+            ? settings.arguments as int
+            : 0;
         return MaterialPageRoute(
           settings: const RouteSettings(name: AppRoutes.smartImport),
-          builder: (_) => const SmartImportScreen(),
+          builder: (_) => SmartImportScreen(initialTabIndex: initialTab),
         );
       case AppRoutes.calculator:
         return MaterialPageRoute(builder: (_) => const CalculatorScreen());

@@ -167,8 +167,11 @@ class _RecurringTransactionsScreenState
                     ),
                   );
                 },
-                confirmDelete: () => _askDelete(item),
-                onDeleted: () => _delete(item),
+                onDelete: () async {
+                  if (!await _askDelete(item)) return;
+                  if (!mounted) return;
+                  _delete(item);
+                },
               );
             },
           );
@@ -310,15 +313,13 @@ class _RecurringRuleCard extends StatelessWidget {
   final RecurringTransaction item;
   final VoidCallback onTap;
   final ValueChanged<bool> onToggle;
-  final Future<bool> Function() confirmDelete;
-  final VoidCallback onDeleted;
+  final VoidCallback onDelete;
 
   const _RecurringRuleCard({
     required this.item,
     required this.onTap,
     required this.onToggle,
-    required this.confirmDelete,
-    required this.onDeleted,
+    required this.onDelete,
   });
 
   bool get _postedThisMonth {
@@ -364,8 +365,10 @@ class _RecurringRuleCard extends StatelessWidget {
     return Dismissible(
       key: ValueKey(item.id),
       direction: DismissDirection.endToStart,
-      confirmDismiss: (_) => confirmDelete(),
-      onDismissed: (_) => onDeleted(),
+      confirmDismiss: (_) async {
+        onDelete();
+        return false;
+      },
       background: Container(
         alignment: AlignmentDirectional.centerEnd,
         padding: const EdgeInsetsDirectional.only(end: 20),
@@ -467,6 +470,15 @@ class _RecurringRuleCard extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+                              ),
+                              IconButton(
+                                onPressed: onDelete,
+                                tooltip: l10n.expenseShortcutDelete,
+                                icon: Icon(
+                                  Icons.delete_outline_rounded,
+                                  color: AppColors.error.withValues(alpha: 0.9),
+                                ),
+                                visualDensity: VisualDensity.compact,
                               ),
                               Switch.adaptive(
                                 value: item.isEnabled,

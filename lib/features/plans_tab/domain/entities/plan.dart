@@ -28,6 +28,11 @@ class Plan extends Equatable {
 
   bool get isCompleted => savedAmount >= targetAmount;
 
+  double get remaining {
+    final left = targetAmount - savedAmount;
+    return left <= 0 ? 0 : left;
+  }
+
   @override
   List<Object?> get props => [
     id,

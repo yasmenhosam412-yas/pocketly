@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum ScheduledNotificationKind { billReminder, dailyDigest }
+enum ScheduledNotificationKind { billReminder, dailyDigest, push }
 
 class ScheduledNotificationItem extends Equatable {
   final ScheduledNotificationKind kind;

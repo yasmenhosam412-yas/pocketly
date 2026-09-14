@@ -63,6 +63,17 @@
   "loanRecordPayment": "تسجيل دفعة",
   "loanPaymentAmount": "مبلغ الدفعة",
   "loanPaymentSubmit": "حفظ الدفعة",
+  "loanPaymentPayFromBalance": "الدفع من",
+  "loanPaymentPayFromBalanceHint": "المحفظة أو الحساب اللي هتدفع منه السداد",
+  "loanPaymentAddToBalance": "إضافة إلى",
+  "loanPaymentAddToBalanceHint": "المحفظة أو الحساب اللي هيتضاف له السداد",
+  "loanPaymentBalanceEntryTitle": "سداد قرض · {personName}",
+  "@loanPaymentBalanceEntryTitle": {
+    "placeholders": {
+      "personName": { "type": "String" }
+    }
+  },
+  "errorSelectLoanPaymentSource": "اختار محفظة أو مصدر دفع",
   "loanOverview": "وضع القروض",
   "loanOwedToYou": "مستحق لك",
   "loanYouOwe": "عليك",
@@ -561,6 +572,10 @@
   "addIncome": "ضيف دخل",
   "editIncome": "عدّل الدخل",
   "recentIncomes": "آخر دخل",
+  "incomeToolsSectionTitle": "إجراءات سريعة",
+  "incomeToolsSectionSubtitle": "ضيف دخل أسرع بالذكاء الاصطناعي، الاستيراد، يوم الراتب، أو المتكرر.",
+  "incomeToolsAddForm": "فورم فاضي",
+  "incomeToolsRecurring": "متكرر",
   "totalIncome": "مجموع الدخل",
   "addExpense": "ضيف مصروف",
   "editExpense": "عدّل المصروف",
@@ -1036,6 +1051,54 @@
   },
   "planGoalCompleted": "الهدف خلص",
   "planTapToEditGoal": "اضغط عشان تعدّل الهدف",
+  "planCoachMonthly": "وفّر {amount} كل شهر عشان تلحق الموعد",
+  "@planCoachMonthly": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planCoachOverdue": "الموعد عدّى — باقي {amount}",
+  "@planCoachOverdue": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planCoachUrgent": "قرب الموعد — باقي {amount}",
+  "@planCoachUrgent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planCoachRemaining": "باقي {amount} عشان توصل للهدف",
+  "@planCoachRemaining": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planCoachTipTitle": "كمل على الطريق",
+  "planCoachSurplusTip": "عندك {amount} متاح. ضيف جزء على هدف عشان تقرب.",
+  "@planCoachSurplusTip": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planCoachAddSuggested": "ضيف المقترح {amount}",
+  "@planCoachAddSuggested": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planSuggestThisMonth": "الشهر ده",
+  "planSuggestHalf": "النص",
+  "planSuggestAllAvailable": "كل المتاح",
+  "planSuggestFinish": "كمّل الهدف",
+  "planTemplateEmergency": "صندوق طوارئ",
+  "planTemplateVacation": "إجازة",
+  "planTemplateNewPhone": "موبايل جديد",
+  "planTemplateEducation": "تعليم",
+  "planTemplatesTitle": "أفكار سريعة",
+  "planHowItHelps": "حط هدف ومبلغ، وموعد لو حابب، وبعدين حرّك فلوس من الرصيد بزرار إضافة للهدف.",
+
   "plansEmptyTitle": "ابدأ أول هدف",
   "plansEmptySubtitle": "حدّد هدف، تابع اللي وفّرته، وشوف تقدّمك.",
   "plansCreateGoalButton": "اعمل هدف",
@@ -1163,7 +1226,24 @@
   "smartImportSmsTitleIncome": "دخل بنك",
   "smartImportSmsShowBody": "اعرض الرسالة كاملة",
   "smartImportSmsHideBody": "اخفي الرسالة",
-  "smartImportTapToImport": "اضغط للاستيراد",
+  "smartImportSmsFilterReady": "جاهز",
+  "smartImportSmsFilterExpenses": "مصاريف",
+  "smartImportSmsFilterIncomes": "دخل",
+  "smartImportSmsFilterAdded": "اتضاف",
+  "smartImportSmsFilterAll": "الكل",
+  "smartImportSmsSummary": "{ready} جاهز · {added} اتضاف · {noAmount} من غير مبلغ",
+  "@smartImportSmsSummary": {
+    "placeholders": {
+      "ready": { "type": "int" },
+      "added": { "type": "int" },
+      "noAmount": { "type": "int" }
+    }
+  },
+  "smartImportSmsFilterEmpty": "مفيش حاجة في الفلتر ده. جرّب فلتر تاني أو اسحب للتحديث.",
+  "smartImportSmsNoAmount": "مفيش مبلغ",
+  "smartImportSmsReviewAdd": "راجع وضيف",
+  "smartImportSmsHintSelect": "المربع للاختيار المتعدد · اضغط الكارت للمراجعة",
+  "smartImportTapToImport": "اضغط للمراجعة",
   "smartImportAddAllExpenses": "ضيف كل المصاريف ({count})",
   "@smartImportAddAllExpenses": {
     "placeholders": {

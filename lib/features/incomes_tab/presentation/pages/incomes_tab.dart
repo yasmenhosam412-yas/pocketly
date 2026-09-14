@@ -18,10 +18,13 @@ import 'package:imrpo/features/incomes_tab/domain/entities/income.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
 import 'package:imrpo/features/incomes_tab/presentation/widgets/add_income_sheet.dart';
 import 'package:imrpo/features/incomes_tab/presentation/widgets/income_list_tile.dart';
+import 'package:imrpo/features/incomes_tab/presentation/widgets/income_tools_strip.dart';
 import 'package:imrpo/features/incomes_tab/presentation/widgets/manage_income_source_sheet.dart';
 import 'package:imrpo/core/models/parsed_financial_entry.dart';
+import 'package:imrpo/core/config/app_router.dart';
 import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
 import 'package:imrpo/features/salary_day/presentation/widgets/salary_day_sheet.dart';
+import 'package:imrpo/features/smart_import/presentation/pages/smart_import_screen.dart';
 import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_ai_tab.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
@@ -298,6 +301,25 @@ class _IncomesTabState extends State<IncomesTab>
                                 ),
                               ),
 
+                            if (AssociationLedgerAccess.canEdit)
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    20,
+                                    16,
+                                    20,
+                                    0,
+                                  ),
+                                  child: IncomeToolsStrip(
+                                    onMagicAdd: _openMagicAdd,
+                                    onAddForm: _openAddSheet,
+                                    onSmartImport: _openSmartImport,
+                                    onSalaryDay: _openSalaryDay,
+                                    onRecurring: _openRecurring,
+                                  ),
+                                ),
+                              ),
+
                             SliverToBoxAdapter(
                               child: Padding(
                                 padding: const EdgeInsets.fromLTRB(
@@ -452,6 +474,25 @@ class _IncomesTabState extends State<IncomesTab>
       context,
       preferredType: FinancialEntryType.income,
     );
+  }
+
+  void _openSmartImport() {
+    Navigator.of(context).pushNamed(
+      AppRoutes.smartImport,
+      arguments: SmartImportScreen.smsTabIndex,
+    );
+  }
+
+  Future<void> _openSalaryDay() {
+    return showSalaryDaySheet(
+      context,
+      plansBloc: context.read<PlansTabBloc>(),
+      expensesBloc: context.read<ExpensesTabBloc>(),
+    );
+  }
+
+  void _openRecurring() {
+    Navigator.of(context).pushNamed(AppRoutes.recurring);
   }
 
   void _openEditSheet(Income income) =>

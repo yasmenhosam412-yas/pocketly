@@ -13,6 +13,7 @@ import 'package:imrpo/features/balance_tab/domain/services/balance_summary_build
 import 'package:imrpo/features/expenses_tab/presentation/bloc/expenses_tab_bloc.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
 import 'package:imrpo/features/plans_tab/domain/entities/plan.dart';
+import 'package:imrpo/features/plans_tab/domain/services/plan_savings_coach.dart';
 import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
 import 'package:imrpo/features/plans_tab/presentation/widgets/plan_allocation_paid_from_section.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
@@ -130,10 +131,19 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
     final capBase = widget.availableBalanceBase < maxBase
         ? widget.availableBalanceBase
         : maxBase;
-    final display = CurrencyConverter.fromBase(capBase, _currencyCode);
+    _setAmountFromBase(capBase);
+  }
+
+  void _setAmountFromBase(double baseAmount) {
+    final display = CurrencyConverter.fromBase(baseAmount, _currencyCode);
     _amountController.text = display == display.roundToDouble()
         ? display.toInt().toString()
         : display.toStringAsFixed(2);
+  }
+
+  void _applySuggestion(double baseAmount) {
+    if (baseAmount <= 0) return;
+    setState(() => _setAmountFromBase(baseAmount));
   }
 
   @override
@@ -365,6 +375,14 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
                     initialCurrencyCode: _currencyCode,
                     onCurrencyChanged: (c) => _currencyCode = c.code,
                   ),
+                  if (_selectedPlan != null) ...[
+                    const SizedBox(height: 12),
+                    _GoalAmountSuggestions(
+                      plan: _selectedPlan!,
+                      availableBalanceBase: widget.availableBalanceBase,
+                      onSelect: _applySuggestion,
+                    ),
+                  ],
                   const SizedBox(height: 28),
                   SizedBox(
                     height: 54,
@@ -475,3 +493,94 @@ class _AddToPlanFromBalanceSheetState extends State<AddToPlanFromBalanceSheet> {
     AppToast.error(context, message);
   }
 }
+
+class _GoalAmountSuggestions extends StatelessWidget {
+  final Plan plan;
+  final double availableBalanceBase;
+  final ValueChanged<double> onSelect;
+
+  const _GoalAmountSuggestions({
+    required this.plan,
+    required this.availableBalanceBase,
+    required this.onSelect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final remaining = PlanSavingsCoach.remaining(plan);
+    final monthly = PlanSavingsCoach.suggestedMonthly(plan);
+    final half = (availableBalanceBase < remaining
+            ? availableBalanceBase
+            : remaining) /
+        2;
+    final finish = remaining <= availableBalanceBase ? remaining : null;
+    final allAvailable = availableBalanceBase < remaining
+        ? availableBalanceBase
+        : remaining;
+
+    final chips = <(String, double)>[];
+    if (monthly != null && monthly > 0) {
+      final capped = monthly > allAvailable ? allAvailable : monthly;
+      if (capped > 0) {
+        chips.add((l10n.planSuggestThisMonth, capped));
+      }
+    }
+    if (half > 0) chips.add((l10n.planSuggestHalf, half));
+    if (allAvailable > 0) {
+      chips.add((l10n.planSuggestAllAvailable, allAvailable));
+    }
+    if (finish != null && finish > 0) {
+      chips.add((l10n.planSuggestFinish, finish));
+    }
+
+    // Deduplicate near-equal amounts.
+    final seen = <String>{};
+    final unique = <(String, double)>[];
+    for (final chip in chips) {
+      final key = chip.$2.toStringAsFixed(2);
+      if (seen.add(key)) unique.add(chip);
+    }
+    if (unique.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (monthly != null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              l10n.planCoachMonthly(Money.format(monthly)),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.plansDark,
+              ),
+            ),
+          ),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            for (final chip in unique)
+              ActionChip(
+                label: Text(
+                  '${chip.$1} · ${Money.format(chip.$2)}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textColor,
+                  ),
+                ),
+                onPressed: () => onSelect(chip.$2),
+                backgroundColor: AppColors.plans.withValues(alpha: 0.1),
+                side: BorderSide(
+                  color: AppColors.plans.withValues(alpha: 0.25),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+

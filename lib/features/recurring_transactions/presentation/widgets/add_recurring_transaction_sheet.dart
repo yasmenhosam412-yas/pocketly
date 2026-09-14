@@ -472,10 +472,63 @@ class _AddRecurringTransactionSheetState
                 style: TextStyle(fontWeight: FontWeight.w700),
               ),
             ),
+            if (_isEditing) ...[
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                onPressed: _delete,
+                icon: const Icon(Icons.delete_outline_rounded),
+                label: Text(l10n.expenseShortcutDelete),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.error,
+                  side: BorderSide(
+                    color: AppColors.error.withValues(alpha: 0.45),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _delete() async {
+    final item = widget.item;
+    if (item == null) return;
+    final l10n = AppLocalizations.of(context)!;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.recurringTransactionsDeleteConfirmTitle),
+        content: Text(item.title),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(l10n.expenseShortcutDelete),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    context.read<RecurringTransactionsBloc>().add(
+      DeleteRecurringTransactionEvent(id: item.id),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(l10n.recurringTransactionsDeleted)),
+    );
+    Navigator.of(context).pop();
   }
 }
 

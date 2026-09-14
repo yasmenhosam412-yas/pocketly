@@ -443,6 +443,42 @@ abstract class AppLocalizations {
   /// **'Save payment'**
   String get loanPaymentSubmit;
 
+  /// No description provided for @loanPaymentPayFromBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay from'**
+  String get loanPaymentPayFromBalance;
+
+  /// No description provided for @loanPaymentPayFromBalanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet or account this repayment is paid from'**
+  String get loanPaymentPayFromBalanceHint;
+
+  /// No description provided for @loanPaymentAddToBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to'**
+  String get loanPaymentAddToBalance;
+
+  /// No description provided for @loanPaymentAddToBalanceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Wallet or account that receives this repayment'**
+  String get loanPaymentAddToBalanceHint;
+
+  /// No description provided for @loanPaymentBalanceEntryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loan payment · {personName}'**
+  String loanPaymentBalanceEntryTitle(String personName);
+
+  /// No description provided for @errorSelectLoanPaymentSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a wallet or payment source'**
+  String get errorSelectLoanPaymentSource;
+
   /// No description provided for @loanOverview.
   ///
   /// In en, this message translates to:
@@ -2459,6 +2495,30 @@ abstract class AppLocalizations {
   /// **'Recent Incomes'**
   String get recentIncomes;
 
+  /// No description provided for @incomeToolsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick actions'**
+  String get incomeToolsSectionTitle;
+
+  /// No description provided for @incomeToolsSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add income faster with AI, import, salary day, or recurring.'**
+  String get incomeToolsSectionSubtitle;
+
+  /// No description provided for @incomeToolsAddForm.
+  ///
+  /// In en, this message translates to:
+  /// **'Blank form'**
+  String get incomeToolsAddForm;
+
+  /// No description provided for @incomeToolsRecurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get incomeToolsRecurring;
+
   /// No description provided for @totalIncome.
   ///
   /// In en, this message translates to:
@@ -4067,6 +4127,108 @@ abstract class AppLocalizations {
   /// **'Tap to edit goal'**
   String get planTapToEditGoal;
 
+  /// No description provided for @planCoachMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {amount}/month to hit your deadline'**
+  String planCoachMonthly(String amount);
+
+  /// No description provided for @planCoachOverdue.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadline passed — {amount} still needed'**
+  String planCoachOverdue(String amount);
+
+  /// No description provided for @planCoachUrgent.
+  ///
+  /// In en, this message translates to:
+  /// **'Due soon — {amount} left'**
+  String planCoachUrgent(String amount);
+
+  /// No description provided for @planCoachRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} left to reach your goal'**
+  String planCoachRemaining(String amount);
+
+  /// No description provided for @planCoachTipTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay on track'**
+  String get planCoachTipTitle;
+
+  /// No description provided for @planCoachSurplusTip.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {amount} available. Add some to a goal to get closer.'**
+  String planCoachSurplusTip(String amount);
+
+  /// No description provided for @planCoachAddSuggested.
+  ///
+  /// In en, this message translates to:
+  /// **'Add suggested {amount}'**
+  String planCoachAddSuggested(String amount);
+
+  /// No description provided for @planSuggestThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get planSuggestThisMonth;
+
+  /// No description provided for @planSuggestHalf.
+  ///
+  /// In en, this message translates to:
+  /// **'Half'**
+  String get planSuggestHalf;
+
+  /// No description provided for @planSuggestAllAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'All available'**
+  String get planSuggestAllAvailable;
+
+  /// No description provided for @planSuggestFinish.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish goal'**
+  String get planSuggestFinish;
+
+  /// No description provided for @planTemplateEmergency.
+  ///
+  /// In en, this message translates to:
+  /// **'Emergency fund'**
+  String get planTemplateEmergency;
+
+  /// No description provided for @planTemplateVacation.
+  ///
+  /// In en, this message translates to:
+  /// **'Vacation'**
+  String get planTemplateVacation;
+
+  /// No description provided for @planTemplateNewPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'New phone'**
+  String get planTemplateNewPhone;
+
+  /// No description provided for @planTemplateEducation.
+  ///
+  /// In en, this message translates to:
+  /// **'Education'**
+  String get planTemplateEducation;
+
+  /// No description provided for @planTemplatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick start ideas'**
+  String get planTemplatesTitle;
+
+  /// No description provided for @planHowItHelps.
+  ///
+  /// In en, this message translates to:
+  /// **'Set a target, optionally a deadline, then move money from your balance with Add to goal.'**
+  String get planHowItHelps;
+
   /// No description provided for @plansEmptyTitle.
   ///
   /// In en, this message translates to:
@@ -4637,10 +4799,70 @@ abstract class AppLocalizations {
   /// **'Hide message'**
   String get smartImportSmsHideBody;
 
+  /// No description provided for @smartImportSmsFilterReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get smartImportSmsFilterReady;
+
+  /// No description provided for @smartImportSmsFilterExpenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get smartImportSmsFilterExpenses;
+
+  /// No description provided for @smartImportSmsFilterIncomes.
+  ///
+  /// In en, this message translates to:
+  /// **'Incomes'**
+  String get smartImportSmsFilterIncomes;
+
+  /// No description provided for @smartImportSmsFilterAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get smartImportSmsFilterAdded;
+
+  /// No description provided for @smartImportSmsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get smartImportSmsFilterAll;
+
+  /// No description provided for @smartImportSmsSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{ready} ready · {added} added · {noAmount} no amount'**
+  String smartImportSmsSummary(int ready, int added, int noAmount);
+
+  /// No description provided for @smartImportSmsFilterEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in this filter. Try another filter or pull to refresh.'**
+  String get smartImportSmsFilterEmpty;
+
+  /// No description provided for @smartImportSmsNoAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'No amount found'**
+  String get smartImportSmsNoAmount;
+
+  /// No description provided for @smartImportSmsReviewAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Review & add'**
+  String get smartImportSmsReviewAdd;
+
+  /// No description provided for @smartImportSmsHintSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap checkbox to multi-select · tap card to review'**
+  String get smartImportSmsHintSelect;
+
   /// No description provided for @smartImportTapToImport.
   ///
   /// In en, this message translates to:
-  /// **'Tap to import'**
+  /// **'Tap to review'**
   String get smartImportTapToImport;
 
   /// No description provided for @smartImportAddAllExpenses.

@@ -7,7 +7,6 @@ import 'package:imrpo/core/services/association_context.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
-import 'package:imrpo/core/widgets/app_toast.dart';
 import 'package:imrpo/core/widgets/plans_balance_tab_loading_skeleton.dart';
 import 'package:imrpo/core/widgets/tab_centered_scroll.dart';
 import 'package:imrpo/core/widgets/tab_refresh_overlay.dart';
@@ -18,7 +17,6 @@ import 'package:imrpo/features/loans_tab/presentation/bloc/loans_tab_bloc.dart';
 import 'package:imrpo/features/loans_tab/presentation/widgets/add_loan_sheet.dart';
 import 'package:imrpo/features/loans_tab/presentation/widgets/loan_list_tile.dart';
 import 'package:imrpo/features/loans_tab/presentation/widgets/record_loan_payment_sheet.dart';
-import 'package:imrpo/features/loans_tab/presentation/widgets/wallet_split_sheet.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
 class LoansTab extends StatefulWidget {
@@ -53,7 +51,7 @@ class _LoansTabState extends State<LoansTab>
           }
           return FloatingActionButton.extended(
             heroTag: 'fab-loans',
-            onPressed: _openFabMenu,
+            onPressed: _openAddSheet,
             backgroundColor: AppColors.loans,
             elevation: 4,
             highlightElevation: 6,
@@ -373,73 +371,12 @@ class _LoansTabState extends State<LoansTab>
     );
   }
 
-  Future<void> _openFabMenu() async {
-    final l10n = AppLocalizations.of(context)!;
-    final choice = await showModalBottomSheet<String>(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.textMuted.withValues(alpha: 0.35),
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: AppColors.loans.withValues(alpha: 0.15),
-                    child: const Icon(Icons.handshake_outlined,
-                        color: AppColors.loans),
-                  ),
-                  title: Text(l10n.loanAddTitle),
-                  subtitle: Text(l10n.loanEmptySubtitle),
-                  onTap: () => Navigator.pop(ctx, 'loan'),
-                ),
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: AppColors.income.withValues(alpha: 0.15),
-                    child: Icon(Icons.qr_code_2_rounded,
-                        color: AppColors.income),
-                  ),
-                  title: Text(l10n.walletSplitTitle),
-                  subtitle: Text(l10n.walletSplitFabSubtitle),
-                  onTap: () => Navigator.pop(ctx, 'split'),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
-    if (!mounted || choice == null) return;
-    if (choice == 'loan') {
-      _openAddSheet();
-    } else if (choice == 'split') {
-      _openSplitSheet();
-    }
-  }
-
   void _openAddSheet() => _showLoanSheet(const AddLoanSheet());
 
   void _openEditSheet(Loan loan) => _showLoanSheet(AddLoanSheet(loan: loan));
 
-  void _openPaymentSheet(Loan loan) =>
-      _showLoanSheet(RecordLoanPaymentSheet(loan: loan));
-
-  Future<void> _openSplitSheet() async {
-    final message = await showModalBottomSheet<String>(
+  Future<void> _openPaymentSheet(Loan loan) async {
+    final saved = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -455,15 +392,15 @@ class _LoansTabState extends State<LoansTab>
         child: MultiBlocProvider(
           providers: [
             BlocProvider.value(value: context.read<LoansTabBloc>()),
-            BlocProvider.value(value: context.read<ExpensesTabBloc>()),
             BlocProvider.value(value: context.read<IncomesTabBloc>()),
           ],
-          child: const WalletSplitSheet(),
+          child: RecordLoanPaymentSheet(loan: loan),
         ),
       ),
     );
-    if (!mounted || message == null || message.isEmpty) return;
-    AppToast.show(context, message);
+    if (!mounted || saved != true) return;
+    context.read<ExpensesTabBloc>().add(const LoadExpensesEvent(force: true));
+    context.read<IncomesTabBloc>().add(const LoadIncomesEvent(force: true));
   }
 
   void _showLoanSheet(Widget sheet) {

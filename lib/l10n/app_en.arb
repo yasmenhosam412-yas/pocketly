@@ -63,6 +63,17 @@
   "loanRecordPayment": "Record payment",
   "loanPaymentAmount": "Payment amount",
   "loanPaymentSubmit": "Save payment",
+  "loanPaymentPayFromBalance": "Pay from",
+  "loanPaymentPayFromBalanceHint": "Wallet or account this repayment is paid from",
+  "loanPaymentAddToBalance": "Add to",
+  "loanPaymentAddToBalanceHint": "Wallet or account that receives this repayment",
+  "loanPaymentBalanceEntryTitle": "Loan payment · {personName}",
+  "@loanPaymentBalanceEntryTitle": {
+    "placeholders": {
+      "personName": { "type": "String" }
+    }
+  },
+  "errorSelectLoanPaymentSource": "Choose a wallet or payment source",
   "loanOverview": "Loan position",
   "loanOwedToYou": "Owed to you",
   "loanYouOwe": "You owe",
@@ -561,6 +572,10 @@
   "addIncome": "Add Income",
   "editIncome": "Edit Income",
   "recentIncomes": "Recent Incomes",
+  "incomeToolsSectionTitle": "Quick actions",
+  "incomeToolsSectionSubtitle": "Add income faster with AI, import, salary day, or recurring.",
+  "incomeToolsAddForm": "Blank form",
+  "incomeToolsRecurring": "Recurring",
   "totalIncome": "Total Income",
   "addExpense": "Add Expense",
   "editExpense": "Edit Expense",
@@ -1036,6 +1051,54 @@
   },
   "planGoalCompleted": "Goal completed",
   "planTapToEditGoal": "Tap to edit goal",
+  "planCoachMonthly": "Save {amount}/month to hit your deadline",
+  "@planCoachMonthly": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planCoachOverdue": "Deadline passed — {amount} still needed",
+  "@planCoachOverdue": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planCoachUrgent": "Due soon — {amount} left",
+  "@planCoachUrgent": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planCoachRemaining": "{amount} left to reach your goal",
+  "@planCoachRemaining": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planCoachTipTitle": "Stay on track",
+  "planCoachSurplusTip": "You have {amount} available. Add some to a goal to get closer.",
+  "@planCoachSurplusTip": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planCoachAddSuggested": "Add suggested {amount}",
+  "@planCoachAddSuggested": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "planSuggestThisMonth": "This month",
+  "planSuggestHalf": "Half",
+  "planSuggestAllAvailable": "All available",
+  "planSuggestFinish": "Finish goal",
+  "planTemplateEmergency": "Emergency fund",
+  "planTemplateVacation": "Vacation",
+  "planTemplateNewPhone": "New phone",
+  "planTemplateEducation": "Education",
+  "planTemplatesTitle": "Quick start ideas",
+  "planHowItHelps": "Set a target, optionally a deadline, then move money from your balance with Add to goal.",
+
   "plansEmptyTitle": "Start your first goal",
   "plansEmptySubtitle": "Set a target, track what you save, and watch your progress grow.",
   "plansCreateGoalButton": "Create goal",
@@ -1163,7 +1226,24 @@
   "smartImportSmsTitleIncome": "Bank income",
   "smartImportSmsShowBody": "Show full message",
   "smartImportSmsHideBody": "Hide message",
-  "smartImportTapToImport": "Tap to import",
+  "smartImportSmsFilterReady": "Ready",
+  "smartImportSmsFilterExpenses": "Expenses",
+  "smartImportSmsFilterIncomes": "Incomes",
+  "smartImportSmsFilterAdded": "Added",
+  "smartImportSmsFilterAll": "All",
+  "smartImportSmsSummary": "{ready} ready · {added} added · {noAmount} no amount",
+  "@smartImportSmsSummary": {
+    "placeholders": {
+      "ready": { "type": "int" },
+      "added": { "type": "int" },
+      "noAmount": { "type": "int" }
+    }
+  },
+  "smartImportSmsFilterEmpty": "Nothing in this filter. Try another filter or pull to refresh.",
+  "smartImportSmsNoAmount": "No amount found",
+  "smartImportSmsReviewAdd": "Review & add",
+  "smartImportSmsHintSelect": "Tap checkbox to multi-select · tap card to review",
+  "smartImportTapToImport": "Tap to review",
   "smartImportAddAllExpenses": "Add all expenses ({count})",
   "@smartImportAddAllExpenses": {
     "placeholders": {

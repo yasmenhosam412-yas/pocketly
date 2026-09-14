@@ -406,6 +406,7 @@ class _InboxTile extends StatelessWidget {
         ScheduledNotificationKind.billReminder =>
           Icons.notifications_active_outlined,
         ScheduledNotificationKind.dailyDigest => Icons.insights_outlined,
+        ScheduledNotificationKind.push => Icons.campaign_outlined,
       };
 
   @override
@@ -499,6 +500,7 @@ class _UpcomingTile extends StatelessWidget {
         ScheduledNotificationKind.billReminder =>
           Icons.notifications_active_outlined,
         ScheduledNotificationKind.dailyDigest => Icons.insights_outlined,
+        ScheduledNotificationKind.push => Icons.campaign_outlined,
       };
 
   @override

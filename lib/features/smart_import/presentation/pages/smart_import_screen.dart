@@ -3,14 +3,20 @@ import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/services/shared_text_import_store.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_header.dart';
-import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_ai_tab.dart';
 import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_paste_tab.dart';
-import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_quick_add_tab.dart';
 import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_sms_tab.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
 class SmartImportScreen extends StatefulWidget {
-  const SmartImportScreen({super.key});
+  static const pasteTabIndex = 0;
+  static const smsTabIndex = 1;
+
+  final int initialTabIndex;
+
+  const SmartImportScreen({
+    super.key,
+    this.initialTabIndex = pasteTabIndex,
+  });
 
   @override
   State<SmartImportScreen> createState() => _SmartImportScreenState();
@@ -19,26 +25,25 @@ class SmartImportScreen extends StatefulWidget {
 class _SmartImportScreenState extends State<SmartImportScreen>
     with SingleTickerProviderStateMixin {
   static const _scrollToTopThreshold = 320.0;
-  static const _tabCount = 4;
+  static const _tabCount = 2;
 
   late final TabController _tabController;
   late final SharedTextImportStore _sharedTextStore;
-  late final ScrollController _aiScrollController;
   late final ScrollController _pasteScrollController;
-  late final ScrollController _quickScrollController;
   late final ScrollController _smsScrollController;
   bool _showScrollToTop = false;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _tabCount, vsync: this);
+    final initialIndex = widget.initialTabIndex.clamp(0, _tabCount - 1);
+    _tabController = TabController(
+      length: _tabCount,
+      vsync: this,
+      initialIndex: initialIndex,
+    );
     _tabController.addListener(_onTabChanged);
-    _aiScrollController = ScrollController()
-      ..addListener(_updateScrollToTopVisibility);
     _pasteScrollController = ScrollController()
-      ..addListener(_updateScrollToTopVisibility);
-    _quickScrollController = ScrollController()
       ..addListener(_updateScrollToTopVisibility);
     _smsScrollController = ScrollController()
       ..addListener(_updateScrollToTopVisibility);
@@ -54,20 +59,15 @@ class _SmartImportScreenState extends State<SmartImportScreen>
     _sharedTextStore.smartImportScreenOpen = false;
     _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
-    _aiScrollController.dispose();
     _pasteScrollController.dispose();
-    _quickScrollController.dispose();
     _smsScrollController.dispose();
     super.dispose();
   }
 
   ScrollController get _activeScrollController {
-    return switch (_tabController.index) {
-      0 => _aiScrollController,
-      2 => _quickScrollController,
-      3 => _smsScrollController,
-      _ => _pasteScrollController,
-    };
+    return _tabController.index == SmartImportScreen.smsTabIndex
+        ? _smsScrollController
+        : _pasteScrollController;
   }
 
   void _onTabChanged() {
@@ -77,7 +77,9 @@ class _SmartImportScreenState extends State<SmartImportScreen>
 
   void _onSharedTextPending() {
     if (!mounted || !_sharedTextStore.hasPending) return;
-    if (_tabController.index != 1) _tabController.index = 1;
+    if (_tabController.index != SmartImportScreen.pasteTabIndex) {
+      _tabController.index = SmartImportScreen.pasteTabIndex;
+    }
   }
 
   void _updateScrollToTopVisibility() {
@@ -124,11 +126,7 @@ class _SmartImportScreenState extends State<SmartImportScreen>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  SmartImportAiTab(scrollController: _aiScrollController),
                   SmartImportPasteTab(scrollController: _pasteScrollController),
-                  SmartImportQuickAddTab(
-                    scrollController: _quickScrollController,
-                  ),
                   SmartImportSmsTab(
                     scrollController: _smsScrollController,
                     tabController: _tabController,

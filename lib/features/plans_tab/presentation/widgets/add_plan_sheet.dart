@@ -117,6 +117,61 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
                 color: AppColors.textColor,
               ),
             ),
+            if (!_isEditing) ...[
+              const SizedBox(height: 8),
+              Text(
+                l10n.planHowItHelps,
+                style: TextStyle(
+                  fontSize: 13,
+                  height: 1.4,
+                  color: AppColors.textColor.withValues(alpha: 0.55),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n.planTemplatesTitle,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textColor.withValues(alpha: 0.8),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _TemplateChip(
+                    label: l10n.planTemplateEmergency,
+                    onTap: () => _applyTemplate(
+                      l10n.planTemplateEmergency,
+                      'Savings',
+                    ),
+                  ),
+                  _TemplateChip(
+                    label: l10n.planTemplateVacation,
+                    onTap: () => _applyTemplate(
+                      l10n.planTemplateVacation,
+                      'Travel',
+                    ),
+                  ),
+                  _TemplateChip(
+                    label: l10n.planTemplateNewPhone,
+                    onTap: () => _applyTemplate(
+                      l10n.planTemplateNewPhone,
+                      'Purchase',
+                    ),
+                  ),
+                  _TemplateChip(
+                    label: l10n.planTemplateEducation,
+                    onTap: () => _applyTemplate(
+                      l10n.planTemplateEducation,
+                      'Education',
+                    ),
+                  ),
+                ],
+              ),
+            ],
             const SizedBox(height: 24),
             CustomFormField(
               label: l10n.goalTitleLabel,
@@ -418,6 +473,17 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
     Navigator.pop(context);
   }
 
+  void _applyTemplate(String title, String category) {
+    setState(() {
+      if (_titleController.text.trim().isEmpty) {
+        _titleController.text = title;
+      }
+      _category = category;
+      _otherCategoryController.clear();
+      _deadline ??= DateTime.now().add(const Duration(days: 180));
+    });
+  }
+
   String _formatDisplayAmount(double baseAmount) {
     final display = CurrencyConverter.fromBase(baseAmount, _currencyCode);
     return display == display.roundToDouble()
@@ -439,5 +505,32 @@ class _AddPlanSheetState extends State<AddPlanSheet> {
   String _formatDate(BuildContext context, DateTime date) {
     final locale = Localizations.localeOf(context).toString();
     return DateFormat.yMMMd(locale).format(date);
+  }
+}
+
+class _TemplateChip extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+
+  const _TemplateChip({
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ActionChip(
+      avatar: Icon(Icons.auto_awesome_rounded, size: 16, color: AppColors.plans),
+      label: Text(
+        label,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          color: AppColors.textColor,
+        ),
+      ),
+      onPressed: onTap,
+      backgroundColor: AppColors.plans.withValues(alpha: 0.1),
+      side: BorderSide(color: AppColors.plans.withValues(alpha: 0.22)),
+    );
   }
 }

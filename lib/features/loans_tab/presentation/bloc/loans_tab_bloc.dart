@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:imrpo/features/expenses_tab/domain/usecases/add_expense_usecase.dart';
+import 'package:imrpo/features/incomes_tab/domain/usecases/add_income_usecase.dart';
 import 'package:imrpo/features/loans_tab/domain/entities/loan.dart';
 import 'package:imrpo/features/loans_tab/domain/usecases/add_loan_usecase.dart';
 import 'package:imrpo/features/loans_tab/domain/usecases/delete_loan_usecase.dart';
@@ -13,11 +15,15 @@ part 'loans_tab_state.dart';
 enum LoansFilter { all, given, received, overdue, settled }
 
 class LoansTabBloc extends Bloc<LoansTabEvent, LoansTabState> {
+  static const loanPaymentExpenseCategory = 'Other';
+
   final GetAllLoansUsecase getAllLoansUsecase;
   final AddLoanUsecase addLoanUsecase;
   final UpdateLoanUsecase updateLoanUsecase;
   final UpdateLoanRepaidUsecase updateLoanRepaidUsecase;
   final DeleteLoanUsecase deleteLoanUsecase;
+  final AddExpenseUsecase addExpenseUsecase;
+  final AddIncomeUsecase addIncomeUsecase;
 
   LoansTabBloc({
     required this.getAllLoansUsecase,
@@ -25,6 +31,8 @@ class LoansTabBloc extends Bloc<LoansTabEvent, LoansTabState> {
     required this.updateLoanUsecase,
     required this.updateLoanRepaidUsecase,
     required this.deleteLoanUsecase,
+    required this.addExpenseUsecase,
+    required this.addIncomeUsecase,
   }) : super(const LoansTabInitial()) {
     on<LoadLoansEvent>(_onLoad);
     on<ResetLoansTabEvent>(_onReset);
@@ -210,6 +218,17 @@ class LoansTabBloc extends Bloc<LoansTabEvent, LoansTabState> {
       return;
     }
 
+    final walletSource = event.walletSource.trim();
+    if (walletSource.isEmpty) {
+      emit(
+        current.copyWith(
+          status: LoansTabStatus.errorUpdateSaved,
+          error: 'Select a payment source',
+        ),
+      );
+      return;
+    }
+
     final addAmount = event.amount > target.remaining
         ? target.remaining
         : event.amount;
@@ -218,6 +237,40 @@ class LoansTabBloc extends Bloc<LoansTabEvent, LoansTabState> {
     emit(
       current.copyWith(status: LoansTabStatus.loadingUpdateSaved, error: ''),
     );
+
+    final title = event.balanceEntryTitle.trim().isEmpty
+        ? 'Loan payment · ${target.personName}'
+        : event.balanceEntryTitle.trim();
+    final now = DateTime.now();
+
+    // Given (owed to you): repayment credits the wallet as income.
+    // Received (you owe): repayment debits the wallet as expense.
+    final balanceResult = target.isGiven
+        ? await addIncomeUsecase(title, addAmount, now, walletSource)
+        : await addExpenseUsecase(
+            title,
+            loanPaymentExpenseCategory,
+            addAmount,
+            now,
+            incomeSource: walletSource,
+          );
+
+    final balanceFailed = balanceResult.fold(
+      (failure) {
+        final previous = state;
+        if (previous is LoansTabLoaded) {
+          emit(
+            previous.copyWith(
+              status: LoansTabStatus.errorUpdateSaved,
+              error: failure.error,
+            ),
+          );
+        }
+        return true;
+      },
+      (_) => false,
+    );
+    if (balanceFailed) return;
 
     final newRepaid = target.repaidAmount + addAmount;
     final result = await updateLoanRepaidUsecase(target.id, newRepaid);
@@ -234,7 +287,33 @@ class LoansTabBloc extends Bloc<LoansTabEvent, LoansTabState> {
           );
         }
       },
-      (_) => add(const LoadLoansEvent()),
+      (_) {
+        final previous = state;
+        if (previous is! LoansTabLoaded) return;
+        final updatedLoans = previous.loans
+            .map(
+              (l) => l.id == target.id
+                  ? Loan(
+                      id: l.id,
+                      personName: l.personName,
+                      direction: l.direction,
+                      principal: l.principal,
+                      repaidAmount: newRepaid,
+                      dueDate: l.dueDate,
+                      notes: l.notes,
+                      userId: l.userId,
+                    )
+                  : l,
+            )
+            .toList();
+        emit(
+          previous.copyWith(
+            loans: updatedLoans,
+            status: LoansTabStatus.loaded,
+            error: '',
+          ),
+        );
+      },
     );
   }
 

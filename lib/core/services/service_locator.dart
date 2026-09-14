@@ -535,6 +535,8 @@ void setupServiceLocator() {
       updateLoanUsecase: getIt<UpdateLoanUsecase>(),
       updateLoanRepaidUsecase: getIt<UpdateLoanRepaidUsecase>(),
       deleteLoanUsecase: getIt<DeleteLoanUsecase>(),
+      addExpenseUsecase: getIt<AddExpenseUsecase>(),
+      addIncomeUsecase: getIt<AddIncomeUsecase>(),
     ),
   );
 

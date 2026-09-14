@@ -7,6 +7,7 @@ import 'package:imrpo/core/services/bill_reminder_bootstrap.dart';
 import 'package:imrpo/core/services/currency_preferences.dart';
 import 'package:imrpo/core/services/daily_digest_bootstrap.dart';
 import 'package:imrpo/core/services/expense_shortcuts_store.dart';
+import 'package:imrpo/core/services/firebase_notification_service.dart';
 import 'package:imrpo/core/services/notification_inbox_store.dart';
 import 'package:imrpo/core/services/notification_inbox_sync_service.dart';
 import 'package:imrpo/core/services/initial_balance_store.dart';
@@ -39,6 +40,7 @@ Future<void> loadCriticalAppStartup() {
 Future<void> runDeferredAppStartup() async {
   unawaited(LocaleDateFormat.ensureAppLocales());
   unawaited(ShareTextImportBridge.instance.startListening());
+  unawaited(FirebaseNotificationService.instance.initialize());
 
   await Future.wait([
     getIt<CurrencyPreferences>().load(),

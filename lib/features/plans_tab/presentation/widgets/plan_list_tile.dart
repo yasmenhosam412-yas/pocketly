@@ -4,6 +4,7 @@ import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:imrpo/features/plans_tab/domain/entities/plan.dart';
+import 'package:imrpo/features/plans_tab/domain/services/plan_savings_coach.dart';
 import 'package:imrpo/features/associations/presentation/widgets/family_author_meta.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
@@ -210,6 +211,10 @@ class PlanListTile extends StatelessWidget {
                                       ],
                                     ),
                                   ],
+                                  if (!plan.isCompleted) ...[
+                                    const SizedBox(height: 8),
+                                    _PlanCoachTip(plan: plan),
+                                  ],
                                 ],
                               ),
                             ),
@@ -298,6 +303,76 @@ class PlanListTile extends StatelessWidget {
   String _formatDate(BuildContext context, DateTime date) {
     final locale = Localizations.localeOf(context).toString();
     return DateFormat.MMMd(locale).format(date);
+  }
+}
+
+class _PlanCoachTip extends StatelessWidget {
+  final Plan plan;
+
+  const _PlanCoachTip({required this.plan});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final left = PlanSavingsCoach.remaining(plan);
+    final status = PlanSavingsCoach.paceStatus(plan);
+    final monthly = PlanSavingsCoach.suggestedMonthly(plan);
+
+    final Color color;
+    final IconData icon;
+    final String text;
+
+    switch (status) {
+      case PlanPaceStatus.completed:
+        return const SizedBox.shrink();
+      case PlanPaceStatus.overdue:
+        color = AppColors.error;
+        icon = Icons.warning_amber_rounded;
+        text = l10n.planCoachOverdue(Money.format(left));
+      case PlanPaceStatus.urgent:
+        color = AppColors.warning;
+        icon = Icons.priority_high_rounded;
+        text = monthly != null
+            ? l10n.planCoachMonthly(Money.format(monthly))
+            : l10n.planCoachUrgent(Money.format(left));
+      case PlanPaceStatus.steady:
+        color = AppColors.plans;
+        icon = Icons.trending_up_rounded;
+        text = monthly != null
+            ? l10n.planCoachMonthly(Money.format(monthly))
+            : l10n.planCoachRemaining(Money.format(left));
+      case PlanPaceStatus.noDeadline:
+        color = AppColors.plansDark;
+        icon = Icons.flag_outlined;
+        text = l10n.planCoachRemaining(Money.format(left));
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withValues(alpha: 0.22)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: color,
+                height: 1.3,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

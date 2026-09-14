@@ -185,6 +185,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loanPaymentSubmit => 'Save payment';
 
   @override
+  String get loanPaymentPayFromBalance => 'Pay from';
+
+  @override
+  String get loanPaymentPayFromBalanceHint => 'Wallet or account this repayment is paid from';
+
+  @override
+  String get loanPaymentAddToBalance => 'Add to';
+
+  @override
+  String get loanPaymentAddToBalanceHint => 'Wallet or account that receives this repayment';
+
+  @override
+  String loanPaymentBalanceEntryTitle(String personName) {
+    return 'Loan payment · $personName';
+  }
+
+  @override
+  String get errorSelectLoanPaymentSource => 'Choose a wallet or payment source';
+
+  @override
   String get loanOverview => 'Loan position';
 
   @override
@@ -1277,6 +1297,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentIncomes => 'Recent Incomes';
 
   @override
+  String get incomeToolsSectionTitle => 'Quick actions';
+
+  @override
+  String get incomeToolsSectionSubtitle => 'Add income faster with AI, import, salary day, or recurring.';
+
+  @override
+  String get incomeToolsAddForm => 'Blank form';
+
+  @override
+  String get incomeToolsRecurring => 'Recurring';
+
+  @override
   String get totalIncome => 'Total Income';
 
   @override
@@ -2159,6 +2191,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get planTapToEditGoal => 'Tap to edit goal';
 
   @override
+  String planCoachMonthly(String amount) {
+    return 'Save $amount/month to hit your deadline';
+  }
+
+  @override
+  String planCoachOverdue(String amount) {
+    return 'Deadline passed — $amount still needed';
+  }
+
+  @override
+  String planCoachUrgent(String amount) {
+    return 'Due soon — $amount left';
+  }
+
+  @override
+  String planCoachRemaining(String amount) {
+    return '$amount left to reach your goal';
+  }
+
+  @override
+  String get planCoachTipTitle => 'Stay on track';
+
+  @override
+  String planCoachSurplusTip(String amount) {
+    return 'You have $amount available. Add some to a goal to get closer.';
+  }
+
+  @override
+  String planCoachAddSuggested(String amount) {
+    return 'Add suggested $amount';
+  }
+
+  @override
+  String get planSuggestThisMonth => 'This month';
+
+  @override
+  String get planSuggestHalf => 'Half';
+
+  @override
+  String get planSuggestAllAvailable => 'All available';
+
+  @override
+  String get planSuggestFinish => 'Finish goal';
+
+  @override
+  String get planTemplateEmergency => 'Emergency fund';
+
+  @override
+  String get planTemplateVacation => 'Vacation';
+
+  @override
+  String get planTemplateNewPhone => 'New phone';
+
+  @override
+  String get planTemplateEducation => 'Education';
+
+  @override
+  String get planTemplatesTitle => 'Quick start ideas';
+
+  @override
+  String get planHowItHelps => 'Set a target, optionally a deadline, then move money from your balance with Add to goal.';
+
+  @override
   String get plansEmptyTitle => 'Start your first goal';
 
   @override
@@ -2456,7 +2551,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smartImportSmsHideBody => 'Hide message';
 
   @override
-  String get smartImportTapToImport => 'Tap to import';
+  String get smartImportSmsFilterReady => 'Ready';
+
+  @override
+  String get smartImportSmsFilterExpenses => 'Expenses';
+
+  @override
+  String get smartImportSmsFilterIncomes => 'Incomes';
+
+  @override
+  String get smartImportSmsFilterAdded => 'Added';
+
+  @override
+  String get smartImportSmsFilterAll => 'All';
+
+  @override
+  String smartImportSmsSummary(int ready, int added, int noAmount) {
+    return '$ready ready · $added added · $noAmount no amount';
+  }
+
+  @override
+  String get smartImportSmsFilterEmpty => 'Nothing in this filter. Try another filter or pull to refresh.';
+
+  @override
+  String get smartImportSmsNoAmount => 'No amount found';
+
+  @override
+  String get smartImportSmsReviewAdd => 'Review & add';
+
+  @override
+  String get smartImportSmsHintSelect => 'Tap checkbox to multi-select · tap card to review';
+
+  @override
+  String get smartImportTapToImport => 'Tap to review';
 
   @override
   String smartImportAddAllExpenses(int count) {

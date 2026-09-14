@@ -185,6 +185,26 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loanPaymentSubmit => 'حفظ الدفعة';
 
   @override
+  String get loanPaymentPayFromBalance => 'الدفع من';
+
+  @override
+  String get loanPaymentPayFromBalanceHint => 'المحفظة أو الحساب اللي هتدفع منه السداد';
+
+  @override
+  String get loanPaymentAddToBalance => 'إضافة إلى';
+
+  @override
+  String get loanPaymentAddToBalanceHint => 'المحفظة أو الحساب اللي هيتضاف له السداد';
+
+  @override
+  String loanPaymentBalanceEntryTitle(String personName) {
+    return 'سداد قرض · $personName';
+  }
+
+  @override
+  String get errorSelectLoanPaymentSource => 'اختار محفظة أو مصدر دفع';
+
+  @override
   String get loanOverview => 'وضع القروض';
 
   @override
@@ -1277,6 +1297,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get recentIncomes => 'آخر دخل';
 
   @override
+  String get incomeToolsSectionTitle => 'إجراءات سريعة';
+
+  @override
+  String get incomeToolsSectionSubtitle => 'ضيف دخل أسرع بالذكاء الاصطناعي، الاستيراد، يوم الراتب، أو المتكرر.';
+
+  @override
+  String get incomeToolsAddForm => 'فورم فاضي';
+
+  @override
+  String get incomeToolsRecurring => 'متكرر';
+
+  @override
   String get totalIncome => 'مجموع الدخل';
 
   @override
@@ -2159,6 +2191,69 @@ class AppLocalizationsAr extends AppLocalizations {
   String get planTapToEditGoal => 'اضغط عشان تعدّل الهدف';
 
   @override
+  String planCoachMonthly(String amount) {
+    return 'وفّر $amount كل شهر عشان تلحق الموعد';
+  }
+
+  @override
+  String planCoachOverdue(String amount) {
+    return 'الموعد عدّى — باقي $amount';
+  }
+
+  @override
+  String planCoachUrgent(String amount) {
+    return 'قرب الموعد — باقي $amount';
+  }
+
+  @override
+  String planCoachRemaining(String amount) {
+    return 'باقي $amount عشان توصل للهدف';
+  }
+
+  @override
+  String get planCoachTipTitle => 'كمل على الطريق';
+
+  @override
+  String planCoachSurplusTip(String amount) {
+    return 'عندك $amount متاح. ضيف جزء على هدف عشان تقرب.';
+  }
+
+  @override
+  String planCoachAddSuggested(String amount) {
+    return 'ضيف المقترح $amount';
+  }
+
+  @override
+  String get planSuggestThisMonth => 'الشهر ده';
+
+  @override
+  String get planSuggestHalf => 'النص';
+
+  @override
+  String get planSuggestAllAvailable => 'كل المتاح';
+
+  @override
+  String get planSuggestFinish => 'كمّل الهدف';
+
+  @override
+  String get planTemplateEmergency => 'صندوق طوارئ';
+
+  @override
+  String get planTemplateVacation => 'إجازة';
+
+  @override
+  String get planTemplateNewPhone => 'موبايل جديد';
+
+  @override
+  String get planTemplateEducation => 'تعليم';
+
+  @override
+  String get planTemplatesTitle => 'أفكار سريعة';
+
+  @override
+  String get planHowItHelps => 'حط هدف ومبلغ، وموعد لو حابب، وبعدين حرّك فلوس من الرصيد بزرار إضافة للهدف.';
+
+  @override
   String get plansEmptyTitle => 'ابدأ أول هدف';
 
   @override
@@ -2456,7 +2551,39 @@ class AppLocalizationsAr extends AppLocalizations {
   String get smartImportSmsHideBody => 'اخفي الرسالة';
 
   @override
-  String get smartImportTapToImport => 'اضغط للاستيراد';
+  String get smartImportSmsFilterReady => 'جاهز';
+
+  @override
+  String get smartImportSmsFilterExpenses => 'مصاريف';
+
+  @override
+  String get smartImportSmsFilterIncomes => 'دخل';
+
+  @override
+  String get smartImportSmsFilterAdded => 'اتضاف';
+
+  @override
+  String get smartImportSmsFilterAll => 'الكل';
+
+  @override
+  String smartImportSmsSummary(int ready, int added, int noAmount) {
+    return '$ready جاهز · $added اتضاف · $noAmount من غير مبلغ';
+  }
+
+  @override
+  String get smartImportSmsFilterEmpty => 'مفيش حاجة في الفلتر ده. جرّب فلتر تاني أو اسحب للتحديث.';
+
+  @override
+  String get smartImportSmsNoAmount => 'مفيش مبلغ';
+
+  @override
+  String get smartImportSmsReviewAdd => 'راجع وضيف';
+
+  @override
+  String get smartImportSmsHintSelect => 'المربع للاختيار المتعدد · اضغط الكارت للمراجعة';
+
+  @override
+  String get smartImportTapToImport => 'اضغط للمراجعة';
 
   @override
   String smartImportAddAllExpenses(int count) {

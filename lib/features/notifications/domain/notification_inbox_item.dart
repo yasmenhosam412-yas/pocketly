@@ -54,9 +54,14 @@ class NotificationInboxItem extends Equatable {
       };
 
   factory NotificationInboxItem.fromJson(Map<String, dynamic> json) {
+    final kindName = json['kind'] as String? ?? 'push';
+    final kind = ScheduledNotificationKind.values.firstWhere(
+      (k) => k.name == kindName,
+      orElse: () => ScheduledNotificationKind.push,
+    );
     return NotificationInboxItem(
       id: json['id'] as String,
-      kind: ScheduledNotificationKind.values.byName(json['kind'] as String),
+      kind: kind,
       scheduledAt: DateTime.parse(json['scheduledAt'] as String),
       title: json['title'] as String,
       subtitle: json['subtitle'] as String,
@@ -78,5 +83,7 @@ extension ScheduledNotificationInboxId on ScheduledNotificationItem {
           'bill_${reminderId ?? 'x'}_${scheduledAt.millisecondsSinceEpoch}',
         ScheduledNotificationKind.dailyDigest =>
           'digest_${scheduledAt.year}-${scheduledAt.month}-${scheduledAt.day}',
+        ScheduledNotificationKind.push =>
+          'push_${scheduledAt.millisecondsSinceEpoch}',
       };
 }

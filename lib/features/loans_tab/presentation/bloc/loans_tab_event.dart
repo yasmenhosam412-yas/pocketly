@@ -92,13 +92,22 @@ class RecordLoanPaymentEvent extends LoansTabEvent {
   final String id;
   final double amount;
 
+  /// Wallet / payment method: expense "paid from" when you repay,
+  /// or income source when you receive a repayment.
+  final String walletSource;
+
+  /// Localized title for the expense or income created for this payment.
+  final String balanceEntryTitle;
+
   const RecordLoanPaymentEvent({
     required this.id,
     required this.amount,
+    required this.walletSource,
+    required this.balanceEntryTitle,
   });
 
   @override
-  List<Object> get props => [id, amount];
+  List<Object> get props => [id, amount, walletSource, balanceEntryTitle];
 }
 
 class DeleteLoanEvent extends LoansTabEvent {

@@ -4,12 +4,15 @@ import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/helpers/association_ledger_access.dart';
 import 'package:imrpo/core/services/association_context.dart';
+import 'package:imrpo/core/services/initial_balance_store.dart';
 import 'package:imrpo/core/services/service_locator.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/core/widgets/plans_balance_tab_loading_skeleton.dart';
 import 'package:imrpo/core/widgets/tab_centered_scroll.dart';
 import 'package:imrpo/core/widgets/tab_refresh_overlay.dart';
+import 'package:imrpo/features/balance_tab/domain/services/balance_summary_builder.dart';
+import 'package:imrpo/features/expenses_tab/presentation/bloc/expenses_tab_bloc.dart';
 import 'package:imrpo/features/plans_tab/domain/entities/plan.dart';
 import 'package:imrpo/features/plans_tab/presentation/bloc/plans_tab_bloc.dart';
 import 'package:imrpo/features/incomes_tab/presentation/bloc/incomes_tab_bloc.dart';
@@ -169,6 +172,16 @@ class _PlansTabState extends State<PlansTab> with AutomaticKeepAliveClientMixin 
                     ),
                   ),
                 ),
+                if (AssociationLedgerAccess.canEdit &&
+                    sorted.any((p) => !p.isCompleted))
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                      child: _SavingsCoachBanner(
+                        onAddToGoal: () => showAddToPlanFromBalanceSheet(context),
+                      ),
+                    ),
+                  ),
                 if (sorted.isNotEmpty)
                   SliverToBoxAdapter(
                     child: Padding(
@@ -549,6 +562,88 @@ class _MiniStatCard extends StatelessWidget {
   }
 }
 
+class _SavingsCoachBanner extends StatelessWidget {
+  final VoidCallback onAddToGoal;
+
+  const _SavingsCoachBanner({required this.onAddToGoal});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final incomes = context.watch<IncomesTabBloc>().state.incomes;
+    final expenses = context.watch<ExpensesTabBloc>().state.expenses;
+    final available = BalanceSummaryBuilder.availableNet(
+      incomes: incomes,
+      expenses: expenses,
+      initialBalance: getIt<InitialBalanceStore>().amount,
+    );
+    if (available <= 0) return const SizedBox.shrink();
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onAddToGoal,
+        borderRadius: BorderRadius.circular(16),
+        child: Ink(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppColors.plans.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: AppColors.plans.withValues(alpha: 0.28),
+            ),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.plans.withValues(alpha: 0.16),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.savings_outlined,
+                  color: AppColors.plans,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.planCoachTipTitle,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 15,
+                        color: AppColors.textColor,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.planCoachSurplusTip(Money.format(available)),
+                      style: TextStyle(
+                        fontSize: 13,
+                        height: 1.35,
+                        color: AppColors.textColor.withValues(alpha: 0.65),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.plansDark,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _EmptyState extends StatelessWidget {
   final VoidCallback onAdd;
 
@@ -600,6 +695,16 @@ class _EmptyState extends StatelessWidget {
                 fontSize: 14,
                 height: 1.5,
                 color: AppColors.textColor.withValues(alpha: 0.55),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              l10n.planHowItHelps,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13,
+                height: 1.45,
+                color: AppColors.textColor.withValues(alpha: 0.45),
               ),
             ),
             const SizedBox(height: 28),

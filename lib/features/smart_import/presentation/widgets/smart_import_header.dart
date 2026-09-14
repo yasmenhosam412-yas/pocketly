@@ -71,16 +71,8 @@ class SmartImportHeader extends StatelessWidget {
                 labelPadding: EdgeInsets.zero,
                 tabs: [
                   _LabeledTab(
-                    icon: Icons.auto_awesome_rounded,
-                    label: l10n.magicAddTab,
-                  ),
-                  _LabeledTab(
                     icon: Icons.content_paste_go_rounded,
                     label: l10n.smartImportPasteTab,
-                  ),
-                  _LabeledTab(
-                    icon: Icons.bolt_rounded,
-                    label: l10n.smartImportQuickTab,
                   ),
                   _LabeledTab(
                     icon: Icons.sms_outlined,
