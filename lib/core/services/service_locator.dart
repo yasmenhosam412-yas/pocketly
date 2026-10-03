@@ -12,6 +12,8 @@ import 'package:imrpo/features/bill_reminders/data/repositories/bill_reminder_re
 import 'package:imrpo/features/bill_reminders/domain/repositories/bill_reminder_repository.dart';
 import 'package:imrpo/features/bill_reminders/presentation/bloc/bill_reminders_bloc.dart';
 import 'package:imrpo/features/recurring_transactions/data/recurring_transaction_post_service.dart';
+import 'package:imrpo/features/commitments/data/commitment_ledger.dart';
+import 'package:imrpo/features/commitments/data/commitment_store.dart';
 import 'package:imrpo/features/recurring_transactions/data/recurring_transaction_store.dart';
 import 'package:imrpo/features/recurring_transactions/data/repositories/recurring_transaction_repository_impl.dart';
 import 'package:imrpo/features/recurring_transactions/domain/repositories/recurring_transaction_repository.dart';
@@ -226,6 +228,19 @@ void setupServiceLocator() {
 
   getIt.registerLazySingleton<RecurringTransactionStore>(
     () => RecurringTransactionStore(),
+  );
+
+  getIt.registerLazySingleton<CommitmentStore>(() => CommitmentStore());
+
+  getIt.registerLazySingleton<CommitmentLedger>(
+    () => CommitmentLedger(
+      addExpenseUsecase: getIt<AddExpenseUsecase>(),
+      addIncomeUsecase: getIt<AddIncomeUsecase>(),
+      deleteExpenseUsecase: getIt<DeleteExpenseUsecase>(),
+      deleteIncomeUsecase: getIt<DeleteIncomeUsecase>(),
+      getAllExpensesUsecase: getIt<GetAllExpensesUsecase>(),
+      getAllIncomesUsecase: getIt<GetAllIncomesUsecase>(),
+    ),
   );
 
   getIt.registerLazySingleton<RecurringTransactionRepository>(

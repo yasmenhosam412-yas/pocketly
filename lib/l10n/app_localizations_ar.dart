@@ -27,7 +27,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeGuideTabsTitle => 'تبويبات فلوسك';
 
   @override
-  String get homeGuideTabsBody => 'تنقل بين الدخل، المصاريف، الرصيد، القروض، والخطط.';
+  String get homeGuideTabsBody => 'تنقل بين الدخل، المصاريف، الرصيد، القروض، الخطط، والجمعيات.';
 
   @override
   String get homeGuideIncomeTitle => 'ضيف أول دخل';
@@ -97,6 +97,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tabLoans => 'القروض';
+
+  @override
+  String get tabCommitments => 'جمعيات';
 
   @override
   String get statisticsLast3Months => 'آخر 3 شهور';
@@ -546,6 +549,199 @@ class AppLocalizationsAr extends AppLocalizations {
   String get recurringTransactionsDeleteConfirmTitle => 'تمسح المعاملة المتكررة؟';
 
   @override
+  String get commitmentsTitle => 'الجمعيات والأقساط';
+
+  @override
+  String get commitmentsSubtitle => 'تابعي الجمعية والقسط. الدفع يتسجل في المصروفات ويتخصم من مصدر الرصيد، واستلام الجمعية يتضاف للدخل.';
+
+  @override
+  String get commitmentsGameyas => 'جمعيات';
+
+  @override
+  String get commitmentsInstallments => 'أقساط';
+
+  @override
+  String get commitmentsAddGameya => 'جمعية جديدة';
+
+  @override
+  String get commitmentsAddInstallment => 'قسط جديد';
+
+  @override
+  String get commitmentsEditTitle => 'تعديل';
+
+  @override
+  String get commitmentsGameyaHint => 'الجمعية: الكل بيدفع نفس المبلغ كل شهر، وواحد بياخد المبلغ كامل في دوره.';
+
+  @override
+  String get commitmentsInstallmentHint => 'القسط: مبلغ ثابت كل شهر لحد ما تخلّصي العدد.';
+
+  @override
+  String get commitmentsNameLabel => 'الاسم';
+
+  @override
+  String get commitmentsGameyaNameHint => 'زي: جمعية الشغل';
+
+  @override
+  String get commitmentsInstallmentNameHint => 'زي: موبايل، عفش';
+
+  @override
+  String get commitmentsMonthlyAmount => 'القسط الشهري';
+
+  @override
+  String get commitmentsMemberCount => 'عدد الأفراد / الشهور';
+
+  @override
+  String get commitmentsInstallmentCount => 'عدد الأقساط';
+
+  @override
+  String get commitmentsMyTurn => 'دورِك (شهر كام)';
+
+  @override
+  String get commitmentsMyTurnHint => '1 يعني أول شهر';
+
+  @override
+  String get commitmentsMembersTitle => 'الناس بترتيب الأدوار';
+
+  @override
+  String get commitmentsMembersHint => 'أول اسم بياخد الجمعية أول شهر. اضغطي «أنا» على اسمك.';
+
+  @override
+  String get commitmentsMemberHint => 'الاسم';
+
+  @override
+  String get commitmentsMemberMe => 'أنا';
+
+  @override
+  String get commitmentsAddMember => 'ضيفي حد';
+
+  @override
+  String get commitmentsMemberNameRequired => 'اكتبي اسم كل الناس';
+
+  @override
+  String get commitmentsMembersMin => 'الجمعية لازم يبقى فيها شخصين على الأقل';
+
+  @override
+  String commitmentsTurnIs(String name) {
+    return 'الدور على $name';
+  }
+
+  @override
+  String commitmentsDueDay(int day) {
+    return 'الاستحقاق يوم $day';
+  }
+
+  @override
+  String get commitmentsNotesHint => 'ملاحظة اختيارية';
+
+  @override
+  String get commitmentsSave => 'حفظ';
+
+  @override
+  String get commitmentsSaved => 'اتحفظ';
+
+  @override
+  String get commitmentsNameRequired => 'اكتبي الاسم';
+
+  @override
+  String get commitmentsCountRequired => 'اكتبي عدد الشهور';
+
+  @override
+  String get commitmentsTurnInvalid => 'دورِك لازم يكون بين 1 وعدد الشهور';
+
+  @override
+  String commitmentsDueThisMonth(String amount) {
+    return 'لسه مستحق الشهر ده $amount';
+  }
+
+  @override
+  String get commitmentsEmptyGameya => 'لسه مفيش جمعيات. ضيفي واحدة عشان تتابعي القسط وإمتى تستلمي.';
+
+  @override
+  String get commitmentsEmptyInstallment => 'لسه مفيش أقساط. ضيفي خطة عشان تشوفي فاضل كام قسط.';
+
+  @override
+  String commitmentsProgress(int paid, int total, String left) {
+    return 'اتدفع $paid من $total · فاضل $left';
+  }
+
+  @override
+  String commitmentsPayout(String amount) {
+    return 'هتستلمي $amount في دورِك';
+  }
+
+  @override
+  String get commitmentsYourTurn => 'الشهر ده دورِك — المفروض تستلمي الجمعية.';
+
+  @override
+  String get commitmentsTurnPassed => 'دورِك عدّى.';
+
+  @override
+  String commitmentsTurnsLeft(int count) {
+    return 'فاضل $count قسط على دورِك';
+  }
+
+  @override
+  String get commitmentsMarkPaid => 'سجّلي دفع الشهر';
+
+  @override
+  String get commitmentsPaidThisMonth => 'اتدفع الشهر ده';
+
+  @override
+  String get commitmentsFinished => 'خلصت';
+
+  @override
+  String get commitmentsUndo => 'تراجع';
+
+  @override
+  String get commitmentsDeleteTitle => 'تمسحي ده؟';
+
+  @override
+  String get commitmentsCategoryHint => 'نفس تصنيفات المصروفات، عشان القسط يظهر هناك.';
+
+  @override
+  String get commitmentsPayFromHint => 'نفس محافظ الرصيد. قسط الشهر يتسجل في المصروفات ويتخصم من المصدر ده.';
+
+  @override
+  String get commitmentsReceiveInto => 'استلام الجمعية في';
+
+  @override
+  String get commitmentsReceiveIntoHint => 'في شهر دورِك، المبلغ كامل يتسجل في الدخل على المصدر ده.';
+
+  @override
+  String commitmentsFromSource(String source) {
+    return 'بتدفعي من $source';
+  }
+
+  @override
+  String commitmentsPayoutInto(String source) {
+    return 'هتستلمي في $source';
+  }
+
+  @override
+  String get commitmentsConfirmPay => 'سجّلي في المصروفات';
+
+  @override
+  String commitmentsTurnPayoutNote(String amount) {
+    return 'الشهر ده دورِك. قسطِك يتسجل مصروف، و$amount يتضاف للدخل.';
+  }
+
+  @override
+  String commitmentsExpenseTitle(String title, int cycle, int total) {
+    return '$title ($cycle/$total)';
+  }
+
+  @override
+  String commitmentsIncomeTitle(String title) {
+    return 'استلام $title';
+  }
+
+  @override
+  String get commitmentsLedgerMissing => 'اتسجل الدفع، بس مش قادرين نربطه. راجعي المصروفات.';
+
+  @override
+  String get commitmentsPosted => 'اتسجل في المصروفات';
+
+  @override
   String get billRemindersTestNow => 'جرب دلوقتي';
 
   @override
@@ -593,7 +789,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get associationPickerTitle => 'اختار الدفتر';
 
   @override
-  String get associationPickerSubtitle => 'الشخصي ليك لوحدك. دفتر العيلة الكل يضيف فيه. الجمعية المدير هو اللي بيسجّل.';
+  String get associationPickerSubtitle => 'الشخصي ليك لوحدك. الدفتر المنفصل زي الشغل أو البيت، واللي تدعوه يقدر يضيف. الجمعية المدير هو اللي بيسجّل.';
 
   @override
   String get associationCreateTitle => 'دفتر جديد';
@@ -602,22 +798,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get associationCreateAction => 'إضافة جمعية';
 
   @override
-  String get associationCreateFamilyTitle => 'دفتر عيلة جديد';
+  String get associationCreateFamilyTitle => 'دفتر جديد';
 
   @override
-  String get associationCreateFamilyAction => 'إضافة عيلة';
+  String get associationCreateFamilyAction => 'إضافة دفتر';
 
   @override
-  String get associationCreateFamilyHint => 'مثال: البيت';
+  String get associationCreateFamilyHint => 'مثال: الشغل، البيت';
 
   @override
-  String get associationCreateFamilySubtitle => 'كل اللي تدعوه يقدر يضيف دخله ومصاريفه. هتدعوهم بعد كده.';
+  String get associationCreateFamilySubtitle => 'دفتر منفصل عن الشخصي، للشغل أو أي حاجة تانية. اللي تدعوه يقدر يضيف دخله ومصاريفه.';
 
   @override
-  String get associationFamilyBadge => 'عيلة';
+  String get associationFamilyBadge => 'دفتر منفصل';
 
   @override
-  String get associationFamilyBanner => 'دفتر العيلة: كل عضو يقدر يضيف دخله ومصاريفه.';
+  String get associationFamilyBanner => 'دفتر منفصل: كل عضو يقدر يضيف دخله ومصاريفه.';
 
   @override
   String familyTransactionBy(String name) {
@@ -628,7 +824,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get familyAuthorYou => 'إنت';
 
   @override
-  String get familyAuthorUnknown => 'فرد من العيلة';
+  String get familyAuthorUnknown => 'عضو';
 
   @override
   String get associationNameHint => 'مثال: شغل، بيت، ادخار';

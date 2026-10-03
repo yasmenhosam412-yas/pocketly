@@ -12,6 +12,7 @@ import 'package:imrpo/features/home/presentation/pages/calculator_screen.dart';
 import 'package:imrpo/features/home/presentation/pages/home_screen.dart';
 import 'package:imrpo/features/monthly_report/presentation/pages/monthly_report_screen.dart';
 import 'package:imrpo/features/search/presentation/pages/global_search_screen.dart';
+import 'package:imrpo/features/commitments/presentation/pages/commitments_screen.dart';
 import 'package:imrpo/features/bill_reminders/presentation/pages/bill_reminders_screen.dart';
 import 'package:imrpo/features/recurring_transactions/presentation/pages/recurring_transactions_screen.dart';
 import 'package:imrpo/features/subscriptions/presentation/pages/subscriptions_screen.dart';
@@ -40,6 +41,7 @@ class AppRoutes {
   static const String monthlyReport = '/monthly-report';
   static const String billReminders = '/bill-reminders';
   static const String recurring = '/recurring';
+  static const String commitments = '/commitments';
   static const String subscriptions = '/subscriptions';
   static const String notifications = '/notifications';
   static const String zakat = '/zakat';
@@ -112,6 +114,10 @@ class AppRouter {
             value: getIt<BillRemindersBloc>()..add(const LoadBillRemindersEvent()),
             child: const BillRemindersScreen(),
           ),
+        );
+      case AppRoutes.commitments:
+        return MaterialPageRoute(
+          builder: (_) => const CommitmentsScreen(),
         );
       case AppRoutes.recurring:
         return MaterialPageRoute(

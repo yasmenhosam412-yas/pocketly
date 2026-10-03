@@ -27,7 +27,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeGuideTabsTitle => 'Your money tabs';
 
   @override
-  String get homeGuideTabsBody => 'Switch between Incomes, Expenses, Balance, Loans, and Plans.';
+  String get homeGuideTabsBody => 'Switch between Incomes, Expenses, Balance, Loans, Plans, and Gameyas.';
 
   @override
   String get homeGuideIncomeTitle => 'Add your first income';
@@ -97,6 +97,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tabLoans => 'Loans';
+
+  @override
+  String get tabCommitments => 'Gameyas';
 
   @override
   String get statisticsLast3Months => 'Last 3 months';
@@ -546,6 +549,199 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recurringTransactionsDeleteConfirmTitle => 'Delete this recurring transaction?';
 
   @override
+  String get commitmentsTitle => 'Gameyas & installments';
+
+  @override
+  String get commitmentsSubtitle => 'Track gameyas and installments. Each payment is saved in Expenses and taken from a balance source. On your turn, the pot is added to Income.';
+
+  @override
+  String get commitmentsGameyas => 'Gameyas';
+
+  @override
+  String get commitmentsInstallments => 'Installments';
+
+  @override
+  String get commitmentsAddGameya => 'Add gameya';
+
+  @override
+  String get commitmentsAddInstallment => 'Add installment';
+
+  @override
+  String get commitmentsEditTitle => 'Edit';
+
+  @override
+  String get commitmentsGameyaHint => 'A gameya: everyone pays the same amount each month, and one person receives the full pot on their turn.';
+
+  @override
+  String get commitmentsInstallmentHint => 'An installment plan: a fixed monthly payment until the total is paid off.';
+
+  @override
+  String get commitmentsNameLabel => 'Name';
+
+  @override
+  String get commitmentsGameyaNameHint => 'e.g. Work gameya';
+
+  @override
+  String get commitmentsInstallmentNameHint => 'e.g. Phone, furniture';
+
+  @override
+  String get commitmentsMonthlyAmount => 'Monthly payment';
+
+  @override
+  String get commitmentsMemberCount => 'Number of members / months';
+
+  @override
+  String get commitmentsInstallmentCount => 'Number of installments';
+
+  @override
+  String get commitmentsMyTurn => 'Your turn (which month)';
+
+  @override
+  String get commitmentsMyTurnHint => '1 = first month';
+
+  @override
+  String get commitmentsMembersTitle => 'People, in turn order';
+
+  @override
+  String get commitmentsMembersHint => 'The first name receives the pot in month one. Mark your own name with “Me”.';
+
+  @override
+  String get commitmentsMemberHint => 'Name';
+
+  @override
+  String get commitmentsMemberMe => 'Me';
+
+  @override
+  String get commitmentsAddMember => 'Add a person';
+
+  @override
+  String get commitmentsMemberNameRequired => 'Enter every person’s name';
+
+  @override
+  String get commitmentsMembersMin => 'A gameya needs at least two people';
+
+  @override
+  String commitmentsTurnIs(String name) {
+    return '$name’s turn';
+  }
+
+  @override
+  String commitmentsDueDay(int day) {
+    return 'Due on day $day';
+  }
+
+  @override
+  String get commitmentsNotesHint => 'Optional note';
+
+  @override
+  String get commitmentsSave => 'Save';
+
+  @override
+  String get commitmentsSaved => 'Saved';
+
+  @override
+  String get commitmentsNameRequired => 'Enter a name';
+
+  @override
+  String get commitmentsCountRequired => 'Enter how many months';
+
+  @override
+  String get commitmentsTurnInvalid => 'Your turn must be between 1 and the number of months';
+
+  @override
+  String commitmentsDueThisMonth(String amount) {
+    return '$amount still due this month';
+  }
+
+  @override
+  String get commitmentsEmptyGameya => 'No gameyas yet. Add one to track your share and when you receive the pot.';
+
+  @override
+  String get commitmentsEmptyInstallment => 'No installments yet. Add a plan to see how many payments are left.';
+
+  @override
+  String commitmentsProgress(int paid, int total, String left) {
+    return '$paid of $total paid · $left left';
+  }
+
+  @override
+  String commitmentsPayout(String amount) {
+    return 'You receive $amount on your turn';
+  }
+
+  @override
+  String get commitmentsYourTurn => 'This month is your turn — you should receive the pot.';
+
+  @override
+  String get commitmentsTurnPassed => 'Your turn already passed.';
+
+  @override
+  String commitmentsTurnsLeft(int count) {
+    return '$count payment(s) until your turn';
+  }
+
+  @override
+  String get commitmentsMarkPaid => 'Mark this month paid';
+
+  @override
+  String get commitmentsPaidThisMonth => 'Paid this month';
+
+  @override
+  String get commitmentsFinished => 'Finished';
+
+  @override
+  String get commitmentsUndo => 'Undo';
+
+  @override
+  String get commitmentsDeleteTitle => 'Remove this?';
+
+  @override
+  String get commitmentsCategoryHint => 'Same categories as Expenses, so this payment shows up there.';
+
+  @override
+  String get commitmentsPayFromHint => 'Same wallets as Expenses. This month’s payment is saved there and taken from this source.';
+
+  @override
+  String get commitmentsReceiveInto => 'Add the pot to';
+
+  @override
+  String get commitmentsReceiveIntoHint => 'On your turn, the full amount is saved in Income on this source.';
+
+  @override
+  String commitmentsFromSource(String source) {
+    return 'Paid from $source';
+  }
+
+  @override
+  String commitmentsPayoutInto(String source) {
+    return 'Pot goes to $source';
+  }
+
+  @override
+  String get commitmentsConfirmPay => 'Save to expenses';
+
+  @override
+  String commitmentsTurnPayoutNote(String amount) {
+    return 'This month is your turn. Your share is an expense, and $amount is added to income.';
+  }
+
+  @override
+  String commitmentsExpenseTitle(String title, int cycle, int total) {
+    return '$title ($cycle/$total)';
+  }
+
+  @override
+  String commitmentsIncomeTitle(String title) {
+    return '$title payout';
+  }
+
+  @override
+  String get commitmentsLedgerMissing => 'The payment was saved, but it could not be linked. Check Expenses.';
+
+  @override
+  String get commitmentsPosted => 'Saved in Expenses';
+
+  @override
   String get billRemindersTestNow => 'Test now';
 
   @override
@@ -593,7 +789,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get associationPickerTitle => 'Choose ledger';
 
   @override
-  String get associationPickerSubtitle => 'Personal is yours. A family ledger lets everyone add. An association is recorded by the manager.';
+  String get associationPickerSubtitle => 'Personal is only yours. A separate ledger, like work or home, lets people you invite add their own entries. An association is recorded by the manager.';
 
   @override
   String get associationCreateTitle => 'New ledger';
@@ -602,22 +798,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get associationCreateAction => 'Add association';
 
   @override
-  String get associationCreateFamilyTitle => 'New family ledger';
+  String get associationCreateFamilyTitle => 'New ledger';
 
   @override
-  String get associationCreateFamilyAction => 'Add family';
+  String get associationCreateFamilyAction => 'Add ledger';
 
   @override
-  String get associationCreateFamilyHint => 'e.g. Our house';
+  String get associationCreateFamilyHint => 'e.g. Work, Home';
 
   @override
-  String get associationCreateFamilySubtitle => 'Everyone you invite can add their own income and expenses. You\'ll invite them next.';
+  String get associationCreateFamilySubtitle => 'A separate ledger from your personal one, for work or anything else. People you invite can add their own income and expenses.';
 
   @override
-  String get associationFamilyBadge => 'Family';
+  String get associationFamilyBadge => 'Separate';
 
   @override
-  String get associationFamilyBanner => 'Family ledger: everyone can add their own income and expenses.';
+  String get associationFamilyBanner => 'Separate ledger: everyone can add their own income and expenses.';
 
   @override
   String familyTransactionBy(String name) {
@@ -628,7 +824,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get familyAuthorYou => 'you';
 
   @override
-  String get familyAuthorUnknown => 'a family member';
+  String get familyAuthorUnknown => 'a member';
 
   @override
   String get associationNameHint => 'e.g. Work, Home, Savings';

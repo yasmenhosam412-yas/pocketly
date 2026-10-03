@@ -134,7 +134,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeGuideTabsBody.
   ///
   /// In en, this message translates to:
-  /// **'Switch between Incomes, Expenses, Balance, Loans, and Plans.'**
+  /// **'Switch between Incomes, Expenses, Balance, Loans, Plans, and Gameyas.'**
   String get homeGuideTabsBody;
 
   /// No description provided for @homeGuideIncomeTitle.
@@ -274,6 +274,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loans'**
   String get tabLoans;
+
+  /// No description provided for @tabCommitments.
+  ///
+  /// In en, this message translates to:
+  /// **'Gameyas'**
+  String get tabCommitments;
 
   /// No description provided for @statisticsLast3Months.
   ///
@@ -1097,6 +1103,348 @@ abstract class AppLocalizations {
   /// **'Delete this recurring transaction?'**
   String get recurringTransactionsDeleteConfirmTitle;
 
+  /// No description provided for @commitmentsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gameyas & installments'**
+  String get commitmentsTitle;
+
+  /// No description provided for @commitmentsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track gameyas and installments. Each payment is saved in Expenses and taken from a balance source. On your turn, the pot is added to Income.'**
+  String get commitmentsSubtitle;
+
+  /// No description provided for @commitmentsGameyas.
+  ///
+  /// In en, this message translates to:
+  /// **'Gameyas'**
+  String get commitmentsGameyas;
+
+  /// No description provided for @commitmentsInstallments.
+  ///
+  /// In en, this message translates to:
+  /// **'Installments'**
+  String get commitmentsInstallments;
+
+  /// No description provided for @commitmentsAddGameya.
+  ///
+  /// In en, this message translates to:
+  /// **'Add gameya'**
+  String get commitmentsAddGameya;
+
+  /// No description provided for @commitmentsAddInstallment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add installment'**
+  String get commitmentsAddInstallment;
+
+  /// No description provided for @commitmentsEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get commitmentsEditTitle;
+
+  /// No description provided for @commitmentsGameyaHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A gameya: everyone pays the same amount each month, and one person receives the full pot on their turn.'**
+  String get commitmentsGameyaHint;
+
+  /// No description provided for @commitmentsInstallmentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'An installment plan: a fixed monthly payment until the total is paid off.'**
+  String get commitmentsInstallmentHint;
+
+  /// No description provided for @commitmentsNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get commitmentsNameLabel;
+
+  /// No description provided for @commitmentsGameyaNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Work gameya'**
+  String get commitmentsGameyaNameHint;
+
+  /// No description provided for @commitmentsInstallmentNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Phone, furniture'**
+  String get commitmentsInstallmentNameHint;
+
+  /// No description provided for @commitmentsMonthlyAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly payment'**
+  String get commitmentsMonthlyAmount;
+
+  /// No description provided for @commitmentsMemberCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of members / months'**
+  String get commitmentsMemberCount;
+
+  /// No description provided for @commitmentsInstallmentCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Number of installments'**
+  String get commitmentsInstallmentCount;
+
+  /// No description provided for @commitmentsMyTurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Your turn (which month)'**
+  String get commitmentsMyTurn;
+
+  /// No description provided for @commitmentsMyTurnHint.
+  ///
+  /// In en, this message translates to:
+  /// **'1 = first month'**
+  String get commitmentsMyTurnHint;
+
+  /// No description provided for @commitmentsMembersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'People, in turn order'**
+  String get commitmentsMembersTitle;
+
+  /// No description provided for @commitmentsMembersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The first name receives the pot in month one. Mark your own name with “Me”.'**
+  String get commitmentsMembersHint;
+
+  /// No description provided for @commitmentsMemberHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get commitmentsMemberHint;
+
+  /// No description provided for @commitmentsMemberMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Me'**
+  String get commitmentsMemberMe;
+
+  /// No description provided for @commitmentsAddMember.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a person'**
+  String get commitmentsAddMember;
+
+  /// No description provided for @commitmentsMemberNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter every person’s name'**
+  String get commitmentsMemberNameRequired;
+
+  /// No description provided for @commitmentsMembersMin.
+  ///
+  /// In en, this message translates to:
+  /// **'A gameya needs at least two people'**
+  String get commitmentsMembersMin;
+
+  /// No description provided for @commitmentsTurnIs.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}’s turn'**
+  String commitmentsTurnIs(String name);
+
+  /// No description provided for @commitmentsDueDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Due on day {day}'**
+  String commitmentsDueDay(int day);
+
+  /// No description provided for @commitmentsNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional note'**
+  String get commitmentsNotesHint;
+
+  /// No description provided for @commitmentsSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get commitmentsSave;
+
+  /// No description provided for @commitmentsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get commitmentsSaved;
+
+  /// No description provided for @commitmentsNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name'**
+  String get commitmentsNameRequired;
+
+  /// No description provided for @commitmentsCountRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter how many months'**
+  String get commitmentsCountRequired;
+
+  /// No description provided for @commitmentsTurnInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Your turn must be between 1 and the number of months'**
+  String get commitmentsTurnInvalid;
+
+  /// No description provided for @commitmentsDueThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} still due this month'**
+  String commitmentsDueThisMonth(String amount);
+
+  /// No description provided for @commitmentsEmptyGameya.
+  ///
+  /// In en, this message translates to:
+  /// **'No gameyas yet. Add one to track your share and when you receive the pot.'**
+  String get commitmentsEmptyGameya;
+
+  /// No description provided for @commitmentsEmptyInstallment.
+  ///
+  /// In en, this message translates to:
+  /// **'No installments yet. Add a plan to see how many payments are left.'**
+  String get commitmentsEmptyInstallment;
+
+  /// No description provided for @commitmentsProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{paid} of {total} paid · {left} left'**
+  String commitmentsProgress(int paid, int total, String left);
+
+  /// No description provided for @commitmentsPayout.
+  ///
+  /// In en, this message translates to:
+  /// **'You receive {amount} on your turn'**
+  String commitmentsPayout(String amount);
+
+  /// No description provided for @commitmentsYourTurn.
+  ///
+  /// In en, this message translates to:
+  /// **'This month is your turn — you should receive the pot.'**
+  String get commitmentsYourTurn;
+
+  /// No description provided for @commitmentsTurnPassed.
+  ///
+  /// In en, this message translates to:
+  /// **'Your turn already passed.'**
+  String get commitmentsTurnPassed;
+
+  /// No description provided for @commitmentsTurnsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} payment(s) until your turn'**
+  String commitmentsTurnsLeft(int count);
+
+  /// No description provided for @commitmentsMarkPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark this month paid'**
+  String get commitmentsMarkPaid;
+
+  /// No description provided for @commitmentsPaidThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid this month'**
+  String get commitmentsPaidThisMonth;
+
+  /// No description provided for @commitmentsFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Finished'**
+  String get commitmentsFinished;
+
+  /// No description provided for @commitmentsUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get commitmentsUndo;
+
+  /// No description provided for @commitmentsDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this?'**
+  String get commitmentsDeleteTitle;
+
+  /// No description provided for @commitmentsCategoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Same categories as Expenses, so this payment shows up there.'**
+  String get commitmentsCategoryHint;
+
+  /// No description provided for @commitmentsPayFromHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Same wallets as Expenses. This month’s payment is saved there and taken from this source.'**
+  String get commitmentsPayFromHint;
+
+  /// No description provided for @commitmentsReceiveInto.
+  ///
+  /// In en, this message translates to:
+  /// **'Add the pot to'**
+  String get commitmentsReceiveInto;
+
+  /// No description provided for @commitmentsReceiveIntoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'On your turn, the full amount is saved in Income on this source.'**
+  String get commitmentsReceiveIntoHint;
+
+  /// No description provided for @commitmentsFromSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid from {source}'**
+  String commitmentsFromSource(String source);
+
+  /// No description provided for @commitmentsPayoutInto.
+  ///
+  /// In en, this message translates to:
+  /// **'Pot goes to {source}'**
+  String commitmentsPayoutInto(String source);
+
+  /// No description provided for @commitmentsConfirmPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to expenses'**
+  String get commitmentsConfirmPay;
+
+  /// No description provided for @commitmentsTurnPayoutNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This month is your turn. Your share is an expense, and {amount} is added to income.'**
+  String commitmentsTurnPayoutNote(String amount);
+
+  /// No description provided for @commitmentsExpenseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} ({cycle}/{total})'**
+  String commitmentsExpenseTitle(String title, int cycle, int total);
+
+  /// No description provided for @commitmentsIncomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} payout'**
+  String commitmentsIncomeTitle(String title);
+
+  /// No description provided for @commitmentsLedgerMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'The payment was saved, but it could not be linked. Check Expenses.'**
+  String get commitmentsLedgerMissing;
+
+  /// No description provided for @commitmentsPosted.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved in Expenses'**
+  String get commitmentsPosted;
+
   /// No description provided for @billRemindersTestNow.
   ///
   /// In en, this message translates to:
@@ -1178,7 +1526,7 @@ abstract class AppLocalizations {
   /// No description provided for @associationPickerSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Personal is yours. A family ledger lets everyone add. An association is recorded by the manager.'**
+  /// **'Personal is only yours. A separate ledger, like work or home, lets people you invite add their own entries. An association is recorded by the manager.'**
   String get associationPickerSubtitle;
 
   /// No description provided for @associationCreateTitle.
@@ -1196,37 +1544,37 @@ abstract class AppLocalizations {
   /// No description provided for @associationCreateFamilyTitle.
   ///
   /// In en, this message translates to:
-  /// **'New family ledger'**
+  /// **'New ledger'**
   String get associationCreateFamilyTitle;
 
   /// No description provided for @associationCreateFamilyAction.
   ///
   /// In en, this message translates to:
-  /// **'Add family'**
+  /// **'Add ledger'**
   String get associationCreateFamilyAction;
 
   /// No description provided for @associationCreateFamilyHint.
   ///
   /// In en, this message translates to:
-  /// **'e.g. Our house'**
+  /// **'e.g. Work, Home'**
   String get associationCreateFamilyHint;
 
   /// No description provided for @associationCreateFamilySubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Everyone you invite can add their own income and expenses. You\'ll invite them next.'**
+  /// **'A separate ledger from your personal one, for work or anything else. People you invite can add their own income and expenses.'**
   String get associationCreateFamilySubtitle;
 
   /// No description provided for @associationFamilyBadge.
   ///
   /// In en, this message translates to:
-  /// **'Family'**
+  /// **'Separate'**
   String get associationFamilyBadge;
 
   /// No description provided for @associationFamilyBanner.
   ///
   /// In en, this message translates to:
-  /// **'Family ledger: everyone can add their own income and expenses.'**
+  /// **'Separate ledger: everyone can add their own income and expenses.'**
   String get associationFamilyBanner;
 
   /// No description provided for @familyTransactionBy.
@@ -1244,7 +1592,7 @@ abstract class AppLocalizations {
   /// No description provided for @familyAuthorUnknown.
   ///
   /// In en, this message translates to:
-  /// **'a family member'**
+  /// **'a member'**
   String get familyAuthorUnknown;
 
   /// No description provided for @associationNameHint.

@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:app_upgrader_flutter/app_upgrader_flutter.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const _kUpgradeAlertNavFixApplied = 'pocketly_upgrade_alert_nav_fix_v1';
+const _kUpgradeAlertNavFixApplied = 'pocketly_upgrade_alert_play_fix_v2';
 
-/// Mounts [AppUpgradeAlert] only after [navigatorKey] has a context.
+/// Mounts [UpgradeAlert] only after [navigatorKey] has a context.
 ///
-/// [AppUpgradeAlert] in [MaterialApp.builder] can evaluate before the navigator
-/// exists. The package then sets `_displayed` / last-alerted prefs even when
-/// [showDialog] fails, so the prompt never appears again for days.
+/// Showing the dialog from [MaterialApp.builder] can run before the navigator
+/// exists. A failed show used to mark the alert as already seen, so a later
+/// Play Store update never appeared.
 class UpgradeAlertWhenReady extends StatefulWidget {
   const UpgradeAlertWhenReady({
     super.key,
@@ -52,7 +52,7 @@ class _UpgradeAlertWhenReadyState extends State<UpgradeAlertWhenReady> {
       await Upgrader.clearSavedSettings();
       await prefs.setBool(_kUpgradeAlertNavFixApplied, true);
       if (kDebugMode) {
-        debugPrint('AppUpgrader: cleared stale alert cooldown (nav fix)');
+        debugPrint('upgrader: cleared stale alert cooldown');
       }
     } catch (_) {}
   }
@@ -65,7 +65,7 @@ class _UpgradeAlertWhenReadyState extends State<UpgradeAlertWhenReady> {
     }
     if (attempt >= 80) {
       if (kDebugMode) {
-        debugPrint('AppUpgrader: navigator never became ready');
+        debugPrint('upgrader: navigator never became ready');
       }
       return;
     }
@@ -78,9 +78,9 @@ class _UpgradeAlertWhenReadyState extends State<UpgradeAlertWhenReady> {
   @override
   Widget build(BuildContext context) {
     if (!_ready) return widget.child;
-    return AppUpgradeAlert(
+    return UpgradeAlert(
       navigatorKey: widget.navigatorKey,
-      appUpgrader: widget.appUpgrader,
+      upgrader: widget.appUpgrader,
       child: widget.child,
     );
   }
@@ -90,21 +90,26 @@ class _UpgradeAlertWhenReadyState extends State<UpgradeAlertWhenReady> {
 Upgrader createPocketlyUpgrader({required String languageCode}) {
   return Upgrader(
     languageCode: languageCode,
+    // Arabic builds are used in Egypt. The US Play listing often has no
+    // version for this app, so the update dialog never appeared.
+    countryCode: languageCode == 'ar' ? 'EG' : null,
+    clientHeaders: const {
+      'User-Agent':
+          'Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 '
+          '(KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36',
+    },
     messages: UpgraderMessages(code: languageCode),
     debugLogging: kDebugMode,
     durationUntilAlertAgain: const Duration(days: 1),
     willDisplayUpgrade: ({
       required bool display,
-      String? minAppVersion,
-      String? releaseNote,
       String? installedVersion,
-      String? appStoreVersion,
+      UpgraderVersionInfo? versionInfo,
     }) {
       if (kDebugMode) {
         debugPrint(
-          'AppUpgrader: willDisplay=$display '
-          'installed=$installedVersion store=$appStoreVersion '
-          'min=$minAppVersion',
+          'upgrader: willDisplay=$display '
+          'installed=$installedVersion store=${versionInfo?.appStoreVersion}',
         );
       }
     },

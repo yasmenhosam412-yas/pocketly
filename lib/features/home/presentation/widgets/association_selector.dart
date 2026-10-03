@@ -102,11 +102,6 @@ shape: const RoundedRectangleBorder(
       return;
     }
 
-    if (choice.createRequested) {
-      await _createAssociation(context, associationContext, l10n);
-      return;
-    }
-
     if (choice.inviteId != null) {
       await _openInvite(context, associationContext, choice.inviteId!);
       return;
@@ -127,55 +122,6 @@ shape: const RoundedRectangleBorder(
       await associationContext.selectAssociation(choice.selectedId!);
       if (!context.mounted) return;
       UserSession.reloadForAssociationSwitch(context);
-    }
-  }
-
-  Future<void> _createAssociation(
-    BuildContext context,
-    AssociationContext associationContext,
-    AppLocalizations l10n,
-  ) async {
-    final name = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) => _CreateAssociationDialog(
-        l10n: l10n,
-        title: l10n.associationCreateTitle,
-        hint: l10n.associationNameHint,
-        action: l10n.associationCreateAction,
-      ),
-    );
-
-    if (!context.mounted || name == null) return;
-
-    if (name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.associationNameRequired),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      return;
-    }
-
-    try {
-      await associationContext.createAssociation(name);
-      if (!context.mounted) return;
-      UserSession.reloadForAssociationSwitch(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.associationCreated(name)),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    } catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-          backgroundColor: AppColors.error,
-        ),
-      );
     }
   }
 
@@ -402,14 +348,12 @@ class _CreateAssociationDialogState extends State<_CreateAssociationDialog> {
 
 class _AssociationSheetResult {
   final String? selectedId;
-  final bool createRequested;
   final bool createFamilyRequested;
   final String? deleteId;
   final String? inviteId;
 
   const _AssociationSheetResult({
     this.selectedId,
-    this.createRequested = false,
     this.createFamilyRequested = false,
     this.deleteId,
     this.inviteId,
@@ -620,24 +564,6 @@ class _AssociationPickerSheet extends StatelessWidget {
                           const _AssociationSheetResult(
                             createFamilyRequested: true,
                           ),
-                        ),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        leading: Icon(
-                          Icons.add_circle_outline_rounded,
-                          color: AppColors.primaryInk,
-                        ),
-                        title: Text(
-                          l10n.associationCreateAction,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.primaryInk,
-                          ),
-                        ),
-                        onTap: () => Navigator.pop(
-                          context,
-                          const _AssociationSheetResult(createRequested: true),
                         ),
                       ),
                     ],

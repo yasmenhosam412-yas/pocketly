@@ -28,7 +28,7 @@ import 'package:imrpo/features/loans_tab/presentation/bloc/loans_tab_bloc.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:imrpo/core/widgets/upgrade_alert_when_ready.dart';
 import 'package:imrpo/firebase_options.dart';
-import 'package:app_upgrader_flutter/app_upgrader_flutter.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -158,7 +158,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
             title: "Pocketly",
             navigatorKey: rootNavigatorKey,
             locale: locale,
-            onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+            onGenerateTitle: (context) =>
+                AppLocalizations.of(context)!.appTitle,
             theme: theme,
             darkTheme: theme,
             themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
@@ -166,7 +167,9 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
             onGenerateRoute: AppRouter.generateRoute,
             onGenerateInitialRoutes: (_) {
               return [
-                AppRouter.generateRoute(RouteSettings(name: AppLaunch.routeName)),
+                AppRouter.generateRoute(
+                  RouteSettings(name: AppLaunch.routeName),
+                ),
               ];
             },
             supportedLocales: AppLocalizations.supportedLocales,

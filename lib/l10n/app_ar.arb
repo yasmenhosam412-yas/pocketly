@@ -6,7 +6,7 @@
   "homeGuideNext": "التالي",
   "homeGuideDone": "تمام",
   "homeGuideTabsTitle": "تبويبات فلوسك",
-  "homeGuideTabsBody": "تنقل بين الدخل، المصاريف، الرصيد، القروض، والخطط.",
+  "homeGuideTabsBody": "تنقل بين الدخل، المصاريف، الرصيد، القروض، الخطط، والجمعيات.",
   "homeGuideIncomeTitle": "ضيف أول دخل",
   "homeGuideIncomeBody": "اضغط إضافة دخل وسجّل مرتب أو شغل حر أو أي فلوس داخلة.",
   "homeGuideExpenseTitle": "سجّل المصاريف",
@@ -30,6 +30,7 @@
   "tabPlans": "الخطط",
   "tabStatistics": "إحصائيات",
   "tabLoans": "القروض",
+  "tabCommitments": "جمعيات",
   "statisticsLast3Months": "آخر 3 شهور",
   "statisticsMonthlyTrend": "الدخل والمصاريف كل شهر",
   "statisticsNetPerMonth": "الصافي كل شهر",
@@ -231,6 +232,122 @@
   "recurringTransactionsPostedThisMonth": "اتنزلت الشهر ده",
   "recurringTransactionsDeleted": "اتمسحت المعاملة المتكررة",
   "recurringTransactionsDeleteConfirmTitle": "تمسح المعاملة المتكررة؟",
+  "commitmentsTitle": "الجمعيات والأقساط",
+  "commitmentsSubtitle": "تابعي الجمعية والقسط. الدفع يتسجل في المصروفات ويتخصم من مصدر الرصيد، واستلام الجمعية يتضاف للدخل.",
+  "commitmentsGameyas": "جمعيات",
+  "commitmentsInstallments": "أقساط",
+  "commitmentsAddGameya": "جمعية جديدة",
+  "commitmentsAddInstallment": "قسط جديد",
+  "commitmentsEditTitle": "تعديل",
+  "commitmentsGameyaHint": "الجمعية: الكل بيدفع نفس المبلغ كل شهر، وواحد بياخد المبلغ كامل في دوره.",
+  "commitmentsInstallmentHint": "القسط: مبلغ ثابت كل شهر لحد ما تخلّصي العدد.",
+  "commitmentsNameLabel": "الاسم",
+  "commitmentsGameyaNameHint": "زي: جمعية الشغل",
+  "commitmentsInstallmentNameHint": "زي: موبايل، عفش",
+  "commitmentsMonthlyAmount": "القسط الشهري",
+  "commitmentsMemberCount": "عدد الأفراد / الشهور",
+  "commitmentsInstallmentCount": "عدد الأقساط",
+  "commitmentsMyTurn": "دورِك (شهر كام)",
+  "commitmentsMyTurnHint": "1 يعني أول شهر",
+  "commitmentsMembersTitle": "الناس بترتيب الأدوار",
+  "commitmentsMembersHint": "أول اسم بياخد الجمعية أول شهر. اضغطي «أنا» على اسمك.",
+  "commitmentsMemberHint": "الاسم",
+  "commitmentsMemberMe": "أنا",
+  "commitmentsAddMember": "ضيفي حد",
+  "commitmentsMemberNameRequired": "اكتبي اسم كل الناس",
+  "commitmentsMembersMin": "الجمعية لازم يبقى فيها شخصين على الأقل",
+  "commitmentsTurnIs": "الدور على {name}",
+  "@commitmentsTurnIs": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "commitmentsDueDay": "الاستحقاق يوم {day}",
+  "@commitmentsDueDay": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "commitmentsNotesHint": "ملاحظة اختيارية",
+  "commitmentsSave": "حفظ",
+  "commitmentsSaved": "اتحفظ",
+  "commitmentsNameRequired": "اكتبي الاسم",
+  "commitmentsCountRequired": "اكتبي عدد الشهور",
+  "commitmentsTurnInvalid": "دورِك لازم يكون بين 1 وعدد الشهور",
+  "commitmentsDueThisMonth": "لسه مستحق الشهر ده {amount}",
+  "@commitmentsDueThisMonth": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "commitmentsEmptyGameya": "لسه مفيش جمعيات. ضيفي واحدة عشان تتابعي القسط وإمتى تستلمي.",
+  "commitmentsEmptyInstallment": "لسه مفيش أقساط. ضيفي خطة عشان تشوفي فاضل كام قسط.",
+  "commitmentsProgress": "اتدفع {paid} من {total} · فاضل {left}",
+  "@commitmentsProgress": {
+    "placeholders": {
+      "paid": { "type": "int" },
+      "total": { "type": "int" },
+      "left": { "type": "String" }
+    }
+  },
+  "commitmentsPayout": "هتستلمي {amount} في دورِك",
+  "@commitmentsPayout": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "commitmentsYourTurn": "الشهر ده دورِك — المفروض تستلمي الجمعية.",
+  "commitmentsTurnPassed": "دورِك عدّى.",
+  "commitmentsTurnsLeft": "فاضل {count} قسط على دورِك",
+  "@commitmentsTurnsLeft": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "commitmentsMarkPaid": "سجّلي دفع الشهر",
+  "commitmentsPaidThisMonth": "اتدفع الشهر ده",
+  "commitmentsFinished": "خلصت",
+  "commitmentsUndo": "تراجع",
+  "commitmentsDeleteTitle": "تمسحي ده؟",
+  "commitmentsCategoryHint": "نفس تصنيفات المصروفات، عشان القسط يظهر هناك.",
+  "commitmentsPayFromHint": "نفس محافظ الرصيد. قسط الشهر يتسجل في المصروفات ويتخصم من المصدر ده.",
+  "commitmentsReceiveInto": "استلام الجمعية في",
+  "commitmentsReceiveIntoHint": "في شهر دورِك، المبلغ كامل يتسجل في الدخل على المصدر ده.",
+  "commitmentsFromSource": "بتدفعي من {source}",
+  "@commitmentsFromSource": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "commitmentsPayoutInto": "هتستلمي في {source}",
+  "@commitmentsPayoutInto": {
+    "placeholders": {
+      "source": { "type": "String" }
+    }
+  },
+  "commitmentsConfirmPay": "سجّلي في المصروفات",
+  "commitmentsTurnPayoutNote": "الشهر ده دورِك. قسطِك يتسجل مصروف، و{amount} يتضاف للدخل.",
+  "@commitmentsTurnPayoutNote": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "commitmentsExpenseTitle": "{title} ({cycle}/{total})",
+  "@commitmentsExpenseTitle": {
+    "placeholders": {
+      "title": { "type": "String" },
+      "cycle": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "commitmentsIncomeTitle": "استلام {title}",
+  "@commitmentsIncomeTitle": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "commitmentsLedgerMissing": "اتسجل الدفع، بس مش قادرين نربطه. راجعي المصروفات.",
+  "commitmentsPosted": "اتسجل في المصروفات",
   "billRemindersTestNow": "جرب دلوقتي",
   "billRemindersTestNowSent": "اتبعت إشعار تجربة — شوف شريط الإشعارات",
   "billReminderNotificationTitle": "فاتورة: {title}",
@@ -265,15 +382,15 @@
   "billRemindersPresetWater": "مياه",
   "associationSelect": "دفتر",
   "associationPickerTitle": "اختار الدفتر",
-  "associationPickerSubtitle": "الشخصي ليك لوحدك. دفتر العيلة الكل يضيف فيه. الجمعية المدير هو اللي بيسجّل.",
+  "associationPickerSubtitle": "الشخصي ليك لوحدك. الدفتر المنفصل زي الشغل أو البيت، واللي تدعوه يقدر يضيف. الجمعية المدير هو اللي بيسجّل.",
   "associationCreateTitle": "دفتر جديد",
   "associationCreateAction": "إضافة جمعية",
-  "associationCreateFamilyTitle": "دفتر عيلة جديد",
-  "associationCreateFamilyAction": "إضافة عيلة",
-  "associationCreateFamilyHint": "مثال: البيت",
-  "associationCreateFamilySubtitle": "كل اللي تدعوه يقدر يضيف دخله ومصاريفه. هتدعوهم بعد كده.",
-  "associationFamilyBadge": "عيلة",
-  "associationFamilyBanner": "دفتر العيلة: كل عضو يقدر يضيف دخله ومصاريفه.",
+  "associationCreateFamilyTitle": "دفتر جديد",
+  "associationCreateFamilyAction": "إضافة دفتر",
+  "associationCreateFamilyHint": "مثال: الشغل، البيت",
+  "associationCreateFamilySubtitle": "دفتر منفصل عن الشخصي، للشغل أو أي حاجة تانية. اللي تدعوه يقدر يضيف دخله ومصاريفه.",
+  "associationFamilyBadge": "دفتر منفصل",
+  "associationFamilyBanner": "دفتر منفصل: كل عضو يقدر يضيف دخله ومصاريفه.",
   "familyTransactionBy": "ضافها {name}",
   "@familyTransactionBy": {
     "placeholders": {
@@ -281,7 +398,7 @@
     }
   },
   "familyAuthorYou": "إنت",
-  "familyAuthorUnknown": "فرد من العيلة",
+  "familyAuthorUnknown": "عضو",
   "associationNameHint": "مثال: شغل، بيت، ادخار",
   "associationNameRequired": "اكتب اسم للدفتر",
   "associationCreated": "اتعمل \"{name}\"",

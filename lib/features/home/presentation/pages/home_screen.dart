@@ -29,6 +29,7 @@ import 'package:imrpo/features/expenses_tab/presentation/pages/expenses_tab.dart
 import 'package:imrpo/features/expenses_tab/presentation/utils/show_expense_sheet.dart';
 import 'package:imrpo/features/expenses_tab/presentation/widgets/add_expense_sheet.dart';
 import 'package:imrpo/features/incomes_tab/presentation/pages/incomes_tab.dart';
+import 'package:imrpo/features/commitments/presentation/pages/commitments_screen.dart';
 import 'package:imrpo/features/plans_tab/presentation/pages/plans_tab.dart';
 import 'package:imrpo/features/loans_tab/presentation/pages/loans_tab.dart';
 import 'package:imrpo/core/config/app_router.dart';
@@ -58,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _tabController = TabController(length: 5, vsync: this);
+    _tabController = TabController(length: 6, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _bootstrapSession());
   }
 
@@ -162,6 +163,12 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
       icon: Icons.flag_outlined,
       selectedIcon: Icons.flag_rounded,
       color: AppColors.plans,
+    ),
+    _HomeTabItem(
+      label: l10n.tabCommitments,
+      icon: Icons.groups_outlined,
+      selectedIcon: Icons.groups_rounded,
+      color: const Color(0xFF6B5B95),
     ),
   ];
 
@@ -270,43 +277,12 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
                     ),
                     const SliverToBoxAdapter(child: AssociationLedgerBanner()),
                     SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-                        child: KeyedSubtree(
-                          key: HomeGuideTargets.tabs,
-                          child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: BoxDecoration(
-                              color: palette.card,
-                              borderRadius: BorderRadius.circular(22),
-                              border: Border.all(
-                                color: palette.stroke.withValues(alpha: 0.1),
-                                width: 1.5,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: palette.stroke.withValues(alpha: 0.07),
-                                  blurRadius: 0,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              children: List.generate(tabs.length, (index) {
-                                final tab = tabs[index];
-                                final isSelected = selected == index;
-                                return Expanded(
-                                  flex: isSelected ? 14 : 10,
-                                  child: _TabChip(
-                                    tab: tab,
-                                    isSelected: isSelected,
-                                    onTap: () =>
-                                        widget.tabController.animateTo(index),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
+                      child: KeyedSubtree(
+                        key: HomeGuideTargets.tabs,
+                        child: _HomeTabStrip(
+                          tabs: tabs,
+                          selected: selected,
+                          onTap: widget.tabController.animateTo,
                         ),
                       ),
                     ),
@@ -319,6 +295,7 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
                       BalanceTab(),
                       LoansTab(),
                       PlansTab(),
+                      CommitmentsScreen(embedded: true),
                     ],
                   ),
                 ),
@@ -898,6 +875,62 @@ class _UserAvatar extends StatelessWidget {
   }
 }
 
+class _HomeTabStrip extends StatelessWidget {
+  final List<_HomeTabItem> tabs;
+  final int selected;
+  final ValueChanged<int> onTap;
+
+  const _HomeTabStrip({
+    required this.tabs,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final split = (tabs.length / 2).ceil();
+    final rows = [
+      tabs.take(split).toList(),
+      tabs.skip(split).toList(),
+    ];
+
+    final palette = context.appPalette;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: palette.card,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: palette.stroke.withValues(alpha: 0.08)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+          child: Column(
+            children: [
+              for (var row = 0; row < rows.length; row++) ...[
+                if (row > 0) const SizedBox(height: 4),
+                Row(
+                  children: [
+                    for (var column = 0; column < rows[row].length; column++)
+                      Expanded(
+                        child: _TabChip(
+                          tab: rows[row][column],
+                          isSelected: selected == row * split + column,
+                          onTap: () => onTap(row * split + column),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _TabChip extends StatelessWidget {
   final _HomeTabItem tab;
   final bool isSelected;
@@ -913,80 +946,63 @@ class _TabChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final palette = context.appPalette;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final ink = ColorContrast.asInk(tab.color, onDarkSurface: isDark);
-    final onAccent = ColorContrast.onColor(tab.color);
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(17),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 240),
-          curve: Curves.easeOutCubic,
-          margin: const EdgeInsets.symmetric(horizontal: 2),
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? tab.color.withValues(alpha: isDark ? 0.28 : 0.16)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(17),
-            border: Border.all(
+    final iconColor = isSelected
+        ? ColorContrast.onColor(tab.color)
+        : palette.textMuted;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOutCubic,
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 7),
+            decoration: BoxDecoration(
               color: isSelected
-                  ? tab.color.withValues(alpha: 0.45)
+                  ? tab.color.withValues(alpha: isDark ? 0.2 : 0.1)
                   : Colors.transparent,
-              width: 1.4,
+              borderRadius: BorderRadius.circular(14),
             ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 240),
-                curve: Curves.easeOutCubic,
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: isSelected ? tab.color : palette.scaffold,
-                  shape: BoxShape.circle,
-                  border: Border.all(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
                     color: isSelected
                         ? tab.color
-                        : tab.color.withValues(alpha: 0.28),
-                    width: 1.3,
+                        : palette.scaffold,
+                    shape: BoxShape.circle,
                   ),
-                  boxShadow: isSelected
-                      ? [
-                          BoxShadow(
-                            color: tab.color.withValues(alpha: 0.35),
-                            blurRadius: 0,
-                            offset: const Offset(0, 2),
-                          ),
-                        ]
-                      : null,
+                  child: Icon(
+                    isSelected ? tab.selectedIcon : tab.icon,
+                    size: 17,
+                    color: iconColor,
+                  ),
                 ),
-                child: Icon(
-                  isSelected ? tab.selectedIcon : tab.icon,
-                  size: isSelected ? 17 : 16,
-                  color: isSelected ? onAccent : ink,
+                const SizedBox(height: 5),
+                Text(
+                  tab.label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.1,
+                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                    color: isSelected ? palette.textPrimary : palette.textMuted,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                tab.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: isSelected ? 11 : 10,
-                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  letterSpacing: isSelected ? 0.1 : 0,
-                  color: isSelected
-                      ? ink
-                      : palette.textMuted.withValues(alpha: 0.9),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
