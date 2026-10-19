@@ -6,12 +6,10 @@ class Expense extends Equatable {
   final String category;
   final double amount;
   final DateTime date;
-  /// Income source / wallet this spend is deducted from; optional for legacy rows.
   final String? incomeSource;
   final String? receiptUrl;
   final String? entryCurrency;
   final double? entryAmount;
-  /// Who recorded this row (family ledgers).
   final String? userId;
 
   const Expense({

@@ -40,7 +40,9 @@
   "statisticsAvgMonthlyNet": "Avg. per month: {amount}",
   "@statisticsAvgMonthlyNet": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "statisticsTopExpenses": "Top expense categories (3 mo)",
@@ -71,7 +73,9 @@
   "loanPaymentBalanceEntryTitle": "Loan payment · {personName}",
   "@loanPaymentBalanceEntryTitle": {
     "placeholders": {
-      "personName": { "type": "String" }
+      "personName": {
+        "type": "String"
+      }
     }
   },
   "errorSelectLoanPaymentSource": "Choose a wallet or payment source",
@@ -86,14 +90,20 @@
   "loanRemainingOf": "{remaining} left of {principal}",
   "@loanRemainingOf": {
     "placeholders": {
-      "remaining": { "type": "String" },
-      "principal": { "type": "String" }
+      "remaining": {
+        "type": "String"
+      },
+      "principal": {
+        "type": "String"
+      }
     }
   },
   "loanOfPrincipal": "of {amount}",
   "@loanOfPrincipal": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "loanTapToEdit": "Tap to edit loan",
@@ -121,7 +131,9 @@
   "walletSplitYourShare": "Your share: {amount}",
   "@walletSplitYourShare": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "walletSplitPeopleSection": "Who owes you",
@@ -136,7 +148,9 @@
   "walletSplitSuccess": "Saved expense and {count} loan(s)",
   "@walletSplitSuccess": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "errorEnterPersonName": "Enter the person's name",
@@ -162,7 +176,9 @@
   "billRemindersDayOfMonthValue": "Day {day}",
   "@billRemindersDayOfMonthValue": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "billRemindersRemindBefore": "Remind me",
@@ -179,23 +195,33 @@
   "dailyDigestYesterdayExpenses": "{count, plural, one{1 expense ({amount})} other{{count} expenses ({amount})}}",
   "@dailyDigestYesterdayExpenses": {
     "placeholders": {
-      "count": { "type": "int" },
-      "amount": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "dailyDigestYesterdayNoExpenses": "No expenses yesterday",
   "dailyDigestYesterdayIncomes": "{count, plural, one{1 income ({amount})} other{{count} incomes ({amount})}}",
   "@dailyDigestYesterdayIncomes": {
     "placeholders": {
-      "count": { "type": "int" },
-      "amount": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "dailyDigestYesterdayNoIncomes": "No income yesterday",
   "dailyDigestMonthNet": "Month net: {amount}",
   "@dailyDigestMonthNet": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "notificationsTitle": "Notifications",
@@ -210,14 +236,20 @@
   "notificationsScheduledBillSubtitle": "{when} · {due}",
   "@notificationsScheduledBillSubtitle": {
     "placeholders": {
-      "when": { "type": "String" },
-      "due": { "type": "String" }
+      "when": {
+        "type": "String"
+      },
+      "due": {
+        "type": "String"
+      }
     }
   },
   "notificationsScheduledDigestSubtitle": "Next summary · {when}",
   "@notificationsScheduledDigestSubtitle": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "billRemindersPermissionDenied": "Allow notifications in system settings to get bill reminders.",
@@ -259,13 +291,17 @@
   "commitmentsTurnIs": "{name}’s turn",
   "@commitmentsTurnIs": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "commitmentsDueDay": "Due on day {day}",
   "@commitmentsDueDay": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "commitmentsNotesHint": "Optional note",
@@ -277,7 +313,9 @@
   "commitmentsDueThisMonth": "{amount} still due this month",
   "@commitmentsDueThisMonth": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "commitmentsEmptyGameya": "No gameyas yet. Add one to track your share and when you receive the pot.",
@@ -285,15 +323,23 @@
   "commitmentsProgress": "{paid} of {total} paid · {left} left",
   "@commitmentsProgress": {
     "placeholders": {
-      "paid": { "type": "int" },
-      "total": { "type": "int" },
-      "left": { "type": "String" }
+      "paid": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "left": {
+        "type": "String"
+      }
     }
   },
   "commitmentsPayout": "You receive {amount} on your turn",
   "@commitmentsPayout": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "commitmentsYourTurn": "This month is your turn — you should receive the pot.",
@@ -301,7 +347,9 @@
   "commitmentsTurnsLeft": "{count} payment(s) until your turn",
   "@commitmentsTurnsLeft": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "commitmentsMarkPaid": "Mark this month paid",
@@ -316,34 +364,48 @@
   "commitmentsFromSource": "Paid from {source}",
   "@commitmentsFromSource": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "commitmentsPayoutInto": "Pot goes to {source}",
   "@commitmentsPayoutInto": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "commitmentsConfirmPay": "Save to expenses",
   "commitmentsTurnPayoutNote": "This month is your turn. Your share is an expense, and {amount} is added to income.",
   "@commitmentsTurnPayoutNote": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "commitmentsExpenseTitle": "{title} ({cycle}/{total})",
   "@commitmentsExpenseTitle": {
     "placeholders": {
-      "title": { "type": "String" },
-      "cycle": { "type": "int" },
-      "total": { "type": "int" }
+      "title": {
+        "type": "String"
+      },
+      "cycle": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "commitmentsIncomeTitle": "{title} payout",
   "@commitmentsIncomeTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "commitmentsLedgerMissing": "The payment was saved, but it could not be linked. Check Expenses.",
@@ -353,27 +415,37 @@
   "billReminderNotificationTitle": "Bill: {title}",
   "@billReminderNotificationTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "billReminderNotificationDueTodayWithAmount": "Due today — {amount}",
   "@billReminderNotificationDueTodayWithAmount": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "billReminderNotificationDueTodayPlain": "Due today",
   "billReminderNotificationDueInDaysWithAmount": "Due in {days} days — {amount}",
   "@billReminderNotificationDueInDaysWithAmount": {
     "placeholders": {
-      "days": { "type": "int" },
-      "amount": { "type": "String" }
+      "days": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "billReminderNotificationDueInDaysPlain": "Due in {days} days",
   "@billReminderNotificationDueInDaysPlain": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "billRemindersPresetElectricity": "Electricity",
@@ -394,7 +466,9 @@
   "familyTransactionBy": "Added by {name}",
   "@familyTransactionBy": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "familyAuthorYou": "you",
@@ -404,14 +478,18 @@
   "associationCreated": "Created \"{name}\"",
   "@associationCreated": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationDeleteConfirmTitle": "Delete ledger?",
   "associationDeleteConfirmMessage": "Delete \"{name}\" and all its income, expenses, budgets, and plans? This cannot be undone.",
   "@associationDeleteConfirmMessage": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationDeleteAction": "Delete",
@@ -421,7 +499,9 @@
   "associationInviteSubtitle": "Search by username and invite people to \"{name}\". They choose whether to join.",
   "@associationInviteSubtitle": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationInviteSearchHint": "Search username…",
@@ -432,7 +512,9 @@
   "associationInviteSent": "Invitation sent to {username}",
   "@associationInviteSent": {
     "placeholders": {
-      "username": { "type": "String" }
+      "username": {
+        "type": "String"
+      }
     }
   },
   "associationInviteMembersAction": "Invite members",
@@ -440,8 +522,12 @@
   "associationInvitePendingBody": "{username} invited you to \"{name}\"",
   "@associationInvitePendingBody": {
     "placeholders": {
-      "username": { "type": "String" },
-      "name": { "type": "String" }
+      "username": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationInviteAccept": "Join",
@@ -467,13 +553,17 @@
   "associationTreasurerBannerBody": "All entries for {name} are recorded by you.",
   "@associationTreasurerBannerBody": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationMemberReadOnlyBanner": "View-only member of \"{name}\". Ask the treasurer to add or edit entries.",
   "@associationMemberReadOnlyBanner": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationManageHubAction": "Manage ledger",
@@ -492,14 +582,22 @@
   "associationHubCollectionDayInvalid": "Collection day must be between 1 and 31.",
   "associationHubDayOfMonth": "Day {day}",
   "@associationHubDayOfMonth": {
-    "placeholders": { "day": { "type": "int" } }
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
   },
   "associationHubCurrentTurn": "Current turn",
   "associationHubTurnNumber": "Turn {current} of {total}",
   "@associationHubTurnNumber": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "associationHubTurnList": "Turn order",
@@ -514,7 +612,11 @@
   "associationHubPaymentsEmpty": "No payments recorded yet.",
   "associationHubPaymentsTotal": "Total: {amount}",
   "@associationHubPaymentsTotal": {
-    "placeholders": { "amount": { "type": "String" } }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "associationHubRecordPayment": "Record payment",
   "associationHubPaymentRecorded": "Payment recorded.",
@@ -524,7 +626,11 @@
   "associationHubPaymentDate": "Payment date",
   "associationHubPaymentPaidOn": "Paid on {date}",
   "@associationHubPaymentPaidOn": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "associationHubPaymentNote": "Note (optional)",
   "associationHubPaymentNoteHint": "e.g. March installment",
@@ -532,7 +638,11 @@
   "associationHubPaymentDeleteTitle": "Delete payment?",
   "associationHubPaymentDeleteMessage": "Remove payment record for {name}?",
   "@associationHubPaymentDeleteMessage": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "associationHubPaymentDeleteConfirm": "Delete",
   "associationHubEndGam3eya": "End gom3eya",
@@ -542,14 +652,22 @@
   "associationHubEndGam3eyaDone": "Gom3eya ended.",
   "associationHubEndedBanner": "This gom3eya ended on {date}. View only.",
   "@associationHubEndedBanner": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "associationHubOwnerEndedSubtitle": "This gom3eya is finished. Data is view-only.",
   "associationHubMemberEndedSubtitle": "The manager ended this gom3eya. View only.",
   "associationHubAdvanceTurn": "Next turn",
   "associationHubAdvanceTurnConfirm": "Mark turn complete and move to the next person after {name}?",
   "@associationHubAdvanceTurnConfirm": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "associationHubReceived": "Received",
   "associationHubPending": "Waiting",
@@ -565,7 +683,11 @@
   "associationHubBannerTitle": "Manage association",
   "associationHubBannerBody": "Turn, payout & installment for {name}.",
   "@associationHubBannerBody": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "homeWelcomeBack": "Welcome back",
   "homeWelcomeUser": "Welcome back, {name}",
@@ -726,7 +848,11 @@
   "salaryDaySubtitle": "Split your paycheck into rent, bills, plans, and leftover spending money.",
   "salaryDayPaydayLabel": "Payday: day {day} of each month",
   "@salaryDayPaydayLabel": {
-    "placeholders": { "day": { "type": "int" } }
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
   },
   "salaryDayAmountLabel": "Salary amount",
   "salaryDayRentPct": "Rent",
@@ -734,7 +860,11 @@
   "salaryDayPlansPct": "Plans / savings",
   "salaryDayLeftoverPct": "Leftover · {pct}%",
   "@salaryDayLeftoverPct": {
-    "placeholders": { "pct": { "type": "String" } }
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
   },
   "salaryDayPromptToggle": "Open this after I add a Salary income",
   "salaryDayPreview": "Allocation preview",
@@ -745,18 +875,30 @@
   "salaryDayRulesSaved": "Salary day rules saved",
   "salaryDaySuccess": "Allocated into {count} expense(s)",
   "@salaryDaySuccess": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "yearInReviewTitle": "Year in review",
   "yearInReviewHero": "Your {year} money story",
   "@yearInReviewHero": {
-    "placeholders": { "year": { "type": "int" } }
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
   },
   "yearInReviewHeroBody": "You earned {income} and spent {expenses}.",
   "@yearInReviewHeroBody": {
     "placeholders": {
-      "income": { "type": "String" },
-      "expenses": { "type": "String" }
+      "income": {
+        "type": "String"
+      },
+      "expenses": {
+        "type": "String"
+      }
     }
   },
   "yearInReviewEmpty": "No income or expenses logged for this year yet.",
@@ -769,8 +911,12 @@
   "yearInReviewMonthNet": "{month} · net {amount}",
   "@yearInReviewMonthNet": {
     "placeholders": {
-      "month": { "type": "String" },
-      "amount": { "type": "String" }
+      "month": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "yearInReviewTopCategories": "Top categories",
@@ -802,7 +948,9 @@
   "paymentMethodAdded": "Added \"{name}\" to your methods.",
   "@paymentMethodAdded": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "expensePaidFromField": "Paid from",
@@ -816,7 +964,9 @@
   "incomeSourceRenameHint": "Updates all incomes with source \"{name}\".",
   "@incomeSourceRenameHint": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "incomeSourceNameTaken": "That source name is already in use",
@@ -825,8 +975,12 @@
   "incomeSourceRemoveMessage": "What should happen to {count} income(s) with source \"{name}\"?",
   "@incomeSourceRemoveMessage": {
     "placeholders": {
-      "count": { "type": "int" },
-      "name": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "incomeSourceMoveToOther": "Move all to Other",
@@ -835,7 +989,9 @@
   "incomeSourceDeleteConfirmMessage": "This permanently deletes {count} income(s). This cannot be undone.",
   "@incomeSourceDeleteConfirmMessage": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "incomeSourceDeleteConfirmAction": "Delete",
@@ -869,13 +1025,17 @@
   "expenseShortcutDeleteConfirmMessage": "Remove \"{name}\"?",
   "@expenseShortcutDeleteConfirmMessage": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "expenseShortcutLogged": "Logged: {name}",
   "@expenseShortcutLogged": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "expenseShortcutErrorLabel": "Enter a chip label",
@@ -886,7 +1046,9 @@
   "expenseCategoryRenameHint": "Updates all expenses in \"{name}\".",
   "@expenseCategoryRenameHint": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "expenseCategoryNameTaken": "That category name is already in use",
@@ -895,8 +1057,12 @@
   "expenseCategoryRemoveMessage": "What should happen to {count} expense(s) in \"{name}\"?",
   "@expenseCategoryRemoveMessage": {
     "placeholders": {
-      "count": { "type": "int" },
-      "name": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "expenseCategoryMoveToOther": "Move all to Other",
@@ -905,7 +1071,9 @@
   "expenseCategoryDeleteConfirmMessage": "This permanently deletes {count} expense(s). This cannot be undone.",
   "@expenseCategoryDeleteConfirmMessage": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "expenseCategoryDeleteConfirmAction": "Delete",
@@ -922,43 +1090,56 @@
   "budgetEmptyHint": "Set a limit per category to see how much of your budget you've used.",
   "budgetSetFirst": "Create first budget",
   "budgetTotalSpent": "Total spent",
-  "budgetRemaining": "{amount} left",
   "@budgetRemaining": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "budgetOverBy": "Over by {amount}",
   "@budgetOverBy": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "budgetDeleteTitle": "Remove budget?",
   "budgetDeleteMessage": "Remove the budget for {category}?",
   "@budgetDeleteMessage": {
     "placeholders": {
-      "category": { "type": "String" }
+      "category": {
+        "type": "String"
+      }
     }
   },
   "budgetDeleteConfirm": "Remove",
   "budgetAlertNear": "{count} category near the limit",
   "@budgetAlertNear": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "budgetAlertOver": "{count} category over budget",
   "@budgetAlertOver": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "budgetAlertOverAndNear": "{over} over budget, {near} near limit",
   "@budgetAlertOverAndNear": {
     "placeholders": {
-      "over": { "type": "int" },
-      "near": { "type": "int" }
+      "over": {
+        "type": "int"
+      },
+      "near": {
+        "type": "int"
+      }
     }
   },
   "categoryField": "Category",
@@ -977,7 +1158,9 @@
   "pocketInsufficientFunds": "Not enough in your pocket. Available: {amount}",
   "@pocketInsufficientFunds": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "errorEnterCategoryName": "Please enter a category name",
@@ -1107,13 +1290,17 @@
   "clearAllExpensesConfirmMessage": "This will permanently delete all {count} expenses. This cannot be undone.",
   "@clearAllExpensesConfirmMessage": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "clearAllIncomesConfirmMessage": "This will permanently delete all {count} incomes. This cannot be undone.",
   "@clearAllIncomesConfirmMessage": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "clearAllExpensesSuccess": "All expenses deleted",
@@ -1171,38 +1358,50 @@
   "planCoachMonthly": "Save {amount}/month to hit your deadline",
   "@planCoachMonthly": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planCoachOverdue": "Deadline passed — {amount} still needed",
   "@planCoachOverdue": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planCoachUrgent": "Due soon — {amount} left",
   "@planCoachUrgent": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planCoachRemaining": "{amount} left to reach your goal",
   "@planCoachRemaining": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planCoachTipTitle": "Stay on track",
   "planCoachSurplusTip": "You have {amount} available. Add some to a goal to get closer.",
   "@planCoachSurplusTip": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planCoachAddSuggested": "Add suggested {amount}",
   "@planCoachAddSuggested": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planSuggestThisMonth": "This month",
@@ -1215,7 +1414,6 @@
   "planTemplateEducation": "Education",
   "planTemplatesTitle": "Quick start ideas",
   "planHowItHelps": "Set a target, optionally a deadline, then move money from your balance with Add to goal.",
-
   "plansEmptyTitle": "Start your first goal",
   "plansEmptySubtitle": "Set a target, track what you save, and watch your progress grow.",
   "plansCreateGoalButton": "Create goal",
@@ -1268,7 +1466,9 @@
   "magicAddAddAll": "Add {count}",
   "@magicAddAddAll": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "magicAddAddOne": "Add transaction",
@@ -1288,13 +1488,17 @@
   "smartImportPasteFoundCount": "Found {count} messages",
   "@smartImportPasteFoundCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportPasteAddedOneRemaining": "Added. {count} more ready to import.",
   "@smartImportPasteAddedOneRemaining": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportPasteProcessing": "Reading message…",
@@ -1324,7 +1528,9 @@
   "smartImportSmsSkippedDuplicate": "{count} message(s) were already in the app.",
   "@smartImportSmsSkippedDuplicate": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportSmsLoadMore": "Load more messages",
@@ -1351,9 +1557,15 @@
   "smartImportSmsSummary": "{ready} ready · {added} added · {noAmount} no amount",
   "@smartImportSmsSummary": {
     "placeholders": {
-      "ready": { "type": "int" },
-      "added": { "type": "int" },
-      "noAmount": { "type": "int" }
+      "ready": {
+        "type": "int"
+      },
+      "added": {
+        "type": "int"
+      },
+      "noAmount": {
+        "type": "int"
+      }
     }
   },
   "smartImportSmsFilterEmpty": "Nothing in this filter. Try another filter or pull to refresh.",
@@ -1364,19 +1576,25 @@
   "smartImportAddAllExpenses": "Add all expenses ({count})",
   "@smartImportAddAllExpenses": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportAddAllIncomes": "Add all incomes ({count})",
   "@smartImportAddAllIncomes": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportAddSelected": "Add selected ({count})",
   "@smartImportAddSelected": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportSelectAll": "Select all",
@@ -1395,14 +1613,20 @@
   "smartImportBulkResult": "Added {incomes} incomes and {expenses} expenses.",
   "@smartImportBulkResult": {
     "placeholders": {
-      "incomes": { "type": "int" },
-      "expenses": { "type": "int" }
+      "incomes": {
+        "type": "int"
+      },
+      "expenses": {
+        "type": "int"
+      }
     }
   },
   "smartImportBulkPartialFail": "{failed} message(s) could not be imported.",
   "@smartImportBulkPartialFail": {
     "placeholders": {
-      "failed": { "type": "int" }
+      "failed": {
+        "type": "int"
+      }
     }
   },
   "settingsAppLock": "App lock",
@@ -1437,8 +1661,12 @@
   "monthlyReportEntrySummary": "{incomeCount} income sources · {expenseCount} expense categories",
   "@monthlyReportEntrySummary": {
     "placeholders": {
-      "incomeCount": { "type": "int" },
-      "expenseCount": { "type": "int" }
+      "incomeCount": {
+        "type": "int"
+      },
+      "expenseCount": {
+        "type": "int"
+      }
     }
   },
   "globalSearchTitle": "Search",
@@ -1462,13 +1690,21 @@
   "subscriptionsMonthlyTotal": "Monthly total",
   "subscriptionsCount": "{count} subscriptions",
   "@subscriptionsCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "subscriptionsDueThisWeek": "Due this week",
   "subscriptionsAll": "All subscriptions",
   "subscriptionsDueOn": "Due {date}",
   "@subscriptionsDueOn": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "zakatTitle": "Zakat calculator",
   "zakatDisclaimer": "Estimate only (2.5% on net zakatable wealth). Enter gold and silver by weight in grams; value = grams × price per gram. Consult a scholar for your situation.",
@@ -1496,13 +1732,21 @@
   "zakatSilverWeightHint": "e.g. 200",
   "zakatComputedValue": "≈ {amount}",
   "@zakatComputedValue": {
-    "placeholders": { "amount": { "type": "String" } }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "zakatNisabHint": "Nisab reference: {goldGrams}g gold or {silverGrams}g silver (this app uses {goldGrams}g gold × gold price).",
   "@zakatNisabHint": {
     "placeholders": {
-      "goldGrams": { "type": "int" },
-      "silverGrams": { "type": "int" }
+      "goldGrams": {
+        "type": "int"
+      },
+      "silverGrams": {
+        "type": "int"
+      }
     }
   },
   "zakatResultTitle": "Your estimate",
@@ -1522,5 +1766,70 @@
   "planImageAttach": "Add a photo",
   "planImageReplace": "Change photo",
   "planImageRemove": "Remove photo",
-  "planImageUploadFailed": "Couldn't upload the photo. Try again."
+  "planImageUploadFailed": "Couldn't upload the photo. Try again.",
+  "manage": "Manage",
+  "dailyBudget": "Daily Budget",
+  "expenseTracking": "Expense Tracking",
+  "savingsGoal": "Savings Goal",
+  "dailyLimit": "Daily Budget",
+  "budgetExceeded": "You've exceeded your daily budget",
+  "budgetRemaining": "Remaining from your daily budget",
+  "editBudget": "Edit Budget",
+  "enterBudget": "Enter daily budget",
+  "invalidBudget": "Enter a valid amount greater than zero",
+  "dailyBudgetTitle": "Your Daily Budget",
+  "dailyBudgetSubtitle": "Track your expenses and daily spending limit",
+  "editDailyBudget": "Edit Daily Budget",
+  "remainingToday": "Remaining Today",
+  "expensesToday": "Today's Expenses",
+  "dailyBudgetAmount": "Budget: EGP {amount}",
+  "@dailyBudgetAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "budgetUsedPercent": "{percent}% used",
+  "@budgetUsedPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "addExpenseOrIncome": "Add Expense or Income",
+  "trackBudgetSubtitle": "Record expenses and track your budget",
+  "dailyBudgetExceededMessage": "You've exceeded your daily budget by EGP {amount}. Try to reduce spending for the rest of the day.",
+  "@dailyBudgetExceededMessage": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyBudgetRemainingMessage": "You have EGP {amount} remaining from your daily budget.",
+  "@dailyBudgetRemainingMessage": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyBudgetInputLabel": "Daily amount in Egyptian pounds",
+    "egpAmount": "EGP {amount}",
+  "@egpAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "egpCurrency": "EGP",
+   "dailyExpensesSummaryTitle": "Today's Expenses Summary",
+  "dailyExpensesTotalLabel": "Total Spent Today",
+  "dailyExpensesRecordedMessage": "Your total recorded expenses for today.",
+  "dailyExpensesEmptyMessage": "You haven't recorded any expenses today yet."
+
+  
 }

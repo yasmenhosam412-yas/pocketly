@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imrpo/features/home/presentation/widgets/scroll_hint.dart';
+import 'package:imrpo/features/manage_tab/presentation/pages/manage_tab.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:imrpo/features/home/domain/entities/user_profile.dart';
 import 'package:imrpo/features/home/presentation/bloc/home_bloc.dart';
@@ -22,7 +24,6 @@ import 'package:imrpo/features/home/presentation/widgets/association_selector.da
 import 'package:imrpo/features/home/presentation/widgets/home_date_filter_sheet.dart';
 import 'package:imrpo/features/home/presentation/theme/home_header_theme.dart';
 import 'package:imrpo/features/home/presentation/widgets/home_wallet_header_chip.dart';
-import 'package:imrpo/core/theme/color_contrast.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/features/balance_tab/presentation/pages/balance_tab.dart';
 import 'package:imrpo/features/expenses_tab/presentation/pages/expenses_tab.dart';
@@ -59,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _tabController = TabController(length: 6, vsync: this);
+    _tabController = TabController(length: 7, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _bootstrapSession());
   }
 
@@ -134,6 +135,12 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
   int _displayedTabIndex = 0;
 
   List<_HomeTabItem> _tabs(AppLocalizations l10n) => [
+    _HomeTabItem(
+      label: l10n.manage,
+      icon: Icons.dashboard_outlined,
+      selectedIcon: Icons.dashboard_rounded,
+      color: AppColors.balance,
+    ),
     _HomeTabItem(
       label: l10n.tabIncomes,
       icon: Icons.trending_up_rounded,
@@ -276,6 +283,7 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
                       child: PendingAssociationInvites(),
                     ),
                     const SliverToBoxAdapter(child: AssociationLedgerBanner()),
+                    const SliverToBoxAdapter(child: _HomeQuickTools()),
                     SliverToBoxAdapter(
                       child: KeyedSubtree(
                         key: HomeGuideTargets.tabs,
@@ -290,6 +298,7 @@ class _HomeTabBodyState extends State<_HomeTabBody> {
                   body: TabBarView(
                     controller: widget.tabController,
                     children: const [
+                      ManageTab(),
                       IncomesTab(),
                       ExpensesTab(),
                       BalanceTab(),
@@ -391,214 +400,221 @@ class _HomeHeader extends StatelessWidget {
                   style: TextStyle(color: headerTheme.foreground),
                   child: Stack(
                     children: [
-                  Positioned(
-                    top: -40,
-                    right: -20,
-                    child: _HeaderDecorCircle(
-                      size: 140,
-                      color: headerTheme.decorSoft,
-                    ),
-                  ),
-                  Positioned(
-                    bottom: -30,
-                    left: -24,
-                    child: _HeaderDecorCircle(
-                      size: 110,
-                      color: accent.withValues(
-                        alpha: headerTheme.isDark ? 0.18 : 0.22,
+                      Positioned(
+                        top: -40,
+                        right: -20,
+                        child: _HeaderDecorCircle(
+                          size: 140,
+                          color: headerTheme.decorSoft,
+                        ),
                       ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(20, topPadding + 14, 20, 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
+                      Positioned(
+                        bottom: -30,
+                        left: -24,
+                        child: _HeaderDecorCircle(
+                          size: 110,
+                          color: accent.withValues(
+                            alpha: headerTheme.isDark ? 0.18 : 0.22,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          20,
+                          topPadding + 14,
+                          20,
+                          20,
+                        ),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _UserAvatar(
-                              profile: profile,
-                              isInitialLoading: isInitialLoading,
-                              isRefreshing: isRefreshingProfile,
-                              onTap: profile != null && !isInitialLoading
-                                  ? () =>
-                                        showUserSettingsSheet(context, profile)
-                                  : null,
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _welcomeLine(
-                                      l10n,
-                                      profile,
-                                      isInitialLoading,
-                                    ),
-                                    style: TextStyle(
-                                      color: headerTheme.foreground,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _UserAvatar(
+                                  profile: profile,
+                                  isInitialLoading: isInitialLoading,
+                                  isRefreshing: isRefreshingProfile,
+                                  onTap: profile != null && !isInitialLoading
+                                      ? () => showUserSettingsSheet(
+                                          context,
+                                          profile,
+                                        )
+                                      : null,
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _welcomeLine(
+                                          l10n,
+                                          profile,
+                                          isInitialLoading,
+                                        ),
+                                        style: TextStyle(
+                                          color: headerTheme.foreground,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        l10n.homeFinanceOverview,
+                                        style: TextStyle(
+                                          color: headerTheme.foreground,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: -0.4,
+                                          height: 1.2,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    l10n.homeFinanceOverview,
-                                    style: TextStyle(
-                                      color: headerTheme.foreground,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: -0.4,
-                                      height: 1.2,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                _ActiveTabBadge(tab: selectedTab),
+                                const Spacer(),
+                                _HeaderIconButton(
+                                  icon: Icons.search_rounded,
+                                  tooltip: l10n.globalSearchTitle,
+                                  onTap: () => Navigator.of(
+                                    context,
+                                  ).pushNamed(AppRoutes.search),
+                                ),
+                                const SizedBox(width: 4),
+                                ListenableBuilder(
+                                  listenable: getIt<NotificationInboxStore>(),
+                                  builder: (context, _) {
+                                    return _HeaderIconButton(
+                                      icon: Icons.notifications_outlined,
+                                      tooltip: l10n.notificationsTitle,
+                                      badgeCount:
+                                          getIt<NotificationInboxStore>()
+                                              .unreadCount,
+                                      onTap: () => Navigator.of(
+                                        context,
+                                      ).pushNamed(AppRoutes.notifications),
+                                    );
+                                  },
+                                ),
+                                if (profile != null && !isInitialLoading) ...[
+                                  const SizedBox(width: 4),
+                                  KeyedSubtree(
+                                    key: HomeGuideTargets.settings,
+                                    child: _HeaderIconButton(
+                                      icon: Icons.settings_outlined,
+                                      tooltip: l10n.accountSettingsTitle,
+                                      onTap: () => showUserSettingsSheet(
+                                        context,
+                                        profile,
+                                      ),
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ],
+                            ),
+                            const SizedBox(height: 16),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  AssociationSelector(
+                                    lightStyle: !headerTheme.isDark,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const HomeWalletHeaderButton(),
+                                  const SizedBox(width: 8),
+                                  ListenableBuilder(
+                                    listenable: dateFilter,
+                                    builder: (context, _) {
+                                      return _HeaderActionChip(
+                                        icon: dateFilter.isAllMode
+                                            ? Icons.date_range_outlined
+                                            : dateFilter.isDayMode
+                                            ? Icons.today_outlined
+                                            : Icons.calendar_month_outlined,
+                                        label: dateFilter.headerLabel(context),
+                                        isHighlighted: dateFilter.isFiltered,
+                                        trailingIcon: Icons.expand_more_rounded,
+                                        onTap: () =>
+                                            showHomeDateFilterSheet(context),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 8),
+                                  ListenableBuilder(
+                                    listenable: getIt<AssociationContext>(),
+                                    builder: (context, _) {
+                                      final canEdit =
+                                          AssociationLedgerAccess.canEdit;
+                                      return Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          if (canEdit) ...[
+                                            KeyedSubtree(
+                                              key: HomeGuideTargets.smartImport,
+                                              child: _HeaderActionChip(
+                                                icon:
+                                                    Icons.auto_awesome_rounded,
+                                                label: l10n.magicAddShort,
+                                                onTap: () =>
+                                                    showMagicAddSheet(context),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 8),
+                                          ],
+                                          KeyedSubtree(
+                                            key: canEdit
+                                                ? const ValueKey(
+                                                    'home-import-chip',
+                                                  )
+                                                : HomeGuideTargets.smartImport,
+                                            child: _HeaderActionChip(
+                                              icon: Icons
+                                                  .document_scanner_outlined,
+                                              label: l10n.smartImportShort,
+                                              trailingIcon:
+                                                  Icons.arrow_forward_rounded,
+                                              onTap: () => Navigator.of(context)
+                                                  .pushNamed(
+                                                    AppRoutes.smartImport,
+                                                  ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            _ActiveTabBadge(tab: selectedTab),
-                            const Spacer(),
-                            _HeaderIconButton(
-                              icon: Icons.search_rounded,
-                              tooltip: l10n.globalSearchTitle,
-                              onTap: () => Navigator.of(
-                                context,
-                              ).pushNamed(AppRoutes.search),
+                      ),
+                      if (isRefreshingProfile)
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: LinearProgressIndicator(
+                            minHeight: 2,
+                            color: headerTheme.foreground,
+                            backgroundColor: headerTheme.foreground.withValues(
+                              alpha: 0.24,
                             ),
-                            const SizedBox(width: 4),
-                            ListenableBuilder(
-                              listenable: getIt<NotificationInboxStore>(),
-                              builder: (context, _) {
-                                return _HeaderIconButton(
-                                  icon: Icons.notifications_outlined,
-                                  tooltip: l10n.notificationsTitle,
-                                  badgeCount: getIt<NotificationInboxStore>()
-                                      .unreadCount,
-                                  onTap: () => Navigator.of(
-                                    context,
-                                  ).pushNamed(AppRoutes.notifications),
-                                );
-                              },
-                            ),
-                            if (profile != null && !isInitialLoading) ...[
-                              const SizedBox(width: 4),
-                              KeyedSubtree(
-                                key: HomeGuideTargets.settings,
-                                child: _HeaderIconButton(
-                                  icon: Icons.settings_outlined,
-                                  tooltip: l10n.accountSettingsTitle,
-                                  onTap: () =>
-                                      showUserSettingsSheet(context, profile),
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              AssociationSelector(
-                                lightStyle: !headerTheme.isDark,
-                              ),
-                              const SizedBox(width: 8),
-                              const HomeWalletHeaderButton(),
-                              const SizedBox(width: 8),
-                              ListenableBuilder(
-                                listenable: dateFilter,
-                                builder: (context, _) {
-                                  return _HeaderActionChip(
-                                    icon: dateFilter.isAllMode
-                                        ? Icons.date_range_outlined
-                                        : dateFilter.isDayMode
-                                        ? Icons.today_outlined
-                                        : Icons.calendar_month_outlined,
-                                    label: dateFilter.headerLabel(context),
-                                    isHighlighted: dateFilter.isFiltered,
-                                    trailingIcon: Icons.expand_more_rounded,
-                                    onTap: () =>
-                                        showHomeDateFilterSheet(context),
-                                  );
-                                },
-                              ),
-                              const SizedBox(width: 8),
-                              ListenableBuilder(
-                                listenable: getIt<AssociationContext>(),
-                                builder: (context, _) {
-                                  final canEdit =
-                                      AssociationLedgerAccess.canEdit;
-                                  return Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      if (canEdit) ...[
-                                        KeyedSubtree(
-                                          key: HomeGuideTargets.smartImport,
-                                          child: _HeaderActionChip(
-                                            icon: Icons.auto_awesome_rounded,
-                                            label: l10n.magicAddShort,
-                                            onTap: () =>
-                                                showMagicAddSheet(context),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                      ],
-                                      KeyedSubtree(
-                                        key: canEdit
-                                            ? const ValueKey('home-import-chip')
-                                            : HomeGuideTargets.smartImport,
-                                        child: _HeaderActionChip(
-                                          icon: Icons.document_scanner_outlined,
-                                          label: l10n.smartImportShort,
-                                          trailingIcon:
-                                              Icons.arrow_forward_rounded,
-                                          onTap: () => Navigator.of(
-                                            context,
-                                          ).pushNamed(AppRoutes.smartImport),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                              // const SizedBox(width: 8),
-                              // _HeaderActionChip(
-                              //   icon: Icons.bar_chart_rounded,
-                              //   label: l10n.tabStatistics,
-                              //   trailingIcon: Icons.arrow_forward_rounded,
-                              //   onTap: () => Navigator.of(
-                              //     context,
-                              //   ).pushNamed(AppRoutes.statistics),
-                              // ),
-                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  if (isRefreshingProfile)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: LinearProgressIndicator(
-                        minHeight: 2,
-                        color: headerTheme.foreground,
-                        backgroundColor: headerTheme.foreground.withValues(
-                          alpha: 0.24,
-                        ),
-                      ),
-                    ),
                     ],
                   ),
                 ),
@@ -875,7 +891,7 @@ class _UserAvatar extends StatelessWidget {
   }
 }
 
-class _HomeTabStrip extends StatelessWidget {
+class _HomeTabStrip extends StatefulWidget {
   final List<_HomeTabItem> tabs;
   final int selected;
   final ValueChanged<int> onTap;
@@ -887,125 +903,356 @@ class _HomeTabStrip extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final split = (tabs.length / 2).ceil();
-    final rows = [
-      tabs.take(split).toList(),
-      tabs.skip(split).toList(),
-    ];
+  State<_HomeTabStrip> createState() => _HomeTabStripState();
+}
 
+class _HomeTabStripState extends State<_HomeTabStrip> {
+  late final ScrollController _scrollController;
+  bool _canScrollMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController = ScrollController();
+    _scrollController.addListener(_updateScrollHint);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateScrollHint();
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _HomeTabStrip oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateScrollHint();
+    });
+  }
+
+  void _updateScrollHint() {
+    if (!mounted || !_scrollController.hasClients) return;
+
+    final position = _scrollController.position;
+    final canScroll = position.maxScrollExtent - position.pixels > 2;
+
+    if (_canScrollMore != canScroll) {
+      setState(() => _canScrollMore = canScroll);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_updateScrollHint);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final palette = context.appPalette;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 4),
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: palette.card,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: palette.stroke.withValues(alpha: 0.08)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-          child: Column(
-            children: [
-              for (var row = 0; row < rows.length; row++) ...[
-                if (row > 0) const SizedBox(height: 4),
-                Row(
-                  children: [
-                    for (var column = 0; column < rows[row].length; column++)
-                      Expanded(
-                        child: _TabChip(
-                          tab: rows[row][column],
-                          isSelected: selected == row * split + column,
-                          onTap: () => onTap(row * split + column),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      child: SizedBox(
+        height: 48,
+        child: Stack(
+          children: [
+            ListView.separated(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsetsDirectional.only(end: _canScrollMore ? 26 : 0),
+              itemCount: widget.tabs.length,
+              separatorBuilder: (context, index) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final tab = widget.tabs[index];
+                final isSelected = widget.selected == index;
+                final isDark = Theme.of(context).brightness == Brightness.dark;
+
+                return Material(
+                  color: isSelected
+                      ? tab.color.withValues(alpha: isDark ? 0.22 : 0.11)
+                      : palette.card,
+                  borderRadius: BorderRadius.circular(15),
+                  child: InkWell(
+                    onTap: () => widget.onTap(index),
+                    borderRadius: BorderRadius.circular(15),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 180),
+                      curve: Curves.easeOutCubic,
+                      padding: const EdgeInsets.symmetric(horizontal: 13),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        border: Border.all(
+                          color: isSelected
+                              ? tab.color.withValues(alpha: 0.55)
+                              : palette.stroke.withValues(alpha: 0.18),
                         ),
                       ),
-                  ],
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isSelected ? tab.selectedIcon : tab.icon,
+                            size: 18,
+                            color: isSelected ? tab.color : palette.textMuted,
+                          ),
+                          const SizedBox(width: 7),
+                          Text(
+                            tab.label,
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: isSelected
+                                  ? FontWeight.w800
+                                  : FontWeight.w600,
+                              color: isSelected
+                                  ? palette.textPrimary
+                                  : palette.textMuted,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+
+            PositionedDirectional(
+              end: 0,
+              top: 0,
+              bottom: 0,
+              child: AnimatedOpacity(
+                opacity: _canScrollMore ? 1 : 0,
+                duration: const Duration(milliseconds: 200),
+                child: Container(
+                  width: 36,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: AlignmentDirectional.centerStart,
+                      end: AlignmentDirectional.centerEnd,
+                      colors: [
+                        palette.scaffold.withValues(alpha: 0),
+                        palette.scaffold.withValues(alpha: 0.96),
+                      ],
+                    ),
+                  ),
+                  child: HorizontalScrollHint(
+                    color: palette.textMuted,
+                    size: 18,
+                    onTap: () {
+                      if (!_scrollController.hasClients) return;
+
+                      final position = _scrollController.position;
+                      final isAtEnd =
+                          position.maxScrollExtent - position.pixels <= 2;
+
+                      _scrollController.animateTo(
+                        isAtEnd ? 0 : position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 450),
+                        curve: Curves.easeInOutCubic,
+                      );
+                    },
+                  ),
                 ),
-              ],
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _TabChip extends StatelessWidget {
-  final _HomeTabItem tab;
-  final bool isSelected;
-  final VoidCallback onTap;
+class _HomeQuickTools extends StatefulWidget {
+  const _HomeQuickTools();
 
-  const _TabChip({
-    required this.tab,
-    required this.isSelected,
-    required this.onTap,
-  });
+  @override
+  State<_HomeQuickTools> createState() => _HomeQuickToolsState();
+}
+
+class _HomeQuickToolsState extends State<_HomeQuickTools> {
+  late final ScrollController _scrollController;
+  bool _canScrollMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController = ScrollController();
+    _scrollController.addListener(_updateScrollHint);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _updateScrollHint();
+    });
+  }
+
+  void _updateScrollHint() {
+    if (!mounted || !_scrollController.hasClients) return;
+
+    final position = _scrollController.position;
+    final canScroll = position.maxScrollExtent - position.pixels > 2;
+
+    if (_canScrollMore != canScroll) {
+      setState(() => _canScrollMore = canScroll);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_updateScrollHint);
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final palette = context.appPalette;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
 
-    final iconColor = isSelected
-        ? ColorContrast.onColor(tab.color)
-        : palette.textMuted;
+    final tools = <_QuickToolItem>[
+      _QuickToolItem(
+        title: l10n.tabStatistics,
+        icon: Icons.bar_chart_rounded,
+        route: AppRoutes.statistics,
+      ),
+      _QuickToolItem(
+        title: l10n.monthlyReportTitle,
+        icon: Icons.calendar_month_rounded,
+        route: AppRoutes.monthlyReport,
+      ),
+      _QuickToolItem(
+        title: l10n.recurringTransactionsTitle,
+        icon: Icons.repeat_rounded,
+        route: AppRoutes.recurring,
+      ),
+      _QuickToolItem(
+        title: l10n.subscriptionsTitle,
+        icon: Icons.subscriptions_outlined,
+        route: AppRoutes.subscriptions,
+      ),
+      _QuickToolItem(
+        title: l10n.settingsCalculator,
+        icon: Icons.calculate_rounded,
+        route: AppRoutes.calculator,
+      ),
+      _QuickToolItem(
+        title: l10n.zakatTitle,
+        icon: Icons.mosque_outlined,
+        route: AppRoutes.zakat,
+      ),
+    ];
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 3),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            curve: Curves.easeOutCubic,
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 7),
-            decoration: BoxDecoration(
-              color: isSelected
-                  ? tab.color.withValues(alpha: isDark ? 0.2 : 0.1)
-                  : Colors.transparent,
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? tab.color
-                        : palette.scaffold,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    isSelected ? tab.selectedIcon : tab.icon,
-                    size: 17,
-                    color: iconColor,
-                  ),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.bolt_rounded, color: palette.textMuted, size: 18),
+              const SizedBox(width: 5),
+              Text(
+                isArabic ? 'أدوات سريعة' : 'Quick tools',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: palette.textMuted,
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  tab.label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12,
-                    height: 1.1,
-                    fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                    color: isSelected ? palette.textPrimary : palette.textMuted,
-                  ),
+              ),
+              const SizedBox(width: 5),
+              AnimatedOpacity(
+                opacity: _canScrollMore ? 1 : 0,
+                duration: const Duration(milliseconds: 200),
+                child: HorizontalScrollHint(
+                  color: palette.textMuted,
+                  size: 18,
+                  onTap: () {
+                    if (!_scrollController.hasClients) return;
+
+                    final position = _scrollController.position;
+                    final isAtEnd =
+                        position.maxScrollExtent - position.pixels <= 2;
+
+                    _scrollController.animateTo(
+                      isAtEnd ? 0 : position.maxScrollExtent,
+                      duration: const Duration(milliseconds: 450),
+                      curve: Curves.easeInOutCubic,
+                    );
+                  },
                 ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 40,
+            child: ListView.separated(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsetsDirectional.only(end: 8),
+              itemCount: tools.length,
+              separatorBuilder: (context, index) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final tool = tools[index];
+
+                return Material(
+                  color: palette.card,
+                  borderRadius: BorderRadius.circular(13),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(tool.route);
+                    },
+                    borderRadius: BorderRadius.circular(13),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 11),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(13),
+                        border: Border.all(
+                          color: palette.stroke.withValues(alpha: 0.16),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(tool.icon, size: 17, color: palette.textPrimary),
+                          const SizedBox(width: 6),
+                          Text(
+                            tool.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: palette.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-        ),
+        ],
       ),
     );
   }
+}
+
+class _QuickToolItem {
+  final String title;
+  final IconData icon;
+  final String route;
+
+  const _QuickToolItem({
+    required this.title,
+    required this.icon,
+    required this.route,
+  });
 }

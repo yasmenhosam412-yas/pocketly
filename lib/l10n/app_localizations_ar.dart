@@ -1996,11 +1996,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get budgetTotalSpent => 'إجمالي المصروف';
 
   @override
-  String budgetRemaining(String amount) {
-    return 'باقي $amount';
-  }
-
-  @override
   String budgetOverBy(String amount) {
     return 'زودت بـ $amount';
   }
@@ -3145,4 +3140,100 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get planImageUploadFailed => 'تعذر رفع الصورة. حاول مرة أخرى.';
+
+  @override
+  String get manage => 'إدارة';
+
+  @override
+  String get dailyBudget => 'الميزانية اليومية';
+
+  @override
+  String get expenseTracking => 'تتبع المصروفات';
+
+  @override
+  String get savingsGoal => 'هدف الادخار';
+
+  @override
+  String get dailyLimit => 'الميزانية اليومية';
+
+  @override
+  String get budgetExceeded => 'لقد تجاوزت ميزانيتك اليومية';
+
+  @override
+  String budgetRemaining(String amount) {
+    return 'باقي $amount';
+  }
+
+  @override
+  String get editBudget => 'تعديل الميزانية';
+
+  @override
+  String get enterBudget => 'أدخل الميزانية اليومية';
+
+  @override
+  String get invalidBudget => 'أدخل مبلغًا صحيحًا أكبر من صفر';
+
+  @override
+  String get dailyBudgetTitle => 'ميزانيتك اليومية';
+
+  @override
+  String get dailyBudgetSubtitle => 'تابعي مصروفاتك وحد الإنفاق اليومي';
+
+  @override
+  String get editDailyBudget => 'تعديل الميزانية اليومية';
+
+  @override
+  String get remainingToday => 'المتبقي اليوم';
+
+  @override
+  String get expensesToday => 'مصروفات اليوم';
+
+  @override
+  String dailyBudgetAmount(String amount) {
+    return 'الميزانية: $amount ج.م';
+  }
+
+  @override
+  String budgetUsedPercent(String percent) {
+    return '$percent% مستخدم';
+  }
+
+  @override
+  String get addExpenseOrIncome => 'إضافة مصروف أو دخل';
+
+  @override
+  String get trackBudgetSubtitle => 'سجّلي مصروفك وتابعي ميزانيتك';
+
+  @override
+  String dailyBudgetExceededMessage(String amount) {
+    return 'تجاوزت ميزانيتك اليومية بمقدار $amount ج.م. حاولي تقليل الإنفاق لبقية اليوم.';
+  }
+
+  @override
+  String dailyBudgetRemainingMessage(String amount) {
+    return 'متبقي لك $amount ج.م من ميزانيتك اليومية.';
+  }
+
+  @override
+  String get dailyBudgetInputLabel => 'المبلغ اليومي بالجنيه المصري';
+
+  @override
+  String egpAmount(String amount) {
+    return '$amount ج.م';
+  }
+
+  @override
+  String get egpCurrency => 'ج.م';
+
+  @override
+  String get dailyExpensesSummaryTitle => 'ملخص مصروفات اليوم';
+
+  @override
+  String get dailyExpensesTotalLabel => 'إجمالي ما أنفقته اليوم';
+
+  @override
+  String get dailyExpensesRecordedMessage => 'إجمالي مصروفاتك المسجلة خلال اليوم.';
+
+  @override
+  String get dailyExpensesEmptyMessage => 'لم تسجل أي مصروفات اليوم حتى الآن.';
 }

@@ -1996,11 +1996,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get budgetTotalSpent => 'Total spent';
 
   @override
-  String budgetRemaining(String amount) {
-    return '$amount left';
-  }
-
-  @override
   String budgetOverBy(String amount) {
     return 'Over by $amount';
   }
@@ -3145,4 +3140,100 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get planImageUploadFailed => 'Couldn\'t upload the photo. Try again.';
+
+  @override
+  String get manage => 'Manage';
+
+  @override
+  String get dailyBudget => 'Daily Budget';
+
+  @override
+  String get expenseTracking => 'Expense Tracking';
+
+  @override
+  String get savingsGoal => 'Savings Goal';
+
+  @override
+  String get dailyLimit => 'Daily Budget';
+
+  @override
+  String get budgetExceeded => 'You\'ve exceeded your daily budget';
+
+  @override
+  String budgetRemaining(String amount) {
+    return 'Remaining from your daily budget';
+  }
+
+  @override
+  String get editBudget => 'Edit Budget';
+
+  @override
+  String get enterBudget => 'Enter daily budget';
+
+  @override
+  String get invalidBudget => 'Enter a valid amount greater than zero';
+
+  @override
+  String get dailyBudgetTitle => 'Your Daily Budget';
+
+  @override
+  String get dailyBudgetSubtitle => 'Track your expenses and daily spending limit';
+
+  @override
+  String get editDailyBudget => 'Edit Daily Budget';
+
+  @override
+  String get remainingToday => 'Remaining Today';
+
+  @override
+  String get expensesToday => 'Today\'s Expenses';
+
+  @override
+  String dailyBudgetAmount(String amount) {
+    return 'Budget: EGP $amount';
+  }
+
+  @override
+  String budgetUsedPercent(String percent) {
+    return '$percent% used';
+  }
+
+  @override
+  String get addExpenseOrIncome => 'Add Expense or Income';
+
+  @override
+  String get trackBudgetSubtitle => 'Record expenses and track your budget';
+
+  @override
+  String dailyBudgetExceededMessage(String amount) {
+    return 'You\'ve exceeded your daily budget by EGP $amount. Try to reduce spending for the rest of the day.';
+  }
+
+  @override
+  String dailyBudgetRemainingMessage(String amount) {
+    return 'You have EGP $amount remaining from your daily budget.';
+  }
+
+  @override
+  String get dailyBudgetInputLabel => 'Daily amount in Egyptian pounds';
+
+  @override
+  String egpAmount(String amount) {
+    return 'EGP $amount';
+  }
+
+  @override
+  String get egpCurrency => 'EGP';
+
+  @override
+  String get dailyExpensesSummaryTitle => 'Today\'s Expenses Summary';
+
+  @override
+  String get dailyExpensesTotalLabel => 'Total Spent Today';
+
+  @override
+  String get dailyExpensesRecordedMessage => 'Your total recorded expenses for today.';
+
+  @override
+  String get dailyExpensesEmptyMessage => 'You haven\'t recorded any expenses today yet.';
 }

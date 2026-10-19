@@ -3785,12 +3785,6 @@ abstract class AppLocalizations {
   /// **'Total spent'**
   String get budgetTotalSpent;
 
-  /// No description provided for @budgetRemaining.
-  ///
-  /// In en, this message translates to:
-  /// **'{amount} left'**
-  String budgetRemaining(String amount);
-
   /// No description provided for @budgetOverBy.
   ///
   /// In en, this message translates to:
@@ -5902,6 +5896,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t upload the photo. Try again.'**
   String get planImageUploadFailed;
+
+  /// No description provided for @manage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get manage;
+
+  /// No description provided for @dailyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Budget'**
+  String get dailyBudget;
+
+  /// No description provided for @expenseTracking.
+  ///
+  /// In en, this message translates to:
+  /// **'Expense Tracking'**
+  String get expenseTracking;
+
+  /// No description provided for @savingsGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings Goal'**
+  String get savingsGoal;
+
+  /// No description provided for @dailyLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Budget'**
+  String get dailyLimit;
+
+  /// No description provided for @budgetExceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve exceeded your daily budget'**
+  String get budgetExceeded;
+
+  /// No description provided for @budgetRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining from your daily budget'**
+  String budgetRemaining(String amount);
+
+  /// No description provided for @editBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Budget'**
+  String get editBudget;
+
+  /// No description provided for @enterBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter daily budget'**
+  String get enterBudget;
+
+  /// No description provided for @invalidBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid amount greater than zero'**
+  String get invalidBudget;
+
+  /// No description provided for @dailyBudgetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Daily Budget'**
+  String get dailyBudgetTitle;
+
+  /// No description provided for @dailyBudgetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your expenses and daily spending limit'**
+  String get dailyBudgetSubtitle;
+
+  /// No description provided for @editDailyBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Daily Budget'**
+  String get editDailyBudget;
+
+  /// No description provided for @remainingToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining Today'**
+  String get remainingToday;
+
+  /// No description provided for @expensesToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Expenses'**
+  String get expensesToday;
+
+  /// No description provided for @dailyBudgetAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget: EGP {amount}'**
+  String dailyBudgetAmount(String amount);
+
+  /// No description provided for @budgetUsedPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% used'**
+  String budgetUsedPercent(String percent);
+
+  /// No description provided for @addExpenseOrIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Expense or Income'**
+  String get addExpenseOrIncome;
+
+  /// No description provided for @trackBudgetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record expenses and track your budget'**
+  String get trackBudgetSubtitle;
+
+  /// No description provided for @dailyBudgetExceededMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve exceeded your daily budget by EGP {amount}. Try to reduce spending for the rest of the day.'**
+  String dailyBudgetExceededMessage(String amount);
+
+  /// No description provided for @dailyBudgetRemainingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You have EGP {amount} remaining from your daily budget.'**
+  String dailyBudgetRemainingMessage(String amount);
+
+  /// No description provided for @dailyBudgetInputLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily amount in Egyptian pounds'**
+  String get dailyBudgetInputLabel;
+
+  /// No description provided for @egpAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP {amount}'**
+  String egpAmount(String amount);
+
+  /// No description provided for @egpCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'EGP'**
+  String get egpCurrency;
+
+  /// No description provided for @dailyExpensesSummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Expenses Summary'**
+  String get dailyExpensesSummaryTitle;
+
+  /// No description provided for @dailyExpensesTotalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Spent Today'**
+  String get dailyExpensesTotalLabel;
+
+  /// No description provided for @dailyExpensesRecordedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your total recorded expenses for today.'**
+  String get dailyExpensesRecordedMessage;
+
+  /// No description provided for @dailyExpensesEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You haven\'t recorded any expenses today yet.'**
+  String get dailyExpensesEmptyMessage;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

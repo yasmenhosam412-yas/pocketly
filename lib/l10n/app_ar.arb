@@ -40,7 +40,9 @@
   "statisticsAvgMonthlyNet": "المتوسط كل شهر: {amount}",
   "@statisticsAvgMonthlyNet": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "statisticsTopExpenses": "أكتر مصاريف (3 شهور)",
@@ -71,7 +73,9 @@
   "loanPaymentBalanceEntryTitle": "سداد قرض · {personName}",
   "@loanPaymentBalanceEntryTitle": {
     "placeholders": {
-      "personName": { "type": "String" }
+      "personName": {
+        "type": "String"
+      }
     }
   },
   "errorSelectLoanPaymentSource": "اختار محفظة أو مصدر دفع",
@@ -86,14 +90,20 @@
   "loanRemainingOf": "{remaining} متبقي من {principal}",
   "@loanRemainingOf": {
     "placeholders": {
-      "remaining": { "type": "String" },
-      "principal": { "type": "String" }
+      "remaining": {
+        "type": "String"
+      },
+      "principal": {
+        "type": "String"
+      }
     }
   },
   "loanOfPrincipal": "من {amount}",
   "@loanOfPrincipal": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "loanTapToEdit": "اضغط لتعديل القرض",
@@ -121,7 +131,9 @@
   "walletSplitYourShare": "نصيبك: {amount}",
   "@walletSplitYourShare": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "walletSplitPeopleSection": "مين عليه فلوس",
@@ -136,7 +148,9 @@
   "walletSplitSuccess": "اتسجل مصروف و{count} قرض",
   "@walletSplitSuccess": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "errorEnterPersonName": "اكتب اسم الشخص",
@@ -162,7 +176,9 @@
   "billRemindersDayOfMonthValue": "يوم {day}",
   "@billRemindersDayOfMonthValue": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "billRemindersRemindBefore": "فكرني",
@@ -179,23 +195,33 @@
   "dailyDigestYesterdayExpenses": "{count, plural, one{مصروف واحد ({amount})} other{{count} مصروفات ({amount})}}",
   "@dailyDigestYesterdayExpenses": {
     "placeholders": {
-      "count": { "type": "int" },
-      "amount": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "dailyDigestYesterdayNoExpenses": "مفيش مصروفات امبارح",
   "dailyDigestYesterdayIncomes": "{count, plural, one{دخل واحد ({amount})} other{{count} دخل ({amount})}}",
   "@dailyDigestYesterdayIncomes": {
     "placeholders": {
-      "count": { "type": "int" },
-      "amount": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "dailyDigestYesterdayNoIncomes": "مفيش دخل امبارح",
   "dailyDigestMonthNet": "صافي الشهر: {amount}",
   "@dailyDigestMonthNet": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "notificationsTitle": "الإشعارات",
@@ -210,14 +236,20 @@
   "notificationsScheduledBillSubtitle": "{when} · {due}",
   "@notificationsScheduledBillSubtitle": {
     "placeholders": {
-      "when": { "type": "String" },
-      "due": { "type": "String" }
+      "when": {
+        "type": "String"
+      },
+      "due": {
+        "type": "String"
+      }
     }
   },
   "notificationsScheduledDigestSubtitle": "الملخص الجاي · {when}",
   "@notificationsScheduledDigestSubtitle": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "billRemindersPermissionDenied": "فعّل الإشعارات من إعدادات الموبايل عشان التذكيرات تشتغل.",
@@ -259,13 +291,17 @@
   "commitmentsTurnIs": "الدور على {name}",
   "@commitmentsTurnIs": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "commitmentsDueDay": "الاستحقاق يوم {day}",
   "@commitmentsDueDay": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "commitmentsNotesHint": "ملاحظة اختيارية",
@@ -277,7 +313,9 @@
   "commitmentsDueThisMonth": "لسه مستحق الشهر ده {amount}",
   "@commitmentsDueThisMonth": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "commitmentsEmptyGameya": "لسه مفيش جمعيات. ضيفي واحدة عشان تتابعي القسط وإمتى تستلمي.",
@@ -285,15 +323,23 @@
   "commitmentsProgress": "اتدفع {paid} من {total} · فاضل {left}",
   "@commitmentsProgress": {
     "placeholders": {
-      "paid": { "type": "int" },
-      "total": { "type": "int" },
-      "left": { "type": "String" }
+      "paid": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "left": {
+        "type": "String"
+      }
     }
   },
   "commitmentsPayout": "هتستلمي {amount} في دورِك",
   "@commitmentsPayout": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "commitmentsYourTurn": "الشهر ده دورِك — المفروض تستلمي الجمعية.",
@@ -301,7 +347,9 @@
   "commitmentsTurnsLeft": "فاضل {count} قسط على دورِك",
   "@commitmentsTurnsLeft": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "commitmentsMarkPaid": "سجّلي دفع الشهر",
@@ -316,34 +364,48 @@
   "commitmentsFromSource": "بتدفعي من {source}",
   "@commitmentsFromSource": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "commitmentsPayoutInto": "هتستلمي في {source}",
   "@commitmentsPayoutInto": {
     "placeholders": {
-      "source": { "type": "String" }
+      "source": {
+        "type": "String"
+      }
     }
   },
   "commitmentsConfirmPay": "سجّلي في المصروفات",
   "commitmentsTurnPayoutNote": "الشهر ده دورِك. قسطِك يتسجل مصروف، و{amount} يتضاف للدخل.",
   "@commitmentsTurnPayoutNote": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "commitmentsExpenseTitle": "{title} ({cycle}/{total})",
   "@commitmentsExpenseTitle": {
     "placeholders": {
-      "title": { "type": "String" },
-      "cycle": { "type": "int" },
-      "total": { "type": "int" }
+      "title": {
+        "type": "String"
+      },
+      "cycle": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "commitmentsIncomeTitle": "استلام {title}",
   "@commitmentsIncomeTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "commitmentsLedgerMissing": "اتسجل الدفع، بس مش قادرين نربطه. راجعي المصروفات.",
@@ -353,27 +415,37 @@
   "billReminderNotificationTitle": "فاتورة: {title}",
   "@billReminderNotificationTitle": {
     "placeholders": {
-      "title": { "type": "String" }
+      "title": {
+        "type": "String"
+      }
     }
   },
   "billReminderNotificationDueTodayWithAmount": "النهاردة موعد الدفع — {amount}",
   "@billReminderNotificationDueTodayWithAmount": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "billReminderNotificationDueTodayPlain": "النهاردة موعد الدفع",
   "billReminderNotificationDueInDaysWithAmount": "باقي {days} يوم على الدفع — {amount}",
   "@billReminderNotificationDueInDaysWithAmount": {
     "placeholders": {
-      "days": { "type": "int" },
-      "amount": { "type": "String" }
+      "days": {
+        "type": "int"
+      },
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "billReminderNotificationDueInDaysPlain": "باقي {days} يوم على الدفع",
   "@billReminderNotificationDueInDaysPlain": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "billRemindersPresetElectricity": "كهرباء",
@@ -394,7 +466,9 @@
   "familyTransactionBy": "ضافها {name}",
   "@familyTransactionBy": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "familyAuthorYou": "إنت",
@@ -404,14 +478,18 @@
   "associationCreated": "اتعمل \"{name}\"",
   "@associationCreated": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationDeleteConfirmTitle": "تمسح الدفتر؟",
   "associationDeleteConfirmMessage": "تمسح \"{name}\" وكل الدخل والمصاريف والميزانيات والخطط اللي فيه؟ مفيش رجوع.",
   "@associationDeleteConfirmMessage": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationDeleteAction": "امسح",
@@ -421,7 +499,9 @@
   "associationInviteSubtitle": "دور على اسم المستخدم وابعت دعوة لـ \"{name}\". هو يختار ينضم ولا لأ.",
   "@associationInviteSubtitle": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationInviteSearchHint": "دور بالاسم…",
@@ -432,7 +512,9 @@
   "associationInviteSent": "اتبعت دعوة لـ {username}",
   "@associationInviteSent": {
     "placeholders": {
-      "username": { "type": "String" }
+      "username": {
+        "type": "String"
+      }
     }
   },
   "associationInviteMembersAction": "دعوة أعضاء",
@@ -440,8 +522,12 @@
   "associationInvitePendingBody": "{username} دعاك لدفتر \"{name}\"",
   "@associationInvitePendingBody": {
     "placeholders": {
-      "username": { "type": "String" },
-      "name": { "type": "String" }
+      "username": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationInviteAccept": "انضم",
@@ -467,13 +553,17 @@
   "associationTreasurerBannerBody": "كل حاجة في {name} بتتسجّل منك.",
   "@associationTreasurerBannerBody": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationMemberReadOnlyBanner": "عضو مشاهدة في \"{name}\". اطلب من المدير يضيف أو يعدّل.",
   "@associationMemberReadOnlyBanner": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "associationManageHubAction": "إدارة الدفتر",
@@ -492,14 +582,22 @@
   "associationHubCollectionDayInvalid": "يوم التحصيل لازم يكون من 1 لـ 31.",
   "associationHubDayOfMonth": "يوم {day}",
   "@associationHubDayOfMonth": {
-    "placeholders": { "day": { "type": "int" } }
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
   },
   "associationHubCurrentTurn": "عليه الدور",
   "associationHubTurnNumber": "الدور {current} من {total}",
   "@associationHubTurnNumber": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "associationHubTurnList": "ترتيب الدور",
@@ -514,7 +612,11 @@
   "associationHubPaymentsEmpty": "مفيش مدفوعات مسجّلة لسه.",
   "associationHubPaymentsTotal": "الإجمالي: {amount}",
   "@associationHubPaymentsTotal": {
-    "placeholders": { "amount": { "type": "String" } }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "associationHubRecordPayment": "سجّل دفع",
   "associationHubPaymentRecorded": "اتسجّل الدفع.",
@@ -524,7 +626,11 @@
   "associationHubPaymentDate": "تاريخ الدفع",
   "associationHubPaymentPaidOn": "دفع يوم {date}",
   "@associationHubPaymentPaidOn": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "associationHubPaymentNote": "ملاحظة (اختياري)",
   "associationHubPaymentNoteHint": "مثال: قسط مارس",
@@ -532,7 +638,11 @@
   "associationHubPaymentDeleteTitle": "تمسح الدفع؟",
   "associationHubPaymentDeleteMessage": "تمسح تسجيل دفع {name}؟",
   "@associationHubPaymentDeleteMessage": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "associationHubPaymentDeleteConfirm": "امسح",
   "associationHubEndGam3eya": "إنهاء الجمعية",
@@ -542,14 +652,22 @@
   "associationHubEndGam3eyaDone": "اتنهت الجمعية.",
   "associationHubEndedBanner": "الجمعية انتهت يوم {date}. مشاهدة بس.",
   "@associationHubEndedBanner": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "associationHubOwnerEndedSubtitle": "الجمعية خلصت. البيانات للمشاهدة بس.",
   "associationHubMemberEndedSubtitle": "المدير أنهى الجمعية. مشاهدة بس.",
   "associationHubAdvanceTurn": "الدور التالي",
   "associationHubAdvanceTurnConfirm": "نكمّل دور {name} وننقل للي بعده؟",
   "@associationHubAdvanceTurnConfirm": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "associationHubReceived": "استلم",
   "associationHubPending": "لسه",
@@ -565,7 +683,11 @@
   "associationHubBannerTitle": "إدارة الجمعية",
   "associationHubBannerBody": "الدور والجمعية والقسط لـ {name}.",
   "@associationHubBannerBody": {
-    "placeholders": { "name": { "type": "String" } }
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
   },
   "homeWelcomeBack": "أهلاً بيك تاني",
   "homeWelcomeUser": "أهلاً بيك تاني، {name}",
@@ -726,7 +848,11 @@
   "salaryDaySubtitle": "قسّم راتبك على إيجار وفواتير وخطط، والباقي للصرف.",
   "salaryDayPaydayLabel": "يوم الراتب: يوم {day} من كل شهر",
   "@salaryDayPaydayLabel": {
-    "placeholders": { "day": { "type": "int" } }
+    "placeholders": {
+      "day": {
+        "type": "int"
+      }
+    }
   },
   "salaryDayAmountLabel": "مبلغ الراتب",
   "salaryDayRentPct": "إيجار",
@@ -734,7 +860,11 @@
   "salaryDayPlansPct": "خطط / ادخار",
   "salaryDayLeftoverPct": "الباقي · {pct}%",
   "@salaryDayLeftoverPct": {
-    "placeholders": { "pct": { "type": "String" } }
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
   },
   "salaryDayPromptToggle": "افتح ده بعد ما أضيف دخل من نوع راتب",
   "salaryDayPreview": "معاينة التقسيم",
@@ -745,18 +875,30 @@
   "salaryDayRulesSaved": "اتحفظت قواعد يوم الراتب",
   "salaryDaySuccess": "اتوزع على {count} مصروف",
   "@salaryDaySuccess": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "yearInReviewTitle": "مراجعة السنة",
   "yearInReviewHero": "قصة فلوسك في {year}",
   "@yearInReviewHero": {
-    "placeholders": { "year": { "type": "int" } }
+    "placeholders": {
+      "year": {
+        "type": "int"
+      }
+    }
   },
   "yearInReviewHeroBody": "كسبت {income} وصرفت {expenses}.",
   "@yearInReviewHeroBody": {
     "placeholders": {
-      "income": { "type": "String" },
-      "expenses": { "type": "String" }
+      "income": {
+        "type": "String"
+      },
+      "expenses": {
+        "type": "String"
+      }
     }
   },
   "yearInReviewEmpty": "مفيش دخل أو مصاريف متسجلة للسنة دي لسه.",
@@ -769,8 +911,12 @@
   "yearInReviewMonthNet": "{month} · صافي {amount}",
   "@yearInReviewMonthNet": {
     "placeholders": {
-      "month": { "type": "String" },
-      "amount": { "type": "String" }
+      "month": {
+        "type": "String"
+      },
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "yearInReviewTopCategories": "أعلى التصنيفات",
@@ -802,7 +948,9 @@
   "paymentMethodAdded": "اتضافت \"{name}\" لطرق الدفع بتاعتك.",
   "@paymentMethodAdded": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "expensePaidFromField": "دفعت من",
@@ -816,7 +964,9 @@
   "incomeSourceRenameHint": "هيتعدّل كل الدخل اللي مصدره \"{name}\".",
   "@incomeSourceRenameHint": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "incomeSourceNameTaken": "اسم المصدر ده مستخدم قبل كده",
@@ -825,8 +975,12 @@
   "incomeSourceRemoveMessage": "عايز تعمل إيه بـ {count} دخل مصدرهم \"{name}\"؟",
   "@incomeSourceRemoveMessage": {
     "placeholders": {
-      "count": { "type": "int" },
-      "name": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "incomeSourceMoveToOther": "انقل الكل لـ «تاني»",
@@ -835,7 +989,9 @@
   "incomeSourceDeleteConfirmMessage": "هيتمسح {count} دخل خالص. مفيش رجوع.",
   "@incomeSourceDeleteConfirmMessage": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "incomeSourceDeleteConfirmAction": "امسح",
@@ -869,13 +1025,17 @@
   "expenseShortcutDeleteConfirmMessage": "تشيل \"{name}\"؟",
   "@expenseShortcutDeleteConfirmMessage": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "expenseShortcutLogged": "اتسجّل: {name}",
   "@expenseShortcutLogged": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "expenseShortcutErrorLabel": "اكتب اسم للزرار",
@@ -886,7 +1046,9 @@
   "expenseCategoryRenameHint": "هيتعدّل كل المصاريف في \"{name}\".",
   "@expenseCategoryRenameHint": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "expenseCategoryNameTaken": "اسم التصنيف ده مستخدم قبل كده",
@@ -895,8 +1057,12 @@
   "expenseCategoryRemoveMessage": "عايز تعمل إيه بـ {count} مصروف في \"{name}\"؟",
   "@expenseCategoryRemoveMessage": {
     "placeholders": {
-      "count": { "type": "int" },
-      "name": { "type": "String" }
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "expenseCategoryMoveToOther": "انقل الكل لـ «تاني»",
@@ -905,7 +1071,9 @@
   "expenseCategoryDeleteConfirmMessage": "هيتمسح {count} مصروف خالص. مفيش رجوع.",
   "@expenseCategoryDeleteConfirmMessage": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "expenseCategoryDeleteConfirmAction": "امسح",
@@ -925,40 +1093,54 @@
   "budgetRemaining": "باقي {amount}",
   "@budgetRemaining": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "budgetOverBy": "زودت بـ {amount}",
   "@budgetOverBy": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "budgetDeleteTitle": "تمسح الميزانية؟",
   "budgetDeleteMessage": "تمسح ميزانية {category}؟",
   "@budgetDeleteMessage": {
     "placeholders": {
-      "category": { "type": "String" }
+      "category": {
+        "type": "String"
+      }
     }
   },
   "budgetDeleteConfirm": "امسح",
   "budgetAlertNear": "{count} تصنيف قرب يخلص",
   "@budgetAlertNear": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "budgetAlertOver": "{count} تصنيف عدّى الميزانية",
   "@budgetAlertOver": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "budgetAlertOverAndNear": "{over} عدّوا الميزانية، {near} قربوا يخلصوا",
   "@budgetAlertOverAndNear": {
     "placeholders": {
-      "over": { "type": "int" },
-      "near": { "type": "int" }
+      "over": {
+        "type": "int"
+      },
+      "near": {
+        "type": "int"
+      }
     }
   },
   "categoryField": "التصنيف",
@@ -977,7 +1159,9 @@
   "pocketInsufficientFunds": "مفيش كفاية في المحفظة. المتاح: {amount}",
   "@pocketInsufficientFunds": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "errorEnterCategoryName": "اكتب اسم التصنيف",
@@ -1107,13 +1291,17 @@
   "clearAllExpensesConfirmMessage": "هيتمسح كل المصاريف ({count}) خالص. مفيش رجوع.",
   "@clearAllExpensesConfirmMessage": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "clearAllIncomesConfirmMessage": "هيتمسح كل الدخل ({count}) خالص. مفيش رجوع.",
   "@clearAllIncomesConfirmMessage": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "clearAllExpensesSuccess": "اتمسحت كل المصاريف",
@@ -1171,38 +1359,50 @@
   "planCoachMonthly": "وفّر {amount} كل شهر عشان تلحق الموعد",
   "@planCoachMonthly": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planCoachOverdue": "الموعد عدّى — باقي {amount}",
   "@planCoachOverdue": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planCoachUrgent": "قرب الموعد — باقي {amount}",
   "@planCoachUrgent": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planCoachRemaining": "باقي {amount} عشان توصل للهدف",
   "@planCoachRemaining": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planCoachTipTitle": "كمل على الطريق",
   "planCoachSurplusTip": "عندك {amount} متاح. ضيف جزء على هدف عشان تقرب.",
   "@planCoachSurplusTip": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planCoachAddSuggested": "ضيف المقترح {amount}",
   "@planCoachAddSuggested": {
     "placeholders": {
-      "amount": { "type": "String" }
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "planSuggestThisMonth": "الشهر ده",
@@ -1215,7 +1415,6 @@
   "planTemplateEducation": "تعليم",
   "planTemplatesTitle": "أفكار سريعة",
   "planHowItHelps": "حط هدف ومبلغ، وموعد لو حابب، وبعدين حرّك فلوس من الرصيد بزرار إضافة للهدف.",
-
   "plansEmptyTitle": "ابدأ أول هدف",
   "plansEmptySubtitle": "حدّد هدف، تابع اللي وفّرته، وشوف تقدّمك.",
   "plansCreateGoalButton": "اعمل هدف",
@@ -1268,7 +1467,9 @@
   "magicAddAddAll": "ضيف {count}",
   "@magicAddAddAll": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "magicAddAddOne": "ضيف المعاملة",
@@ -1288,13 +1489,17 @@
   "smartImportPasteFoundCount": "لقينا {count} رسالة",
   "@smartImportPasteFoundCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportPasteAddedOneRemaining": "اتضافت. {count} رسالة جاهزة للاستيراد.",
   "@smartImportPasteAddedOneRemaining": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportPasteProcessing": "بنقرا الرسالة…",
@@ -1324,7 +1529,9 @@
   "smartImportSmsSkippedDuplicate": "{count} رسالة موجودة في التطبيق أصلاً.",
   "@smartImportSmsSkippedDuplicate": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportSmsLoadMore": "حمّل رسائل أكتر",
@@ -1351,9 +1558,15 @@
   "smartImportSmsSummary": "{ready} جاهز · {added} اتضاف · {noAmount} من غير مبلغ",
   "@smartImportSmsSummary": {
     "placeholders": {
-      "ready": { "type": "int" },
-      "added": { "type": "int" },
-      "noAmount": { "type": "int" }
+      "ready": {
+        "type": "int"
+      },
+      "added": {
+        "type": "int"
+      },
+      "noAmount": {
+        "type": "int"
+      }
     }
   },
   "smartImportSmsFilterEmpty": "مفيش حاجة في الفلتر ده. جرّب فلتر تاني أو اسحب للتحديث.",
@@ -1364,19 +1577,25 @@
   "smartImportAddAllExpenses": "ضيف كل المصاريف ({count})",
   "@smartImportAddAllExpenses": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportAddAllIncomes": "ضيف كل الدخل ({count})",
   "@smartImportAddAllIncomes": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportAddSelected": "ضيف المحدد ({count})",
   "@smartImportAddSelected": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "smartImportSelectAll": "حدّد الكل",
@@ -1395,14 +1614,20 @@
   "smartImportBulkResult": "اتضاف {incomes} دخل و{expenses} مصروف.",
   "@smartImportBulkResult": {
     "placeholders": {
-      "incomes": { "type": "int" },
-      "expenses": { "type": "int" }
+      "incomes": {
+        "type": "int"
+      },
+      "expenses": {
+        "type": "int"
+      }
     }
   },
   "smartImportBulkPartialFail": "ما قدرناش نستورد {failed} رسالة.",
   "@smartImportBulkPartialFail": {
     "placeholders": {
-      "failed": { "type": "int" }
+      "failed": {
+        "type": "int"
+      }
     }
   },
   "settingsAppLock": "قفل التطبيق",
@@ -1437,8 +1662,12 @@
   "monthlyReportEntrySummary": "{incomeCount} مصدر دخل · {expenseCount} تصنيف مصاريف",
   "@monthlyReportEntrySummary": {
     "placeholders": {
-      "incomeCount": { "type": "int" },
-      "expenseCount": { "type": "int" }
+      "incomeCount": {
+        "type": "int"
+      },
+      "expenseCount": {
+        "type": "int"
+      }
     }
   },
   "globalSearchTitle": "بحث",
@@ -1462,13 +1691,21 @@
   "subscriptionsMonthlyTotal": "الإجمالي الشهري",
   "subscriptionsCount": "{count} اشتراك",
   "@subscriptionsCount": {
-    "placeholders": { "count": { "type": "int" } }
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "subscriptionsDueThisWeek": "مستحق الأسبوع ده",
   "subscriptionsAll": "كل الاشتراكات",
   "subscriptionsDueOn": "مستحق {date}",
   "@subscriptionsDueOn": {
-    "placeholders": { "date": { "type": "String" } }
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
   },
   "zakatTitle": "حاسبة الزكاة",
   "zakatDisclaimer": "تقدير فقط (٢٫٥٪ على صافي المال الزكوي). أدخل الذهب والفضة بالوزن بالجرام؛ القيمة = الجرام × السعر. استشر عالماً لحالتك.",
@@ -1496,13 +1733,21 @@
   "zakatSilverWeightHint": "مثال: 200",
   "zakatComputedValue": "≈ {amount}",
   "@zakatComputedValue": {
-    "placeholders": { "amount": { "type": "String" } }
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
   },
   "zakatNisabHint": "مرجع النصاب: {goldGrams} جرام ذهب أو {silverGrams} جرام فضة (التطبيق يستخدم {goldGrams} ج × سعر الذهب).",
   "@zakatNisabHint": {
     "placeholders": {
-      "goldGrams": { "type": "int" },
-      "silverGrams": { "type": "int" }
+      "goldGrams": {
+        "type": "int"
+      },
+      "silverGrams": {
+        "type": "int"
+      }
     }
   },
   "zakatResultTitle": "التقدير",
@@ -1522,5 +1767,70 @@
   "planImageAttach": "أضف صورة",
   "planImageReplace": "تغيير الصورة",
   "planImageRemove": "حذف الصورة",
-  "planImageUploadFailed": "تعذر رفع الصورة. حاول مرة أخرى."
+  "planImageUploadFailed": "تعذر رفع الصورة. حاول مرة أخرى.",
+  "manage": "إدارة",
+  "dailyBudget": "الميزانية اليومية",
+  "expenseTracking": "تتبع المصروفات",
+  "savingsGoal": "هدف الادخار",
+  "remainingToday": "المتبقي اليوم",
+  "spentToday": "مصروفات اليوم",
+  "dailyLimit": "الميزانية اليومية",
+  "budgetExceeded": "لقد تجاوزت ميزانيتك اليومية",
+  "editBudget": "تعديل الميزانية",
+  "enterBudget": "أدخل الميزانية اليومية",
+  "invalidBudget": "أدخل مبلغًا صحيحًا أكبر من صفر",
+  "dailyBudgetTitle": "ميزانيتك اليومية",
+  "dailyBudgetSubtitle": "تابعي مصروفاتك وحد الإنفاق اليومي",
+  "editDailyBudget": "تعديل الميزانية اليومية",
+  "expensesToday": "مصروفات اليوم",
+  "dailyBudgetAmount": "الميزانية: {amount} ج.م",
+  "@dailyBudgetAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "budgetUsedPercent": "{percent}% مستخدم",
+  "@budgetUsedPercent": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "addExpenseOrIncome": "إضافة مصروف أو دخل",
+  "trackBudgetSubtitle": "سجّلي مصروفك وتابعي ميزانيتك",
+  "dailyBudgetExceededMessage": "تجاوزت ميزانيتك اليومية بمقدار {amount} ج.م. حاولي تقليل الإنفاق لبقية اليوم.",
+  "@dailyBudgetExceededMessage": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyBudgetRemainingMessage": "متبقي لك {amount} ج.م من ميزانيتك اليومية.",
+  "@dailyBudgetRemainingMessage": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyBudgetInputLabel": "المبلغ اليومي بالجنيه المصري",
+
+  "egpAmount": "{amount} ج.م",
+  "@egpAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "egpCurrency": "ج.م",
+    "dailyExpensesSummaryTitle": "ملخص مصروفات اليوم",
+  "dailyExpensesTotalLabel": "إجمالي ما أنفقته اليوم",
+  "dailyExpensesRecordedMessage": "إجمالي مصروفاتك المسجلة خلال اليوم.",
+  "dailyExpensesEmptyMessage": "لم تسجل أي مصروفات اليوم حتى الآن."
+
 }
