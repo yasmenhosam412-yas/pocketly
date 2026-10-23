@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Pocketly';
+  String get appTitle => 'Pockio';
 
   @override
   String get exitPressTwiceMore => 'Press back 2 more times to exit';
@@ -440,7 +440,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dailyDigestNotificationTitle => 'Your money yesterday';
 
   @override
-  String get dailyDigestNotificationEmpty => 'No transactions logged yesterday. Open Pocketly to track today\'s spending.';
+  String get dailyDigestNotificationEmpty => 'No transactions logged yesterday. Open Pockio to track today\'s spending.';
 
   @override
   String dailyDigestYesterdayExpenses(int count, String amount) {
@@ -909,13 +909,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get associationInviteDisclaimerTitle => 'Before you invite';
 
   @override
-  String get associationInviteDisclaimerBody => 'Pocketly helps you organize shared ledgers. You are responsible for who you invite and how money is handled between members. The app does not hold funds, is not a bank, and is not liable for disputes between members. Only invite people you trust.';
+  String get associationInviteDisclaimerBody => 'Pockio helps you organize shared ledgers. You are responsible for who you invite and how money is handled between members. The app does not hold funds, is not a bank, and is not liable for disputes between members. Only invite people you trust.';
 
   @override
   String get associationInviteDisclaimerAccept => 'I understand';
 
   @override
-  String get associationInviteLegalNote => 'Pocketly is a record-keeping tool only — not financial advice, escrow, or legal counsel.';
+  String get associationInviteLegalNote => 'Pockio is a record-keeping tool only — not financial advice, escrow, or legal counsel.';
 
   @override
   String get associationManageTitle => 'Manage ledger';
@@ -2602,7 +2602,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get smartImportPasteHint => 'Paste one or more bank or wallet messages. Put a blank line between messages, or paste several SMS in a row. We detect amounts and income vs expense for each.';
 
   @override
-  String get smartImportPasteShareTip => 'Tip: In your SMS app, open a message → Share → Import to Pocketly. No copy-paste needed.';
+  String get smartImportPasteShareTip => 'Tip: In your SMS app, open a message → Share → Import to Pockio. No copy-paste needed.';
 
   @override
   String get smartImportSharedTextReady => 'Shared message loaded. Review below and add.';
@@ -2850,7 +2850,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsAppLockChangePin => 'Change PIN';
 
   @override
-  String get appLockTitle => 'Unlock Pocketly';
+  String get appLockTitle => 'Unlock Pockio';
 
   @override
   String get appLockSubtitle => 'Enter your PIN to continue';
@@ -3124,7 +3124,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeWidgetQuickSettingsTile => 'Quick expense widget';
 
   @override
-  String get homeWidgetPinUnsupported => 'Your launcher can\'t pin widgets. Long-press the home screen and choose Widgets, then add Pocketly.';
+  String get homeWidgetPinUnsupported => 'Your launcher can\'t pin widgets. Long-press the home screen and choose Widgets, then add Pockio.';
 
   @override
   String get planImageLabel => 'Goal photo';

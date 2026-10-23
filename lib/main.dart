@@ -155,7 +155,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
           final theme = AppTheme.of(isDark: isDark);
 
           return MaterialApp(
-            title: "Pocketly",
+            title: "Pockio",
             navigatorKey: rootNavigatorKey,
             locale: locale,
             onGenerateTitle: (context) =>

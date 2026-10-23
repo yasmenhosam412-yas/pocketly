@@ -28,6 +28,16 @@ import 'package:imrpo/features/smart_import/presentation/pages/smart_import_scre
 import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_ai_tab.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
+/// Soft green tint for income accents. Light mode keeps the original
+/// [AppColors.incomeLight]; dark mode uses a translucent income color so it
+/// doesn't glare against dark surfaces.
+Color _incomeTint(BuildContext context) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  return isDark
+      ? AppColors.income.withValues(alpha: 0.16)
+      : AppColors.incomeLight;
+}
+
 class IncomesTab extends StatefulWidget {
   const IncomesTab({super.key});
 
@@ -58,6 +68,7 @@ class _IncomesTabState extends State<IncomesTab>
   Widget build(BuildContext context) {
     super.build(context);
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: ListenableBuilder(
@@ -77,7 +88,7 @@ class _IncomesTabState extends State<IncomesTab>
               icon: const Icon(Icons.add_rounded, color: Colors.white),
               label: Text(
                 l10n.addIncome,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
                 ),
@@ -336,7 +347,7 @@ class _IncomesTabState extends State<IncomesTab>
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
-                                          color: AppColors.textColor,
+                                          color: palette.textPrimary,
                                         ),
                                       ),
                                     ),
@@ -363,9 +374,7 @@ class _IncomesTabState extends State<IncomesTab>
                                       l10n.listEntryCount(filtered.length),
                                       style: TextStyle(
                                         fontSize: 13,
-                                        color: AppColors.textColor.withValues(
-                                          alpha: 0.5,
-                                        ),
+                                        color: palette.textMuted,
                                       ),
                                     ),
                                   ],
@@ -470,10 +479,7 @@ class _IncomesTabState extends State<IncomesTab>
   void _openAddSheet() => _showIncomeSheet(const AddIncomeSheet());
 
   Future<void> _openMagicAdd() {
-    return showMagicAddSheet(
-      context,
-      preferredType: FinancialEntryType.income,
-    );
+    return showMagicAddSheet(context, preferredType: FinancialEntryType.income);
   }
 
   void _openSmartImport() {
@@ -540,10 +546,12 @@ class _IncomesTabState extends State<IncomesTab>
 
   Future<void> _removeIncomeSource(String source, int entryCount) async {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
     final label = localizeIncomeCategory(l10n, source);
 
     final action = await showModalBottomSheet<String>(
       context: context,
+      backgroundColor: palette.card,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -558,7 +566,7 @@ class _IncomesTabState extends State<IncomesTab>
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.textMuted.withValues(alpha: 0.35),
+                  color: palette.textMuted.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -569,7 +577,7 @@ class _IncomesTabState extends State<IncomesTab>
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textColor,
+                color: palette.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
@@ -577,14 +585,20 @@ class _IncomesTabState extends State<IncomesTab>
               l10n.incomeSourceRemoveMessage(entryCount, label),
               style: TextStyle(
                 fontSize: 14,
-                color: AppColors.textColor.withValues(alpha: 0.65),
+                color: palette.textMuted,
                 height: 1.4,
               ),
             ),
             const SizedBox(height: 20),
             ListTile(
-              leading: const Icon(Icons.drive_file_move_outline),
-              title: Text(l10n.incomeSourceMoveToOther),
+              leading: Icon(
+                Icons.drive_file_move_outline,
+                color: palette.textPrimary,
+              ),
+              title: Text(
+                l10n.incomeSourceMoveToOther,
+                style: TextStyle(color: palette.textPrimary),
+              ),
               onTap: () => Navigator.pop(sheetContext, 'move'),
             ),
             ListTile(
@@ -712,6 +726,31 @@ class _SourceFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
+
+    FilterChip buildChip({
+      required String label,
+      required bool selected,
+      required VoidCallback onTap,
+    }) {
+      return FilterChip(
+        label: Text(label),
+        selected: selected,
+        onSelected: (_) => onTap(),
+        selectedColor: AppColors.income,
+        checkmarkColor: Colors.white,
+        labelStyle: TextStyle(
+          color: selected ? Colors.white : palette.textPrimary,
+          fontWeight: FontWeight.w500,
+        ),
+        backgroundColor: palette.card,
+        side: selected
+            ? BorderSide.none
+            : BorderSide(color: palette.stroke.withValues(alpha: 0.25)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -720,7 +759,7 @@ class _SourceFilterBar extends StatelessWidget {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: AppColors.textColor.withValues(alpha: 0.65),
+            color: palette.textMuted,
           ),
         ),
         const SizedBox(height: 8),
@@ -728,45 +767,19 @@ class _SourceFilterBar extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              FilterChip(
-                label: Text(l10n.incomeFilterAllSources),
+              buildChip(
+                label: l10n.incomeFilterAllSources,
                 selected: selectedSource == null,
-                onSelected: (_) => onSelected(null),
-                selectedColor: AppColors.income,
-                checkmarkColor: Colors.white,
-                labelStyle: TextStyle(
-                  color: selectedSource == null
-                      ? Colors.white
-                      : AppColors.textColor,
-                  fontWeight: FontWeight.w500,
-                ),
-                backgroundColor: AppColors.surface,
-                side: BorderSide.none,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
+                onTap: () => onSelected(null),
               ),
               const SizedBox(width: 8),
               ...sources.map((source) {
-                final selected = selectedSource == source;
-                final label = localizeIncomeCategory(l10n, source);
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(label),
-                    selected: selected,
-                    onSelected: (_) => onSelected(source),
-                    selectedColor: AppColors.income,
-                    checkmarkColor: Colors.white,
-                    labelStyle: TextStyle(
-                      color: selected ? Colors.white : AppColors.textColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    backgroundColor: AppColors.surface,
-                    side: BorderSide.none,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                  child: buildChip(
+                    label: localizeIncomeCategory(l10n, source),
+                    selected: selectedSource == source,
+                    onTap: () => onSelected(source),
                   ),
                 );
               }),
@@ -800,6 +813,10 @@ class _SourceBreakdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final tint = _incomeTint(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -808,7 +825,7 @@ class _SourceBreakdown extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: AppColors.textColor,
+            color: palette.textPrimary,
           ),
         ),
         const SizedBox(height: 10),
@@ -831,7 +848,7 @@ class _SourceBreakdown extends StatelessWidget {
                   borderColor: isSelected
                       ? AppColors.income
                       : AppColors.income.withValues(alpha: 0.12),
-                ).copyWith(color: isSelected ? AppColors.incomeLight : null),
+                ).copyWith(color: isSelected ? tint : palette.card),
                 child: Row(
                   children: [
                     Container(
@@ -840,7 +857,7 @@ class _SourceBreakdown extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? AppColors.income.withValues(alpha: 0.15)
-                            : AppColors.incomeLight,
+                            : tint,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
@@ -861,9 +878,9 @@ class _SourceBreakdown extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
-                              color: isSelected
+                              color: isSelected && !isDark
                                   ? AppColors.incomeDark
-                                  : AppColors.textColor,
+                                  : palette.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 2),
@@ -872,7 +889,7 @@ class _SourceBreakdown extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w500,
-                              color: AppColors.textColor.withValues(alpha: 0.5),
+                              color: palette.textMuted,
                             ),
                           ),
                         ],
@@ -880,7 +897,7 @@ class _SourceBreakdown extends StatelessWidget {
                     ),
                     Text(
                       Money.format(entry.value),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: AppColors.income,
@@ -891,7 +908,7 @@ class _SourceBreakdown extends StatelessWidget {
                         enabled: !isBusy,
                         icon: Icon(
                           Icons.more_vert_rounded,
-                          color: AppColors.textColor.withValues(alpha: 0.45),
+                          color: palette.textMuted,
                         ),
                         onSelected: (value) {
                           if (value == 'edit') {
@@ -905,9 +922,16 @@ class _SourceBreakdown extends StatelessWidget {
                             value: 'edit',
                             child: Row(
                               children: [
-                                const Icon(Icons.edit_outlined, size: 20),
+                                Icon(
+                                  Icons.edit_outlined,
+                                  size: 20,
+                                  color: palette.textPrimary,
+                                ),
                                 const SizedBox(width: 10),
-                                Text(l10n.incomeSourceManageEdit),
+                                Text(
+                                  l10n.incomeSourceManageEdit,
+                                  style: TextStyle(color: palette.textPrimary),
+                                ),
                               ],
                             ),
                           ),
@@ -1001,7 +1025,10 @@ class _SummaryCard extends StatelessWidget {
               if (sourceLabel != null) ...[
                 const SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: on.overlayStrong,
                     borderRadius: BorderRadius.circular(20),
@@ -1019,10 +1046,7 @@ class _SummaryCard extends StatelessWidget {
               const SizedBox(height: 20),
               Text(
                 l10n.totalIncome,
-                style: TextStyle(
-                  color: on.muted,
-                  fontSize: 15,
-                ),
+                style: TextStyle(color: on.muted, fontSize: 15),
               ),
               const SizedBox(height: 6),
               Text(
@@ -1051,6 +1075,7 @@ class _FilteredEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40),
@@ -1060,16 +1085,13 @@ class _FilteredEmptyState extends StatelessWidget {
             Icon(
               Icons.filter_alt_off_outlined,
               size: 48,
-              color: AppColors.textColor.withValues(alpha: 0.35),
+              color: palette.textMuted.withValues(alpha: 0.7),
             ),
             const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 15,
-                color: AppColors.textColor.withValues(alpha: 0.6),
-              ),
+              style: TextStyle(fontSize: 15, color: palette.textMuted),
             ),
             if (onClearFilter != null) ...[
               const SizedBox(height: 16),
@@ -1094,6 +1116,7 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40),
@@ -1104,10 +1127,10 @@ class _EmptyState extends StatelessWidget {
               height: 80,
               width: 80,
               decoration: BoxDecoration(
-                color: AppColors.incomeLight,
+                color: _incomeTint(context),
                 borderRadius: BorderRadius.circular(24),
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.account_balance_wallet_outlined,
                 size: 40,
                 color: AppColors.income,
@@ -1119,17 +1142,14 @@ class _EmptyState extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textColor,
+                color: palette.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.noIncomesSubtitle,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.textColor.withValues(alpha: 0.55),
-              ),
+              style: TextStyle(fontSize: 14, color: palette.textMuted),
             ),
             const SizedBox(height: 24),
             TextButton.icon(

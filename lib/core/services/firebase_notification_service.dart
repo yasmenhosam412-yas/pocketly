@@ -110,7 +110,7 @@ class FirebaseNotificationService {
       const AndroidNotificationChannel(
         _fcmChannelId,
         _fcmChannelName,
-        description: 'Push notifications from Pocketly',
+        description: 'Push notifications from Pockio',
         importance: Importance.high,
         playSound: true,
         enableVibration: true,
@@ -180,7 +180,7 @@ class FirebaseNotificationService {
     final notification = message.notification;
     final title = notification?.title ??
         message.data['title']?.toString() ??
-        'Pocketly';
+        'Pockio';
     final body = notification?.body ??
         message.data['body']?.toString() ??
         message.data['message']?.toString() ??
@@ -203,7 +203,7 @@ class FirebaseNotificationService {
         android: AndroidNotificationDetails(
           _fcmChannelId,
           _fcmChannelName,
-          channelDescription: 'Push notifications from Pocketly',
+          channelDescription: 'Push notifications from Pockio',
           importance: Importance.high,
           priority: Priority.high,
           icon: '@mipmap/ic_launcher',
@@ -217,7 +217,7 @@ class FirebaseNotificationService {
   Future<void> _recordInInbox(RemoteMessage message) async {
     final title = message.notification?.title ??
         message.data['title']?.toString() ??
-        'Pocketly';
+        'Pockio';
     final body = message.notification?.body ??
         message.data['body']?.toString() ??
         message.data['message']?.toString() ??

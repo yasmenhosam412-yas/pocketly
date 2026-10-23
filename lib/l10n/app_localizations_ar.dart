@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'Pocketly';
+  String get appTitle => 'Pockio';
 
   @override
   String get exitPressTwiceMore => 'اضغط رجوع مرتين كمان للخروج';
@@ -440,7 +440,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dailyDigestNotificationTitle => 'فلوسك امبارح';
 
   @override
-  String get dailyDigestNotificationEmpty => 'مفيش معاملات اتسجلت امبارح. افتح Pocketly وسجّل مصروفات النهاردة.';
+  String get dailyDigestNotificationEmpty => 'مفيش معاملات اتسجلت امبارح. افتح Pockio وسجّل مصروفات النهاردة.';
 
   @override
   String dailyDigestYesterdayExpenses(int count, String amount) {
@@ -909,13 +909,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get associationInviteDisclaimerTitle => 'قبل ما تبعت دعوة';
 
   @override
-  String get associationInviteDisclaimerBody => 'Pocketly بيساعدك تنظم دفاتر مشتركة. إنت المسؤول عن مين تدعو وإزاي الفلوس تتسجّل بينكم. التطبيق ما بيحتفظش بفلوس، مش بنك، ومش مسؤول عن أي خلاف بين الأعضاء. ادعُ بس ناس تثق فيهم.';
+  String get associationInviteDisclaimerBody => 'Pockio بيساعدك تنظم دفاتر مشتركة. إنت المسؤول عن مين تدعو وإزاي الفلوس تتسجّل بينكم. التطبيق ما بيحتفظش بفلوس، مش بنك، ومش مسؤول عن أي خلاف بين الأعضاء. ادعُ بس ناس تثق فيهم.';
 
   @override
   String get associationInviteDisclaimerAccept => 'فاهم';
 
   @override
-  String get associationInviteLegalNote => 'Pocketly أداة تسجيل بس — مش استشارة مالية ولا ضمان ولا محامي.';
+  String get associationInviteLegalNote => 'Pockio أداة تسجيل بس — مش استشارة مالية ولا ضمان ولا محامي.';
 
   @override
   String get associationManageTitle => 'إدارة الدفتر';
@@ -2602,7 +2602,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get smartImportPasteHint => 'الصق رسالة أو أكتر من البنك أو المحفظة. سطر فاضي بين الرسائل، أو الصق كذا رسالة ورا بعض. بنعرف المبلغ ونوع كل رسالة (دخل ولا مصروف).';
 
   @override
-  String get smartImportPasteShareTip => 'نصيحة: من الرسائل → مشاركة → استيراد لـ Pocketly من غير نسخ ولصق.';
+  String get smartImportPasteShareTip => 'نصيحة: من الرسائل → مشاركة → استيراد لـ Pockio من غير نسخ ولصق.';
 
   @override
   String get smartImportSharedTextReady => 'اتحمّلت الرسالة اللي اتشاركت. راجعها تحت وضيفها.';
@@ -2850,7 +2850,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settingsAppLockChangePin => 'غيّر رمز PIN';
 
   @override
-  String get appLockTitle => 'افتح Pocketly';
+  String get appLockTitle => 'افتح Pockio';
 
   @override
   String get appLockSubtitle => 'اكتب رمز PIN عشان تكمل';
@@ -3124,7 +3124,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get homeWidgetQuickSettingsTile => 'ويدجت المصروف السريع';
 
   @override
-  String get homeWidgetPinUnsupported => 'مشغّل الشاشة لا يدعم تثبيت الويدجت. اضغط مطولًا على الشاشة الرئيسية واختر ويدجت، ثم أضف Pocketly.';
+  String get homeWidgetPinUnsupported => 'مشغّل الشاشة لا يدعم تثبيت الويدجت. اضغط مطولًا على الشاشة الرئيسية واختر ويدجت، ثم أضف Pockio.';
 
   @override
   String get planImageLabel => 'صورة الهدف';

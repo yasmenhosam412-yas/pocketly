@@ -37,6 +37,16 @@ import 'package:intl/intl.dart';
 
 enum ExpenseListSort { newest, highestAmount }
 
+/// Soft red tint for expense accents. Light mode keeps the original
+/// [AppColors.expenseLight]; dark mode uses a translucent expense color so it
+/// doesn't glare against dark surfaces.
+Color _expenseTint(BuildContext context) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  return isDark
+      ? AppColors.expense.withValues(alpha: 0.16)
+      : AppColors.expenseLight;
+}
+
 class ExpensesTab extends StatefulWidget {
   const ExpensesTab({super.key});
 
@@ -161,6 +171,7 @@ class _ExpensesTabState extends State<ExpensesTab>
   Widget build(BuildContext context) {
     super.build(context);
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
     return Scaffold(
       backgroundColor: Colors.transparent,
       floatingActionButton: ListenableBuilder(
@@ -178,7 +189,7 @@ class _ExpensesTabState extends State<ExpensesTab>
             icon: const Icon(Icons.add_rounded, color: Colors.white),
             label: Text(
               l10n.addExpense,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
               ),
@@ -399,15 +410,13 @@ class _ExpensesTabState extends State<ExpensesTab>
                       Icon(
                         Icons.error_outline_rounded,
                         size: 48,
-                        color: AppColors.textColor.withValues(alpha: 0.4),
+                        color: palette.textMuted.withValues(alpha: 0.8),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         localizeApiError(l10n, state.error),
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: AppColors.textColor.withValues(alpha: 0.7),
-                        ),
+                        style: TextStyle(color: palette.textMuted),
                       ),
                       const SizedBox(height: 20),
                       FilledButton(
@@ -654,7 +663,7 @@ class _ExpensesTabState extends State<ExpensesTab>
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
-                                          color: AppColors.textColor,
+                                          color: palette.textPrimary,
                                         ),
                                       ),
                                     ),
@@ -681,9 +690,7 @@ class _ExpensesTabState extends State<ExpensesTab>
                                       l10n.listEntryCount(filtered.length),
                                       style: TextStyle(
                                         fontSize: 13,
-                                        color: AppColors.textColor.withValues(
-                                          alpha: 0.5,
-                                        ),
+                                        color: palette.textMuted,
                                       ),
                                     ),
                                   ],
@@ -822,8 +829,10 @@ class _ExpensesTabState extends State<ExpensesTab>
     }
 
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
     final choice = await showModalBottomSheet<String>(
       context: context,
+      backgroundColor: palette.card,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -839,7 +848,7 @@ class _ExpensesTabState extends State<ExpensesTab>
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: AppColors.textMuted.withValues(alpha: 0.35),
+                    color: palette.textMuted.withValues(alpha: 0.35),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -850,7 +859,7 @@ class _ExpensesTabState extends State<ExpensesTab>
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textColor,
+                  color: palette.textPrimary,
                 ),
               ),
               const SizedBox(height: 8),
@@ -860,13 +869,13 @@ class _ExpensesTabState extends State<ExpensesTab>
                   Icons.auto_awesome_rounded,
                   color: _expenseColor,
                 ),
-                title: Text(l10n.expenseFabAiOption),
+                title: Text(
+                  l10n.expenseFabAiOption,
+                  style: TextStyle(color: palette.textPrimary),
+                ),
                 subtitle: Text(
                   l10n.expenseFabAiOptionSubtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textColor.withValues(alpha: 0.55),
-                  ),
+                  style: TextStyle(fontSize: 12, color: palette.textMuted),
                 ),
                 onTap: () => Navigator.pop(ctx, 'ai'),
               ),
@@ -876,7 +885,10 @@ class _ExpensesTabState extends State<ExpensesTab>
                   Icons.edit_note_outlined,
                   color: _expenseColor,
                 ),
-                title: Text(l10n.expenseFabBlankOption),
+                title: Text(
+                  l10n.expenseFabBlankOption,
+                  style: TextStyle(color: palette.textPrimary),
+                ),
                 onTap: () => Navigator.pop(ctx, 'blank'),
               ),
               ListTile(
@@ -885,13 +897,13 @@ class _ExpensesTabState extends State<ExpensesTab>
                   Icons.content_paste_go_rounded,
                   color: _expenseColor,
                 ),
-                title: Text(l10n.expenseFabFromLastPaste),
+                title: Text(
+                  l10n.expenseFabFromLastPaste,
+                  style: TextStyle(color: palette.textPrimary),
+                ),
                 subtitle: Text(
                   l10n.expenseFabFromLastPasteSubtitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: AppColors.textColor.withValues(alpha: 0.55),
-                  ),
+                  style: TextStyle(fontSize: 12, color: palette.textMuted),
                 ),
                 onTap: () => Navigator.pop(ctx, 'scan'),
               ),
@@ -996,10 +1008,12 @@ class _ExpensesTabState extends State<ExpensesTab>
 
   Future<void> _removeCategory(String category, int entryCount) async {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
     final label = localizeExpenseCategory(l10n, category);
 
     final action = await showModalBottomSheet<String>(
       context: context,
+      backgroundColor: palette.card,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -1014,7 +1028,7 @@ class _ExpensesTabState extends State<ExpensesTab>
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.textMuted.withValues(alpha: 0.35),
+                  color: palette.textMuted.withValues(alpha: 0.35),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -1025,7 +1039,7 @@ class _ExpensesTabState extends State<ExpensesTab>
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textColor,
+                color: palette.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
@@ -1033,14 +1047,20 @@ class _ExpensesTabState extends State<ExpensesTab>
               l10n.expenseCategoryRemoveMessage(entryCount, label),
               style: TextStyle(
                 fontSize: 14,
-                color: AppColors.textColor.withValues(alpha: 0.65),
+                color: palette.textMuted,
                 height: 1.4,
               ),
             ),
             const SizedBox(height: 20),
             ListTile(
-              leading: const Icon(Icons.drive_file_move_outline),
-              title: Text(l10n.expenseCategoryMoveToOther),
+              leading: Icon(
+                Icons.drive_file_move_outline,
+                color: palette.textPrimary,
+              ),
+              title: Text(
+                l10n.expenseCategoryMoveToOther,
+                style: TextStyle(color: palette.textPrimary),
+              ),
               onTap: () => Navigator.pop(sheetContext, 'move'),
             ),
             ListTile(
@@ -1158,6 +1178,31 @@ class _CategoryFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
+
+    FilterChip buildChip({
+      required String label,
+      required bool selected,
+      required VoidCallback onTap,
+    }) {
+      return FilterChip(
+        label: Text(label),
+        selected: selected,
+        onSelected: (_) => onTap(),
+        selectedColor: _expenseColor,
+        checkmarkColor: Colors.white,
+        labelStyle: TextStyle(
+          color: selected ? Colors.white : palette.textPrimary,
+          fontWeight: FontWeight.w500,
+        ),
+        backgroundColor: palette.card,
+        side: selected
+            ? BorderSide.none
+            : BorderSide(color: palette.stroke.withValues(alpha: 0.25)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1166,7 +1211,7 @@ class _CategoryFilterBar extends StatelessWidget {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: AppColors.textColor.withValues(alpha: 0.65),
+            color: palette.textMuted,
           ),
         ),
         const SizedBox(height: 8),
@@ -1174,45 +1219,19 @@ class _CategoryFilterBar extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              FilterChip(
-                label: Text(l10n.expenseFilterAllCategories),
+              buildChip(
+                label: l10n.expenseFilterAllCategories,
                 selected: selectedCategory == null,
-                onSelected: (_) => onSelected(null),
-                selectedColor: _expenseColor,
-                checkmarkColor: Colors.white,
-                labelStyle: TextStyle(
-                  color: selectedCategory == null
-                      ? Colors.white
-                      : AppColors.textColor,
-                  fontWeight: FontWeight.w500,
-                ),
-                backgroundColor: AppColors.surface,
-                side: BorderSide.none,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
+                onTap: () => onSelected(null),
               ),
               const SizedBox(width: 8),
               ...categories.map((category) {
-                final selected = selectedCategory == category;
-                final label = localizeExpenseCategory(l10n, category);
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(label),
-                    selected: selected,
-                    onSelected: (_) => onSelected(category),
-                    selectedColor: _expenseColor,
-                    checkmarkColor: Colors.white,
-                    labelStyle: TextStyle(
-                      color: selected ? Colors.white : AppColors.textColor,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    backgroundColor: AppColors.surface,
-                    side: BorderSide.none,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                  child: buildChip(
+                    label: localizeExpenseCategory(l10n, category),
+                    selected: selectedCategory == category,
+                    onTap: () => onSelected(category),
                   ),
                 );
               }),
@@ -1248,6 +1267,10 @@ class _CategoryBreakdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final tint = _expenseTint(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1256,7 +1279,7 @@ class _CategoryBreakdown extends StatelessWidget {
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
-            color: AppColors.textColor,
+            color: palette.textPrimary,
           ),
         ),
         const SizedBox(height: 10),
@@ -1279,7 +1302,7 @@ class _CategoryBreakdown extends StatelessWidget {
                   borderColor: isSelected
                       ? _expenseColor
                       : _expenseColor.withValues(alpha: 0.12),
-                ).copyWith(color: isSelected ? AppColors.expenseLight : null),
+                ).copyWith(color: isSelected ? tint : palette.card),
                 child: Row(
                   children: [
                     Container(
@@ -1288,7 +1311,7 @@ class _CategoryBreakdown extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: isSelected
                             ? _expenseColor.withValues(alpha: 0.15)
-                            : AppColors.expenseLight,
+                            : tint,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Icon(
@@ -1306,15 +1329,16 @@ class _CategoryBreakdown extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
-                          color: isSelected
+                          color: isSelected && !isDark
                               ? AppColors.expenseDark
-                              : AppColors.textColor,
+                              : palette.textPrimary,
                         ),
                       ),
                     ),
+                    const SizedBox(width: 8),
                     Text(
                       Money.format(entry.value),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: _expenseColor,
@@ -1324,7 +1348,7 @@ class _CategoryBreakdown extends StatelessWidget {
                       enabled: !isBusy,
                       icon: Icon(
                         Icons.more_vert_rounded,
-                        color: AppColors.textColor.withValues(alpha: 0.45),
+                        color: palette.textMuted,
                       ),
                       onSelected: (value) {
                         if (value == 'edit') {
@@ -1338,9 +1362,16 @@ class _CategoryBreakdown extends StatelessWidget {
                           value: 'edit',
                           child: Row(
                             children: [
-                              const Icon(Icons.edit_outlined, size: 20),
+                              Icon(
+                                Icons.edit_outlined,
+                                size: 20,
+                                color: palette.textPrimary,
+                              ),
                               const SizedBox(width: 10),
-                              Text(l10n.expenseCategoryEdit),
+                              Text(
+                                l10n.expenseCategoryEdit,
+                                style: TextStyle(color: palette.textPrimary),
+                              ),
                             ],
                           ),
                         ),
@@ -1434,7 +1465,10 @@ class _SummaryCard extends StatelessWidget {
               if (categoryLabel != null) ...[
                 const SizedBox(height: 12),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: on.overlayStrong,
                     borderRadius: BorderRadius.circular(20),
@@ -1452,10 +1486,7 @@ class _SummaryCard extends StatelessWidget {
               const SizedBox(height: 20),
               Text(
                 l10n.totalExpenses,
-                style: TextStyle(
-                  color: on.muted,
-                  fontSize: 15,
-                ),
+                style: TextStyle(color: on.muted, fontSize: 15),
               ),
               const SizedBox(height: 6),
               Text(
@@ -1486,6 +1517,7 @@ class _FilteredEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40),
@@ -1495,16 +1527,13 @@ class _FilteredEmptyState extends StatelessWidget {
             Icon(
               Icons.filter_alt_off_outlined,
               size: 48,
-              color: AppColors.textColor.withValues(alpha: 0.35),
+              color: palette.textMuted.withValues(alpha: 0.7),
             ),
             const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 15,
-                color: AppColors.textColor.withValues(alpha: 0.6),
-              ),
+              style: TextStyle(fontSize: 15, color: palette.textMuted),
             ),
             if (onClearFilter != null) ...[
               const SizedBox(height: 16),
@@ -1531,6 +1560,7 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40),
@@ -1541,7 +1571,7 @@ class _EmptyState extends StatelessWidget {
               height: 80,
               width: 80,
               decoration: BoxDecoration(
-                color: AppColors.expenseLight,
+                color: _expenseTint(context),
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Icon(
@@ -1556,17 +1586,14 @@ class _EmptyState extends StatelessWidget {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: AppColors.textColor,
+                color: palette.textPrimary,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.noExpensesSubtitle,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.textColor.withValues(alpha: 0.55),
-              ),
+              style: TextStyle(fontSize: 14, color: palette.textMuted),
             ),
             const SizedBox(height: 24),
             TextButton.icon(
@@ -1593,49 +1620,36 @@ class _ExpenseSortBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final palette = context.appPalette;
+
+    ChoiceChip buildChip(String label, ExpenseListSort value) {
+      final selected = sort == value;
+      return ChoiceChip(
+        label: Text(label),
+        selected: selected,
+        onSelected: (_) => onSortChanged(value),
+        selectedColor: _expenseColor,
+        labelStyle: TextStyle(
+          color: selected ? Colors.white : palette.textPrimary,
+          fontWeight: FontWeight.w600,
+          fontSize: 13,
+        ),
+        backgroundColor: palette.card,
+        side: selected
+            ? BorderSide.none
+            : BorderSide(color: palette.stroke.withValues(alpha: 0.25)),
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        visualDensity: VisualDensity.compact,
+      );
+    }
+
     return Row(
       children: [
-        Icon(
-          Icons.sort_rounded,
-          size: 18,
-          color: AppColors.textColor.withValues(alpha: 0.45),
-        ),
+        Icon(Icons.sort_rounded, size: 18, color: palette.textMuted),
         const SizedBox(width: 8),
-        ChoiceChip(
-          label: Text(l10n.expenseSortNewest),
-          selected: sort == ExpenseListSort.newest,
-          onSelected: (_) => onSortChanged(ExpenseListSort.newest),
-          selectedColor: _expenseColor,
-          labelStyle: TextStyle(
-            color: sort == ExpenseListSort.newest
-                ? Colors.white
-                : AppColors.textColor,
-            fontWeight: FontWeight.w600,
-            fontSize: 13,
-          ),
-          backgroundColor: AppColors.surface,
-          side: BorderSide.none,
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          visualDensity: VisualDensity.compact,
-        ),
+        buildChip(l10n.expenseSortNewest, ExpenseListSort.newest),
         const SizedBox(width: 8),
-        ChoiceChip(
-          label: Text(l10n.expenseSortHighestAmount),
-          selected: sort == ExpenseListSort.highestAmount,
-          onSelected: (_) => onSortChanged(ExpenseListSort.highestAmount),
-          selectedColor: _expenseColor,
-          labelStyle: TextStyle(
-            color: sort == ExpenseListSort.highestAmount
-                ? Colors.white
-                : AppColors.textColor,
-            fontWeight: FontWeight.w600,
-            fontSize: 13,
-          ),
-          backgroundColor: AppColors.surface,
-          side: BorderSide.none,
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          visualDensity: VisualDensity.compact,
-        ),
+        buildChip(l10n.expenseSortHighestAmount, ExpenseListSort.highestAmount),
       ],
     );
   }

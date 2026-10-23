@@ -12,7 +12,6 @@ import 'package:imrpo/features/recurring_transactions/presentation/widgets/add_r
 import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
-/// Subscriptions = recurring expenses, with a “due this week” focus.
 class SubscriptionsScreen extends StatefulWidget {
   const SubscriptionsScreen({super.key});
 
@@ -94,8 +93,15 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
           l10n.subscriptionsTitle,
           style: TextStyle(
             color: AppColors.textColor,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
           ),
+        ),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back, color: AppColors.stroke),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -112,9 +118,7 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
           }
           final subs = _subs(state.items);
           final dueSoon = subs.where((s) => _dueThisWeek(s, now)).toList()
-            ..sort(
-              (a, b) => _nextDue(a, now).compareTo(_nextDue(b, now)),
-            );
+            ..sort((a, b) => _nextDue(a, now).compareTo(_nextDue(b, now)));
           final monthly = subs
               .where((s) => s.isEnabled)
               .fold<double>(0, (sum, s) => sum + s.amount);
@@ -180,7 +184,9 @@ class _SubscriptionsScreenState extends State<SubscriptionsScreen> {
                             l10n.subscriptionsMonthlyTotal,
                             style: TextStyle(
                               fontSize: 13,
-                              color: AppColors.textColor.withValues(alpha: 0.55),
+                              color: AppColors.textColor.withValues(
+                                alpha: 0.55,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 4),

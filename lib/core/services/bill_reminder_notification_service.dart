@@ -103,7 +103,7 @@ class BillReminderNotificationService {
       );
       if (after != true) {
         billReminderLog(
-          'exactAlarms: OFF — enable "Alarms & reminders" for Pocketly in system settings (MIUI/Samsung: App info → Other permissions)',
+          'exactAlarms: OFF — enable "Alarms & reminders" for Pockio in system settings (MIUI/Samsung: App info → Other permissions)',
         );
       }
     } catch (e) {

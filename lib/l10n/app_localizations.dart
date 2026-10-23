@@ -98,7 +98,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Pocketly'**
+  /// **'Pockio'**
   String get appTitle;
 
   /// No description provided for @exitPressTwiceMore.
@@ -932,7 +932,7 @@ abstract class AppLocalizations {
   /// No description provided for @dailyDigestNotificationEmpty.
   ///
   /// In en, this message translates to:
-  /// **'No transactions logged yesterday. Open Pocketly to track today\'s spending.'**
+  /// **'No transactions logged yesterday. Open Pockio to track today\'s spending.'**
   String get dailyDigestNotificationEmpty;
 
   /// No description provided for @dailyDigestYesterdayExpenses.
@@ -1742,7 +1742,7 @@ abstract class AppLocalizations {
   /// No description provided for @associationInviteDisclaimerBody.
   ///
   /// In en, this message translates to:
-  /// **'Pocketly helps you organize shared ledgers. You are responsible for who you invite and how money is handled between members. The app does not hold funds, is not a bank, and is not liable for disputes between members. Only invite people you trust.'**
+  /// **'Pockio helps you organize shared ledgers. You are responsible for who you invite and how money is handled between members. The app does not hold funds, is not a bank, and is not liable for disputes between members. Only invite people you trust.'**
   String get associationInviteDisclaimerBody;
 
   /// No description provided for @associationInviteDisclaimerAccept.
@@ -1754,7 +1754,7 @@ abstract class AppLocalizations {
   /// No description provided for @associationInviteLegalNote.
   ///
   /// In en, this message translates to:
-  /// **'Pocketly is a record-keeping tool only — not financial advice, escrow, or legal counsel.'**
+  /// **'Pockio is a record-keeping tool only — not financial advice, escrow, or legal counsel.'**
   String get associationInviteLegalNote;
 
   /// No description provided for @associationManageTitle.
@@ -4880,7 +4880,7 @@ abstract class AppLocalizations {
   /// No description provided for @smartImportPasteShareTip.
   ///
   /// In en, this message translates to:
-  /// **'Tip: In your SMS app, open a message → Share → Import to Pocketly. No copy-paste needed.'**
+  /// **'Tip: In your SMS app, open a message → Share → Import to Pockio. No copy-paste needed.'**
   String get smartImportPasteShareTip;
 
   /// No description provided for @smartImportSharedTextReady.
@@ -5336,7 +5336,7 @@ abstract class AppLocalizations {
   /// No description provided for @appLockTitle.
   ///
   /// In en, this message translates to:
-  /// **'Unlock Pocketly'**
+  /// **'Unlock Pockio'**
   String get appLockTitle;
 
   /// No description provided for @appLockSubtitle.
@@ -5864,7 +5864,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeWidgetPinUnsupported.
   ///
   /// In en, this message translates to:
-  /// **'Your launcher can\'t pin widgets. Long-press the home screen and choose Widgets, then add Pocketly.'**
+  /// **'Your launcher can\'t pin widgets. Long-press the home screen and choose Widgets, then add Pockio.'**
   String get homeWidgetPinUnsupported;
 
   /// No description provided for @planImageLabel.
