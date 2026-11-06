@@ -353,6 +353,8 @@
     }
   },
   "commitmentsMarkPaid": "سجّلي دفع الشهر",
+  "commitmentsPersonPaidAction": "اتدفع",
+  "commitmentsPersonPaidDone": "دافع",
   "commitmentsPaidThisMonth": "اتدفع الشهر ده",
   "commitmentsFinished": "خلصت",
   "commitmentsUndo": "تراجع",
@@ -680,6 +682,47 @@
   "associationHubRoleMember": "عضو",
   "associationHubAddSlot": "ضيف حصة",
   "associationHubSlotName": "الاسم",
+  "associationHubStartDate": "تاريخ بداية الجمعية",
+  "associationHubEndDate": "تاريخ نهاية الجمعية",
+  "associationHubDateNotSet": "مش متحدد",
+  "associationHubClearDate": "امسح التاريخ",
+  "associationHubEndBeforeStart": "تاريخ النهاية لازم يكون في نفس يوم البداية أو بعده.",
+  "associationHubPersonPaymentDate": "تاريخ الدفع",
+  "associationHubPersonCollectionDate": "تاريخ القبض",
+  "associationHubSplitTurn": "قسم الدور على اتنين",
+  "associationHubRemovePartner": "شيل الشريك",
+  "associationHubPartnerName": "اسم الشريك",
+  "associationHubPartnerRequired": "اكتب اسم الشريك.",
+  "associationHubSplitBadge": "دور مشترك",
+  "associationHubSplitHint": "الاتنين بياخدوا الدور ده مع بعض، ولكل واحد تاريخ دفع وتاريخ قبض.",
+  "associationHubTurnListHint": "حدّد تاريخ الدفع وتاريخ القبض لكل شخص. الدور ممكن يتقسم على اتنين.",
+  "associationHubPaysOn": "يدفع {date}",
+  "@associationHubPaysOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "associationHubCollectsOn": "يقبض {date}",
+  "@associationHubCollectsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "associationHubSharedNames": "{first} و {second}",
+  "@associationHubSharedNames": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
   "associationHubBannerTitle": "إدارة الجمعية",
   "associationHubBannerBody": "الدور والجمعية والقسط لـ {name}.",
   "@associationHubBannerBody": {

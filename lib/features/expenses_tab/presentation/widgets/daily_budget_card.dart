@@ -1,16 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:imrpo/core/helpers/association_ledger_access.dart';
+import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
+import 'package:imrpo/core/models/parsed_financial_entry.dart';
 import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/services/daily_budget_store.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/features/expenses_tab/data/models/expense_model.dart';
+import 'package:imrpo/features/expenses_tab/presentation/bloc/expenses_tab_bloc.dart';
+import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_ai_tab.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class DailyBudgetCard extends StatefulWidget {
   final List<ExpenseModel> expenses;
-  final VoidCallback? onAddExpense;
 
-  const DailyBudgetCard({super.key, required this.expenses, this.onAddExpense});
+  const DailyBudgetCard({super.key, required this.expenses});
 
   @override
   State<DailyBudgetCard> createState() => _DailyBudgetCardState();
@@ -20,6 +27,7 @@ class _DailyBudgetCardState extends State<DailyBudgetCard> {
   final DailyBudgetStore _store = DailyBudgetStore();
 
   double _dailyBudget = DailyBudgetStore.defaultDailyBudget;
+  Set<String> _trackedIds = const {};
   bool _loading = true;
 
   @override
@@ -29,12 +37,15 @@ class _DailyBudgetCardState extends State<DailyBudgetCard> {
   }
 
   Future<void> _loadBudget() async {
+    final userId = SupabaseAuthHelper.userId ?? 'local';
     final budget = await _store.loadDailyBudget();
+    final tracked = await _store.loadTrackedExpenseIds(userId);
 
     if (!mounted) return;
 
     setState(() {
       _dailyBudget = budget;
+      _trackedIds = tracked;
       _loading = false;
     });
   }
@@ -50,8 +61,57 @@ class _DailyBudgetCardState extends State<DailyBudgetCard> {
 
   double _sumForDay(DateTime today) {
     return widget.expenses
+        .where((expense) => _trackedIds.contains(expense.id))
         .where((expense) => _localDate(expense.date) == today)
         .fold<double>(0, (sum, expense) => sum + _toEgp(expense.amount));
+  }
+
+  Future<void> _addBudgetExpense() async {
+    if (!AssociationLedgerAccess.canEdit) return;
+    final bloc = context.read<ExpensesTabBloc>();
+    final before = bloc.state.expenses.map((expense) => expense.id).toSet();
+    final result = await showMagicAddSheet(
+      context,
+      preferredType: FinancialEntryType.expense,
+    );
+    if (!mounted || result != 'added') return;
+
+    final added = await _idsAddedSince(bloc, before);
+    if (!mounted || added.isEmpty) return;
+
+    final userId = SupabaseAuthHelper.userId ?? 'local';
+    await _store.rememberTrackedExpenses(userId, added);
+    final tracked = await _store.loadTrackedExpenseIds(userId);
+    if (!mounted) return;
+    setState(() => _trackedIds = tracked);
+  }
+
+  Future<Set<String>> _idsAddedSince(
+    ExpensesTabBloc bloc,
+    Set<String> before,
+  ) async {
+    Set<String> addedFrom(ExpensesTabState state) {
+      return state.expenses
+          .map((expense) => expense.id)
+          .where((id) => !before.contains(id))
+          .toSet();
+    }
+
+    final immediate = addedFrom(bloc.state);
+    if (immediate.isNotEmpty) return immediate;
+
+    try {
+      final next = await bloc.stream
+          .firstWhere(
+            (state) =>
+                state.status == ExpensesTabStatus.loaded &&
+                addedFrom(state).isNotEmpty,
+          )
+          .timeout(const Duration(seconds: 8));
+      return addedFrom(next);
+    } on TimeoutException {
+      return addedFrom(bloc.state);
+    }
   }
 
   Future<void> _editBudget() async {
@@ -227,7 +287,7 @@ class _DailyBudgetCardState extends State<DailyBudgetCard> {
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: widget.onAddExpense,
+                      onTap: _addBudgetExpense,
                       borderRadius: BorderRadius.circular(14),
                       child: Ink(
                         padding: const EdgeInsets.symmetric(

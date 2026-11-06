@@ -684,6 +684,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get commitmentsMarkPaid => 'Mark this month paid';
 
   @override
+  String get commitmentsPersonPaidAction => 'Mark paid';
+
+  @override
+  String get commitmentsPersonPaidDone => 'Paid';
+
+  @override
   String get commitmentsPaidThisMonth => 'Paid this month';
 
   @override
@@ -1162,6 +1168,63 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get associationHubSlotName => 'Name';
+
+  @override
+  String get associationHubStartDate => 'Association start';
+
+  @override
+  String get associationHubEndDate => 'Association end';
+
+  @override
+  String get associationHubDateNotSet => 'Not set';
+
+  @override
+  String get associationHubClearDate => 'Clear date';
+
+  @override
+  String get associationHubEndBeforeStart => 'End date must be on or after the start date.';
+
+  @override
+  String get associationHubPersonPaymentDate => 'Payment date';
+
+  @override
+  String get associationHubPersonCollectionDate => 'Collection date';
+
+  @override
+  String get associationHubSplitTurn => 'Split this turn';
+
+  @override
+  String get associationHubRemovePartner => 'Remove partner';
+
+  @override
+  String get associationHubPartnerName => 'Partner name';
+
+  @override
+  String get associationHubPartnerRequired => 'Enter the partner\'s name.';
+
+  @override
+  String get associationHubSplitBadge => 'Shared';
+
+  @override
+  String get associationHubSplitHint => 'Both people share this turn. Each has a payment date and a collection date.';
+
+  @override
+  String get associationHubTurnListHint => 'Set each person\'s payment date and collection date. A turn can be shared by two people.';
+
+  @override
+  String associationHubPaysOn(String date) {
+    return 'Pays $date';
+  }
+
+  @override
+  String associationHubCollectsOn(String date) {
+    return 'Collects $date';
+  }
+
+  @override
+  String associationHubSharedNames(String first, String second) {
+    return '$first & $second';
+  }
 
   @override
   String get associationHubBannerTitle => 'Manage association';

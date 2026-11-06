@@ -79,9 +79,12 @@ class _MarkCommitmentPaidSheetState extends State<MarkCommitmentPaidSheet> {
     final accent = item.isGameya ? AppColors.primaryInk : AppColors.expense;
     final maxHeight = MediaQuery.sizeOf(context).height * 0.9;
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: maxHeight),
-      child: SingleChildScrollView(
+    return Material(
+      color: AppColors.card,
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: SizedBox(
+        height: maxHeight,
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -207,6 +210,7 @@ class _MarkCommitmentPaidSheetState extends State<MarkCommitmentPaidSheet> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

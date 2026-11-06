@@ -7,6 +7,8 @@ class AssociationHubData {
   final int memberSlots;
   final int currentTurnIndex;
   final int? collectionDay;
+  final DateTime? startsOn;
+  final DateTime? endsOn;
   final List<AssociationTurnSlot> slots;
   final List<AssociationHubMember> members;
   final List<AssociationInstallmentPayment> payments;
@@ -22,6 +24,8 @@ class AssociationHubData {
     required this.memberSlots,
     required this.currentTurnIndex,
     this.collectionDay,
+    this.startsOn,
+    this.endsOn,
     required this.slots,
     required this.members,
     required this.payments,
@@ -57,12 +61,31 @@ class AssociationHubData {
   }
 }
 
+class AssociationTurnPerson {
+  final String name;
+  final DateTime? paymentOn;
+  final DateTime? collectionOn;
+  final bool isPartner;
+
+  const AssociationTurnPerson({
+    required this.name,
+    this.paymentOn,
+    this.collectionOn,
+    this.isPartner = false,
+  });
+}
+
 class AssociationTurnSlot {
   final String? id;
   final int slotIndex;
   final String holderName;
   final String? userId;
   final DateTime? receivedAt;
+  final DateTime? paymentOn;
+  final DateTime? collectionOn;
+  final String? coHolderName;
+  final DateTime? coPaymentOn;
+  final DateTime? coCollectionOn;
 
   const AssociationTurnSlot({
     this.id,
@@ -70,9 +93,36 @@ class AssociationTurnSlot {
     required this.holderName,
     this.userId,
     this.receivedAt,
+    this.paymentOn,
+    this.collectionOn,
+    this.coHolderName,
+    this.coPaymentOn,
+    this.coCollectionOn,
   });
 
   bool get hasReceived => receivedAt != null;
+
+  bool get isSplit => (coHolderName?.trim().isNotEmpty ?? false);
+
+  List<AssociationTurnPerson> get people => [
+        AssociationTurnPerson(
+          name: holderName,
+          paymentOn: paymentOn,
+          collectionOn: collectionOn,
+        ),
+        if (isSplit)
+          AssociationTurnPerson(
+            name: coHolderName!.trim(),
+            paymentOn: coPaymentOn,
+            collectionOn: coCollectionOn,
+            isPartner: true,
+          ),
+      ];
+
+  String joinedNames(String Function(String first, String second) join) {
+    if (!isSplit) return holderName;
+    return join(holderName, coHolderName!.trim());
+  }
 }
 
 class AssociationInstallmentPayment {

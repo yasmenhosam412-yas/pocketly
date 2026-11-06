@@ -684,6 +684,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get commitmentsMarkPaid => 'سجّلي دفع الشهر';
 
   @override
+  String get commitmentsPersonPaidAction => 'اتدفع';
+
+  @override
+  String get commitmentsPersonPaidDone => 'دافع';
+
+  @override
   String get commitmentsPaidThisMonth => 'اتدفع الشهر ده';
 
   @override
@@ -1162,6 +1168,63 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get associationHubSlotName => 'الاسم';
+
+  @override
+  String get associationHubStartDate => 'تاريخ بداية الجمعية';
+
+  @override
+  String get associationHubEndDate => 'تاريخ نهاية الجمعية';
+
+  @override
+  String get associationHubDateNotSet => 'مش متحدد';
+
+  @override
+  String get associationHubClearDate => 'امسح التاريخ';
+
+  @override
+  String get associationHubEndBeforeStart => 'تاريخ النهاية لازم يكون في نفس يوم البداية أو بعده.';
+
+  @override
+  String get associationHubPersonPaymentDate => 'تاريخ الدفع';
+
+  @override
+  String get associationHubPersonCollectionDate => 'تاريخ القبض';
+
+  @override
+  String get associationHubSplitTurn => 'قسم الدور على اتنين';
+
+  @override
+  String get associationHubRemovePartner => 'شيل الشريك';
+
+  @override
+  String get associationHubPartnerName => 'اسم الشريك';
+
+  @override
+  String get associationHubPartnerRequired => 'اكتب اسم الشريك.';
+
+  @override
+  String get associationHubSplitBadge => 'دور مشترك';
+
+  @override
+  String get associationHubSplitHint => 'الاتنين بياخدوا الدور ده مع بعض، ولكل واحد تاريخ دفع وتاريخ قبض.';
+
+  @override
+  String get associationHubTurnListHint => 'حدّد تاريخ الدفع وتاريخ القبض لكل شخص. الدور ممكن يتقسم على اتنين.';
+
+  @override
+  String associationHubPaysOn(String date) {
+    return 'يدفع $date';
+  }
+
+  @override
+  String associationHubCollectsOn(String date) {
+    return 'يقبض $date';
+  }
+
+  @override
+  String associationHubSharedNames(String first, String second) {
+    return '$first و $second';
+  }
 
   @override
   String get associationHubBannerTitle => 'إدارة الجمعية';

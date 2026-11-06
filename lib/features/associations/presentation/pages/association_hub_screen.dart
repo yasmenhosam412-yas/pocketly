@@ -89,6 +89,8 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
         payoutAmount: result.payoutAmount,
         installmentAmount: result.installmentAmount,
         collectionDay: result.collectionDay,
+        startsOn: result.startsOn,
+        endsOn: result.endsOn,
         slots: result.slots,
       );
       if (!mounted) return;
@@ -192,7 +194,9 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
       builder: (ctx) => AlertDialog(
         title: Text(l10n.associationHubAdvanceTurn),
         content: Text(
-          l10n.associationHubAdvanceTurnConfirm(current?.holderName ?? '—'),
+          l10n.associationHubAdvanceTurnConfirm(
+            current?.joinedNames(l10n.associationHubSharedNames) ?? '—',
+          ),
         ),
         actions: [
           TextButton(
@@ -262,9 +266,21 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
     }
   }
 
-  String _formatEndedDate(BuildContext context, DateTime date) {
+  String _formatDay(DateTime date) {
     final locale = getIt<LocalePreferences>().locale.toString();
     return DateFormat.yMMMd(locale).format(date);
+  }
+
+  String? _personSchedule(AppLocalizations l10n, AssociationTurnPerson person) {
+    final parts = <String>[];
+    if (person.paymentOn != null) {
+      parts.add(l10n.associationHubPaysOn(_formatDay(person.paymentOn!)));
+    }
+    if (person.collectionOn != null) {
+      parts.add(l10n.associationHubCollectsOn(_formatDay(person.collectionOn!)));
+    }
+    if (parts.isEmpty) return null;
+    return parts.join(' · ');
   }
 
   @override
@@ -375,7 +391,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
                   Expanded(
                     child: Text(
                       l10n.associationHubEndedBanner(
-                        _formatEndedDate(context, hub.gom3eyaEndedAt!),
+                        _formatDay(hub.gom3eyaEndedAt!),
                       ),
                       style: TextStyle(
                         fontSize: 13,
@@ -389,6 +405,30 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
             ),
           ],
           const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: _StatCard(
+                  label: l10n.associationHubStartDate,
+                  value: hub.startsOn != null
+                      ? _formatDay(hub.startsOn!)
+                      : '—',
+                  icon: Icons.event_available_outlined,
+                  color: AppColors.plans,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _StatCard(
+                  label: l10n.associationHubEndDate,
+                  value: hub.endsOn != null ? _formatDay(hub.endsOn!) : '—',
+                  icon: Icons.event_busy_outlined,
+                  color: AppColors.plans,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
           if (hub.slots.isEmpty)
             _EmptySetupCard(onSetup: hub.canManage ? _editSettings : null)
           else ...[
@@ -449,14 +489,23 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
                       hub.memberSlots,
                     )
                   : '—',
-              holderName: current?.holderName ?? '—',
-              isOwner: hub.canManage,
+              slot: current,
+              scheduleFor: (person) => _personSchedule(l10n, person),
             ),
           ],
           const SizedBox(height: 24),
           Text(
             l10n.associationHubTurnList,
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            l10n.associationHubTurnListHint,
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 13,
+              height: 1.4,
+            ),
           ),
           const SizedBox(height: 10),
           if (hub.slots.isEmpty)
@@ -471,6 +520,7 @@ class _AssociationHubScreenState extends State<AssociationHubScreen> {
                 slot: slot,
                 isCurrent: isCurrent,
                 turnNumber: slot.slotIndex + 1,
+                scheduleFor: (person) => _personSchedule(l10n, person),
               );
             }),
           const SizedBox(height: 24),
@@ -707,7 +757,9 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
           ),
         ],
       ),
@@ -717,18 +769,28 @@ class _StatCard extends StatelessWidget {
 
 class _CurrentTurnCard extends StatelessWidget {
   final String turnLabel;
-  final String holderName;
-  final bool isOwner;
+  final AssociationTurnSlot? slot;
+  final String? Function(AssociationTurnPerson person) scheduleFor;
 
   const _CurrentTurnCard({
     required this.turnLabel,
-    required this.holderName,
-    required this.isOwner,
+    required this.slot,
+    required this.scheduleFor,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final holderName = slot?.joinedNames(l10n.associationHubSharedNames) ?? '—';
+    final lines = <String>[];
+    if (slot != null) {
+      for (final person in slot!.people) {
+        final schedule = scheduleFor(person);
+        if (schedule == null) continue;
+        lines.add(slot!.isSplit ? '${person.name} · $schedule' : schedule);
+      }
+    }
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -757,7 +819,7 @@ class _CurrentTurnCard extends StatelessWidget {
           Text(
             holderName,
             style: TextStyle(
-              fontSize: 26,
+              fontSize: slot?.isSplit == true ? 22 : 26,
               fontWeight: FontWeight.w800,
               color: AppColors.primaryInk,
             ),
@@ -770,6 +832,17 @@ class _CurrentTurnCard extends StatelessWidget {
               color: AppColors.textSecondary,
             ),
           ),
+          for (final line in lines) ...[
+            const SizedBox(height: 4),
+            Text(
+              line,
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
+                height: 1.35,
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -879,11 +952,13 @@ class _TurnSlotTile extends StatelessWidget {
   final AssociationTurnSlot slot;
   final bool isCurrent;
   final int turnNumber;
+  final String? Function(AssociationTurnPerson person) scheduleFor;
 
   const _TurnSlotTile({
     required this.slot,
     required this.isCurrent,
     required this.turnNumber,
+    required this.scheduleFor,
   });
 
   @override
@@ -903,6 +978,7 @@ class _TurnSlotTile extends StatelessWidget {
         ),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             width: 36,
@@ -924,14 +1000,62 @@ class _TurnSlotTile extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              slot.holderName,
-              style: TextStyle(
-                fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
-                fontSize: 16,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var i = 0; i < slot.people.length; i++) ...[
+                  if (i > 0) const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          slot.people[i].name,
+                          style: TextStyle(
+                            fontWeight: isCurrent
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      if (slot.isSplit && i == 0) ...[
+                        const SizedBox(width: 6),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.plans.withValues(alpha: 0.25),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            l10n.associationHubSplitBadge,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  if (scheduleFor(slot.people[i]) != null) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      scheduleFor(slot.people[i])!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                        height: 1.35,
+                      ),
+                    ),
+                  ],
+                ],
+              ],
             ),
           ),
+          const SizedBox(width: 8),
           if (isCurrent)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -951,7 +1075,7 @@ class _TurnSlotTile extends StatelessWidget {
           else if (slot.hasReceived)
             Text(
               l10n.associationHubReceived,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 color: AppColors.incomeDark,
                 fontWeight: FontWeight.w600,

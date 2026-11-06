@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:imrpo/core/helpers/supabase_auth_helper.dart';
 import 'package:imrpo/core/l10n/l10n_entity_strings.dart';
 import 'package:imrpo/core/services/home_date_filter.dart';
@@ -8,7 +9,7 @@ import 'package:imrpo/core/theme/app_decorations.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/core/utils/money_format.dart';
 import 'package:imrpo/core/widgets/app_toast.dart';
-import 'package:imrpo/core/widgets/show_app_bottom_sheet.dart';
+import 'package:imrpo/core/widgets/tab_centered_scroll.dart';
 import 'package:imrpo/features/balance_tab/presentation/bloc/balance_tab_bloc.dart';
 import 'package:imrpo/features/commitments/data/commitment_ledger.dart';
 import 'package:imrpo/features/commitments/data/commitment_store.dart';
@@ -82,18 +83,132 @@ class _CommitmentsScreenState extends State<CommitmentsScreen>
 
   double get _dueThisMonth {
     return _visible
-        .where((item) => item.canMarkPaid())
+        .where(_userStillOwes)
         .fold(0.0, (sum, item) => sum + item.monthlyAmount);
   }
 
+  bool _userStillOwes(PaymentCommitment item) {
+    if (!item.tracksPeople) return item.canMarkPaid();
+    final index = item.myTurn - 1;
+    if (item.isFinished || index < 0 || index >= item.seats.length) {
+      return false;
+    }
+    return !item.seatPaidThisRound(index);
+  }
+
+  Future<void> _markPerson(
+    PaymentCommitment item,
+    int index, {
+    bool partner = false,
+  }) async {
+    if (_posting || item.seatPaidThisRound(index, partner: partner)) return;
+    final l10n = AppLocalizations.of(context)!;
+    final isMine = !partner && index == item.myTurn - 1;
+    CommitmentPaymentDraft? draft;
+    var expenseId = item.lastExpenseId;
+    var incomeId = item.lastIncomeId;
+    var unlinked = false;
+    if (isMine) {
+      draft = await showModalBottomSheet<CommitmentPaymentDraft>(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        backgroundColor: AppColors.card,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        builder: (sheetContext) => AnimatedPadding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
+          ),
+          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeOut,
+          child: MarkCommitmentPaidSheet(item: item),
+        ),
+      );
+      if (draft == null || !mounted) return;
+      setState(() => _posting = true);
+      final usedExpenses = _items
+          .map((e) => e.lastExpenseId)
+          .where((id) => id.isNotEmpty)
+          .toSet();
+      final usedIncomes = _items
+          .map((e) => e.lastIncomeId)
+          .where((id) => id.isNotEmpty)
+          .toSet();
+      final recordPayout =
+          item.openRound == item.myTurn.clamp(1, item.safeTotal);
+      final posted = await _ledger.post(
+        expenseTitle: l10n.commitmentsExpenseTitle(
+          item.title,
+          item.openRound,
+          item.safeTotal,
+        ),
+        category: draft.category,
+        amount: item.monthlyAmount,
+        payFrom: draft.payFrom,
+        date: DateTime.now(),
+        usedExpenseIds: usedExpenses,
+        incomeTitle: recordPayout ? l10n.commitmentsIncomeTitle(item.title) : null,
+        payout: item.payout,
+        receiveInto: draft.receiveInto,
+        usedIncomeIds: usedIncomes,
+      );
+      if (!mounted) return;
+      unlinked = posted.error == CommitmentLedger.missingLink;
+      if (!posted.ok && !unlinked) {
+        setState(() => _posting = false);
+        final message = posted.error == CommitmentLedger.rolledBack
+            ? l10n.errorGeneric
+            : localizeApiError(l10n, posted.error ?? '');
+        AppToast.error(context, message);
+        return;
+      }
+      expenseId = posted.expenseId;
+      incomeId = posted.incomeId;
+      if (unlinked) {
+        AppToast.error(context, l10n.commitmentsLedgerMissing);
+      }
+    } else {
+      setState(() => _posting = true);
+    }
+
+    final marked = item.markPersonPaid(index, partner: partner).copyWith(
+      lastExpenseId: expenseId,
+      lastIncomeId: incomeId,
+      payFrom: draft?.payFrom,
+      expenseCategory: draft?.category,
+      receiveInto: draft?.receiveInto,
+    );
+    final next = _items.map((e) => e.id == item.id ? marked : e).toList();
+    await _persist(next);
+    if (!mounted) return;
+    setState(() => _posting = false);
+    if (isMine) _refreshTabs();
+    if (isMine && !unlinked) {
+      AppToast.success(context, l10n.commitmentsPosted);
+    }
+  }
+
   Future<void> _openEditor({PaymentCommitment? item}) async {
-    final result = await showAppBottomSheet<PaymentCommitment>(
+    final result = await showModalBottomSheet<PaymentCommitment>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (_) => AddCommitmentSheet(
-        kind: item?.kind ?? _filter,
-        item: item,
+      backgroundColor: AppColors.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) => AnimatedPadding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
+        ),
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOut,
+        child: AddCommitmentSheet(
+          kind: item?.kind ?? _filter,
+          item: item,
+        ),
       ),
     );
     if (result == null) return;
@@ -115,11 +230,22 @@ class _CommitmentsScreenState extends State<CommitmentsScreen>
   Future<void> _markPaid(PaymentCommitment item) async {
     if (_posting || !item.canMarkPaid()) return;
     final l10n = AppLocalizations.of(context)!;
-    final draft = await showAppBottomSheet<CommitmentPaymentDraft>(
+    final draft = await showModalBottomSheet<CommitmentPaymentDraft>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (_) => MarkCommitmentPaidSheet(item: item),
+      backgroundColor: AppColors.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) => AnimatedPadding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(sheetContext).bottom,
+        ),
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOut,
+        child: MarkCommitmentPaidSheet(item: item),
+      ),
     );
     if (draft == null || !mounted) return;
 
@@ -182,8 +308,14 @@ class _CommitmentsScreenState extends State<CommitmentsScreen>
 
   Future<void> _undo(PaymentCommitment item) async {
     if (_posting) return;
+    final legacyMonth = item.tracksPeople && item.lastMarkIndex < 0;
+    final undoingMine = item.tracksPeople &&
+        !item.lastMarkPartner &&
+        item.lastMarkIndex == item.myTurn - 1;
+    final removeLedger = !item.tracksPeople || undoingMine || legacyMonth;
     setState(() => _posting = true);
-    if (item.lastExpenseId.isNotEmpty || item.lastIncomeId.isNotEmpty) {
+    if (removeLedger &&
+        (item.lastExpenseId.isNotEmpty || item.lastIncomeId.isNotEmpty)) {
       final error = await _ledger.remove(
         expenseId: item.lastExpenseId,
         incomeId: item.lastIncomeId,
@@ -199,7 +331,13 @@ class _CommitmentsScreenState extends State<CommitmentsScreen>
       }
     }
     final next = _items
-        .map((e) => e.id == item.id ? e.undoLastPayment() : e)
+        .map(
+          (e) => e.id == item.id
+              ? (e.tracksPeople && !legacyMonth
+                  ? e.undoLastPerson()
+                  : e.undoLastPayment())
+              : e,
+        )
         .toList();
     await _persist(next);
     if (!mounted) return;
@@ -254,6 +392,7 @@ class _CommitmentsScreenState extends State<CommitmentsScreen>
         : AppColors.expense;
 
     return Scaffold(
+      primary: !widget.embedded,
       backgroundColor:
           widget.embedded ? Colors.transparent : AppColors.scaffold,
       appBar: widget.embedded
@@ -290,9 +429,13 @@ class _CommitmentsScreenState extends State<CommitmentsScreen>
       ),
       body: _loading
           ? Center(child: CircularProgressIndicator(color: accent))
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 110),
-              children: [
+          : CustomScrollView(
+              physics: kHomeTabScrollPhysics,
+              slivers: [
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 110),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
                 Text(
                   l10n.commitmentsSubtitle,
                   style: TextStyle(
@@ -355,15 +498,32 @@ class _CommitmentsScreenState extends State<CommitmentsScreen>
                       child: _CommitmentCard(
                         item: item,
                         onTap: () => _openEditor(item: item),
-                        onMarkPaid: item.canMarkPaid() && !_posting
+                        onMarkPaid: !item.tracksPeople &&
+                                item.canMarkPaid() &&
+                                !_posting
                             ? () => _markPaid(item)
                             : null,
-                        onUndo:
-                            item.paidThisMonth() ? () => _undo(item) : null,
+                        onMarkPerson: item.tracksPeople && !_posting
+                            ? (index, {bool partner = false}) => _markPerson(
+                                item,
+                                index,
+                                partner: partner,
+                              )
+                            : null,
+                        onUndo: item.tracksPeople
+                            ? (item.lastMarkIndex >= 0 || item.paidThisMonth()
+                                ? () => _undo(item)
+                                : null)
+                            : (item.paidThisMonth()
+                                ? () => _undo(item)
+                                : null),
                         onDelete: () => _delete(item),
                       ),
                     ),
                   ),
+                    ]),
+                  ),
+                ),
               ],
             ),
     );
@@ -452,6 +612,7 @@ class _CommitmentCard extends StatelessWidget {
   final PaymentCommitment item;
   final VoidCallback onTap;
   final VoidCallback? onMarkPaid;
+  final void Function(int index, {bool partner})? onMarkPerson;
   final VoidCallback? onUndo;
   final VoidCallback onDelete;
 
@@ -459,6 +620,7 @@ class _CommitmentCard extends StatelessWidget {
     required this.item,
     required this.onTap,
     required this.onMarkPaid,
+    required this.onMarkPerson,
     required this.onUndo,
     required this.onDelete,
   });
@@ -487,162 +649,292 @@ class _CommitmentCard extends StatelessWidget {
             boxShadow: AppDecorations.flatShadow(color: accent),
           ),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 8, 14),
+            padding: const EdgeInsets.fromLTRB(14, 12, 6, 12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        item.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.textPrimary,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: onDelete,
-                      visualDensity: VisualDensity.compact,
-                      icon: Icon(
-                        Icons.delete_outline_rounded,
-                        color: AppColors.error.withValues(alpha: 0.85),
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  Money.format(item.monthlyAmount),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: accent,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${localizeExpenseCategory(l10n, item.expenseCategory)} · ${l10n.commitmentsFromSource(localizeIncomeCategory(l10n, item.payFrom))}',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                if (item.isGameya && item.receiveInto.trim().isNotEmpty) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    l10n.commitmentsPayoutInto(
-                      localizeIncomeCategory(l10n, item.receiveInto),
-                    ),
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: LinearProgressIndicator(
-                    value: item.progress,
-                    minHeight: 8,
-                    backgroundColor: accent.withValues(alpha: 0.12),
-                    color: item.isFinished ? AppColors.success : accent,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.commitmentsProgress(
-                    item.safePaid,
-                    item.safeTotal,
-                    Money.format(item.remainingMoney),
-                  ),
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                if (item.isGameya) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    l10n.commitmentsPayout(Money.format(item.payout)),
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textColor,
-                    ),
-                  ),
-                  if (item.members.isNotEmpty) ...[
-                    const SizedBox(height: 10),
-                    _MemberTurns(item: item),
-                  ],
-                ],
-                if (coach != null) ...[
-                  const SizedBox(height: 8),
-                  Text(
-                    coach,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: item.isMyTurnNext ? accent : AppColors.textSecondary,
-                    ),
-                  ),
-                ],
-                if (item.notes.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    item.notes,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textMuted,
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    if (onMarkPaid != null)
-                      FilledButton.tonal(
-                        onPressed: onMarkPaid,
-                        child: Text(l10n.commitmentsMarkPaid),
-                      )
-                    else if (item.isFinished)
-                      Text(
-                        l10n.commitmentsFinished,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.success,
-                        ),
-                      )
-                    else
-                      Text(
-                        l10n.commitmentsPaidThisMonth,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.success,
-                        ),
-                      ),
-                    if (onUndo != null) ...[
-                      const SizedBox(width: 8),
-                      TextButton(
-                        onPressed: onUndo,
-                        child: Text(l10n.commitmentsUndo),
-                      ),
-                    ],
-                  ],
-                ),
-              ],
+              children: item.isGameya
+                  ? _gameyaLines(context, l10n, accent)
+                  : _installmentLines(l10n, accent, coach),
             ),
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _gameyaLines(
+    BuildContext context,
+    AppLocalizations l10n,
+    Color accent,
+  ) {
+    final range = item.startsOn != null || item.endsOn != null
+        ? _rangeLabel(context, l10n, item)
+        : null;
+    final status = _gameyaStatus(l10n);
+
+    return [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  Money.format(item.monthlyAmount),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: accent,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            onPressed: onDelete,
+            visualDensity: VisualDensity.compact,
+            icon: Icon(
+              Icons.delete_outline_rounded,
+              color: AppColors.error.withValues(alpha: 0.85),
+            ),
+          ),
+        ],
+      ),
+      if (range != null)
+        Text(
+          range,
+          style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+        ),
+      const SizedBox(height: 10),
+      ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: LinearProgressIndicator(
+          value: item.progress,
+          minHeight: 5,
+          backgroundColor: accent.withValues(alpha: 0.12),
+          color: item.isFinished ? AppColors.success : accent,
+        ),
+      ),
+      const SizedBox(height: 6),
+      Text(
+        l10n.commitmentsProgress(
+          item.safePaid,
+          item.safeTotal,
+          Money.format(item.remainingMoney),
+        ),
+        style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+      ),
+      if (status != null) ...[
+        const SizedBox(height: 2),
+        Text(
+          status,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: item.isMyTurnNow() ? accent : AppColors.textSecondary,
+          ),
+        ),
+      ],
+      if (item.seats.isNotEmpty) ...[
+        const SizedBox(height: 6),
+        _MemberTurns(item: item, onMarkPerson: onMarkPerson),
+      ],
+      if (item.notes.isNotEmpty) ...[
+        const SizedBox(height: 4),
+        Text(
+          item.notes,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+        ),
+      ],
+      if (item.isFinished || onUndo != null)
+        Row(
+          children: [
+            if (item.isFinished)
+              Text(
+                l10n.commitmentsFinished,
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.success,
+                ),
+              ),
+            if (onUndo != null)
+              TextButton(
+                onPressed: onUndo,
+                style: TextButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: const Size(0, 32),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(l10n.commitmentsUndo),
+              ),
+          ],
+        ),
+    ];
+  }
+
+  List<Widget> _installmentLines(
+    AppLocalizations l10n,
+    Color accent,
+    String? coach,
+  ) {
+    return [
+      Row(
+        children: [
+          Expanded(
+            child: Text(
+              item.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: onDelete,
+            visualDensity: VisualDensity.compact,
+            icon: Icon(
+              Icons.delete_outline_rounded,
+              color: AppColors.error.withValues(alpha: 0.85),
+            ),
+          ),
+        ],
+      ),
+      Text(
+        Money.format(item.monthlyAmount),
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
+          color: accent,
+        ),
+      ),
+      const SizedBox(height: 4),
+      Text(
+        '${localizeExpenseCategory(l10n, item.expenseCategory)} · ${l10n.commitmentsFromSource(localizeIncomeCategory(l10n, item.payFrom))}',
+        style: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: AppColors.textSecondary,
+        ),
+      ),
+      const SizedBox(height: 8),
+      ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: LinearProgressIndicator(
+          value: item.progress,
+          minHeight: 8,
+          backgroundColor: accent.withValues(alpha: 0.12),
+          color: item.isFinished ? AppColors.success : accent,
+        ),
+      ),
+      const SizedBox(height: 8),
+      Text(
+        l10n.commitmentsProgress(
+          item.safePaid,
+          item.safeTotal,
+          Money.format(item.remainingMoney),
+        ),
+        style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+      ),
+      if (coach != null) ...[
+        const SizedBox(height: 8),
+        Text(
+          coach,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textSecondary,
+          ),
+        ),
+      ],
+      if (item.notes.isNotEmpty) ...[
+        const SizedBox(height: 4),
+        Text(
+          item.notes,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(fontSize: 12, color: AppColors.textMuted),
+        ),
+      ],
+      const SizedBox(height: 10),
+      Row(
+        children: [
+          if (onMarkPaid != null)
+            FilledButton.tonal(
+              onPressed: onMarkPaid,
+              child: Text(l10n.commitmentsMarkPaid),
+            )
+          else if (item.isFinished)
+            Text(
+              l10n.commitmentsFinished,
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                color: AppColors.success,
+              ),
+            )
+          else
+            Text(
+              l10n.commitmentsPaidThisMonth,
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: AppColors.success,
+              ),
+            ),
+          if (onUndo != null) ...[
+            const SizedBox(width: 8),
+            TextButton(
+              onPressed: onUndo,
+              child: Text(l10n.commitmentsUndo),
+            ),
+          ],
+        ],
+      ),
+    ];
+  }
+
+  String? _gameyaStatus(AppLocalizations l10n) {
+    if (item.isFinished) return null;
+    if (item.isMyTurnNow()) {
+      return item.seats.isEmpty ? l10n.commitmentsYourTurn : null;
+    }
+    if (item.turnAlreadyPassed) return l10n.commitmentsTurnPassed;
+    final left = item.cyclesUntilMyTurn;
+    if (left > 0) return l10n.commitmentsTurnsLeft(left);
+    return null;
+  }
+
+  String _rangeLabel(
+    BuildContext context,
+    AppLocalizations l10n,
+    PaymentCommitment item,
+  ) {
+    String day(DateTime date) => DateFormat.yMMMd(
+      Localizations.localeOf(context).toString(),
+    ).format(date);
+    final start = item.startsOn == null
+        ? l10n.associationHubDateNotSet
+        : day(item.startsOn!);
+    final end = item.endsOn == null
+        ? l10n.associationHubDateNotSet
+        : day(item.endsOn!);
+    return '$start – $end';
   }
 
   String? _coachText(AppLocalizations l10n) {
@@ -666,88 +958,234 @@ class _CommitmentCard extends StatelessWidget {
   }
 }
 
+bool _personPaid(PaymentCommitment item, int index, {bool partner = false}) {
+  if (index < 0 || index >= item.seats.length) return false;
+  final seat = item.seats[index];
+  final paid = partner ? seat.partnerPaidRounds : seat.paidRounds;
+  final target = item.isFinished ? item.safeTotal : item.openRound;
+  return paid >= target;
+}
+
 class _MemberTurns extends StatelessWidget {
   final PaymentCommitment item;
+  final void Function(int index, {bool partner})? onMarkPerson;
 
-  const _MemberTurns({required this.item});
+  const _MemberTurns({required this.item, required this.onMarkPerson});
+
+  @override
+  Widget build(BuildContext context) {
+    final current = item.activeTurn();
+    final mine = item.myTurn.clamp(1, item.safeTotal);
+
+    return Column(
+      children: [
+        for (var index = 0; index < item.seats.length; index++)
+          _SeatLine(
+            turn: index + 1,
+            seat: item.seats[index],
+            isCurrent: !item.isFinished && index + 1 == current,
+            isMe: index + 1 == mine,
+            paid: _personPaid(item, index),
+            partnerPaid: item.seats[index].isSplit &&
+                _personPaid(item, index, partner: true),
+            onMarkPaid: onMarkPerson == null ||
+                    item.isFinished ||
+                    item.seatPaidThisRound(index)
+                ? null
+                : () => onMarkPerson!(index),
+            onMarkPartner: onMarkPerson == null ||
+                    item.isFinished ||
+                    !item.seats[index].isSplit ||
+                    item.seatPaidThisRound(index, partner: true)
+                ? null
+                : () => onMarkPerson!(index, partner: true),
+          ),
+      ],
+    );
+  }
+}
+
+class _SeatLine extends StatelessWidget {
+  final int turn;
+  final GameyaSeat seat;
+  final bool isCurrent;
+  final bool isMe;
+  final bool paid;
+  final bool partnerPaid;
+  final VoidCallback? onMarkPaid;
+  final VoidCallback? onMarkPartner;
+
+  const _SeatLine({
+    required this.turn,
+    required this.seat,
+    required this.isCurrent,
+    required this.isMe,
+    required this.paid,
+    required this.partnerPaid,
+    required this.onMarkPaid,
+    required this.onMarkPartner,
+  });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final accent = AppColors.primaryInk;
-    final current = item.activeTurn();
-    final mine = item.myTurn.clamp(1, item.safeTotal);
-    final headline = item.isFinished
-        ? null
-        : item.isMyTurnNow()
-            ? l10n.commitmentsYourTurn
-            : item.activeTurnName().isEmpty
-                ? null
-                : l10n.commitmentsTurnIs(item.activeTurnName());
+    final locale = Localizations.localeOf(context).toString();
+    String day(DateTime date) => DateFormat.MMMd(locale).format(date);
+    String? schedule(DateTime? payment, DateTime? collection) {
+      final parts = <String>[];
+      if (payment != null) parts.add(l10n.associationHubPaysOn(day(payment)));
+      if (collection != null) {
+        parts.add(l10n.associationHubCollectsOn(day(collection)));
+      }
+      if (parts.isEmpty) return null;
+      return parts.join(' · ');
+    }
+
+    final name = isMe ? '${seat.name} · ${l10n.commitmentsMemberMe}' : seat.name;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (headline != null) ...[
-          Text(
-            headline,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
-              color: item.isMyTurnNow() ? accent : AppColors.textColor,
+        _PersonRow(
+          turn: '$turn',
+          name: name,
+          schedule: schedule(seat.paymentOn, seat.collectionOn),
+          emphasize: isCurrent,
+          paid: paid,
+          onMark: onMarkPaid,
+          action: l10n.commitmentsPersonPaidAction,
+          done: l10n.commitmentsPersonPaidDone,
+        ),
+        if (seat.isSplit)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 22),
+            child: _PersonRow(
+              name: seat.partnerName!.trim(),
+              schedule: schedule(seat.partnerPaymentOn, seat.partnerCollectionOn),
+              paid: partnerPaid,
+              onMark: onMarkPartner,
+              action: l10n.commitmentsPersonPaidAction,
+              done: l10n.commitmentsPersonPaidDone,
             ),
           ),
-          const SizedBox(height: 8),
-        ],
-        SizedBox(
-          height: 36,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: item.members.length,
-            separatorBuilder: (context, index) => const SizedBox(width: 6),
-            itemBuilder: (context, index) {
-              final turn = index + 1;
-              final isCurrent = !item.isFinished && turn == current;
-              final isMe = turn == mine;
-              final done = item.isFinished || turn < current;
-              final label = isMe
-                  ? '${item.members[index]} · ${l10n.commitmentsMemberMe}'
-                  : item.members[index];
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: isCurrent
-                      ? accent
-                      : done
-                          ? AppColors.success.withValues(alpha: 0.12)
-                          : AppColors.surface,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(
-                    color: isCurrent
-                        ? accent
-                        : isMe
-                            ? accent.withValues(alpha: 0.45)
-                            : AppColors.border,
-                  ),
-                ),
-                child: Text(
-                  '$turn  $label',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w800,
-                    color: isCurrent
-                        ? Colors.white
-                        : done
-                            ? AppColors.success
-                            : AppColors.textColor,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
       ],
+    );
+  }
+}
+
+class _PersonRow extends StatelessWidget {
+  final String? turn;
+  final String name;
+  final String? schedule;
+  final bool emphasize;
+  final bool paid;
+  final VoidCallback? onMark;
+  final String action;
+  final String done;
+
+  const _PersonRow({
+    this.turn,
+    required this.name,
+    required this.schedule,
+    this.emphasize = false,
+    required this.paid,
+    required this.onMark,
+    required this.action,
+    required this.done,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = emphasize ? AppColors.primaryInk : AppColors.textColor;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        children: [
+          if (turn != null)
+            SizedBox(
+              width: 22,
+              child: Text(
+                turn!,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  color: color,
+                ),
+              ),
+            ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: color,
+                  ),
+                ),
+                if (schedule != null)
+                  Text(
+                    schedule!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: AppColors.textMuted,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          _PaidMark(
+            paid: paid,
+            onMark: onMark,
+            label: action,
+            doneLabel: done,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PaidMark extends StatelessWidget {
+  final bool paid;
+  final VoidCallback? onMark;
+  final String label;
+  final String doneLabel;
+
+  const _PaidMark({
+    required this.paid,
+    required this.onMark,
+    required this.label,
+    required this.doneLabel,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (paid) {
+      return Text(
+        doneLabel,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w800,
+          color: AppColors.success,
+        ),
+      );
+    }
+    return TextButton(
+      onPressed: onMark,
+      style: TextButton.styleFrom(
+        visualDensity: VisualDensity.compact,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        minimumSize: const Size(0, 32),
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: Text(label),
     );
   }
 }

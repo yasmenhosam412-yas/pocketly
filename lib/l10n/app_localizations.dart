@@ -1349,6 +1349,18 @@ abstract class AppLocalizations {
   /// **'Mark this month paid'**
   String get commitmentsMarkPaid;
 
+  /// No description provided for @commitmentsPersonPaidAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark paid'**
+  String get commitmentsPersonPaidAction;
+
+  /// No description provided for @commitmentsPersonPaidDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get commitmentsPersonPaidDone;
+
   /// No description provided for @commitmentsPaidThisMonth.
   ///
   /// In en, this message translates to:
@@ -2212,6 +2224,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Name'**
   String get associationHubSlotName;
+
+  /// No description provided for @associationHubStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Association start'**
+  String get associationHubStartDate;
+
+  /// No description provided for @associationHubEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Association end'**
+  String get associationHubEndDate;
+
+  /// No description provided for @associationHubDateNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get associationHubDateNotSet;
+
+  /// No description provided for @associationHubClearDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear date'**
+  String get associationHubClearDate;
+
+  /// No description provided for @associationHubEndBeforeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'End date must be on or after the start date.'**
+  String get associationHubEndBeforeStart;
+
+  /// No description provided for @associationHubPersonPaymentDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment date'**
+  String get associationHubPersonPaymentDate;
+
+  /// No description provided for @associationHubPersonCollectionDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Collection date'**
+  String get associationHubPersonCollectionDate;
+
+  /// No description provided for @associationHubSplitTurn.
+  ///
+  /// In en, this message translates to:
+  /// **'Split this turn'**
+  String get associationHubSplitTurn;
+
+  /// No description provided for @associationHubRemovePartner.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove partner'**
+  String get associationHubRemovePartner;
+
+  /// No description provided for @associationHubPartnerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner name'**
+  String get associationHubPartnerName;
+
+  /// No description provided for @associationHubPartnerRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the partner\'s name.'**
+  String get associationHubPartnerRequired;
+
+  /// No description provided for @associationHubSplitBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Shared'**
+  String get associationHubSplitBadge;
+
+  /// No description provided for @associationHubSplitHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Both people share this turn. Each has a payment date and a collection date.'**
+  String get associationHubSplitHint;
+
+  /// No description provided for @associationHubTurnListHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Set each person\'s payment date and collection date. A turn can be shared by two people.'**
+  String get associationHubTurnListHint;
+
+  /// No description provided for @associationHubPaysOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Pays {date}'**
+  String associationHubPaysOn(String date);
+
+  /// No description provided for @associationHubCollectsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Collects {date}'**
+  String associationHubCollectsOn(String date);
+
+  /// No description provided for @associationHubSharedNames.
+  ///
+  /// In en, this message translates to:
+  /// **'{first} & {second}'**
+  String associationHubSharedNames(String first, String second);
 
   /// No description provided for @associationHubBannerTitle.
   ///

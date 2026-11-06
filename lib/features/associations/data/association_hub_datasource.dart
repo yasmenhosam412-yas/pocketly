@@ -20,13 +20,22 @@ class AssociationHubDatasource {
     required double? payoutAmount,
     required double? installmentAmount,
     required int? collectionDay,
+    required DateTime? startsOn,
+    required DateTime? endsOn,
     required List<AssociationTurnSlot> slots,
   }) async {
     final payload = slots
         .map(
           (s) => {
+            'id': s.id,
             'slot_index': s.slotIndex,
             'holder_name': s.holderName,
+            'payment_on': _formatDateOnly(s.paymentOn),
+            'collection_on': _formatDateOnly(s.collectionOn),
+            'co_holder_name': s.isSplit ? s.coHolderName!.trim() : null,
+            'co_payment_on': s.isSplit ? _formatDateOnly(s.coPaymentOn) : null,
+            'co_collection_on':
+                s.isSplit ? _formatDateOnly(s.coCollectionOn) : null,
           },
         )
         .toList();
@@ -39,6 +48,8 @@ class AssociationHubDatasource {
         'p_installment_amount': installmentAmount ?? 0,
         'p_collection_day': collectionDay,
         'p_slots': payload,
+        'p_starts_on': _formatDateOnly(startsOn),
+        'p_ends_on': _formatDateOnly(endsOn),
       },
     );
   }
@@ -106,8 +117,13 @@ class AssociationHubDatasource {
         userId: s['user_id']?.toString(),
         receivedAt:
             received != null && received.isNotEmpty
-                ? DateTime.tryParse(received)
+                ? DateTime.tryParse(received)?.toLocal()
                 : null,
+        paymentOn: _parseDateOnly(s['payment_on']),
+        collectionOn: _parseDateOnly(s['collection_on']),
+        coHolderName: s['co_holder_name']?.toString(),
+        coPaymentOn: _parseDateOnly(s['co_payment_on']),
+        coCollectionOn: _parseDateOnly(s['co_collection_on']),
       );
     }).toList();
 
@@ -144,12 +160,34 @@ class AssociationHubDatasource {
       memberSlots: (assoc['member_slots'] as num?)?.toInt() ?? slots.length,
       currentTurnIndex: (assoc['current_turn_index'] as num?)?.toInt() ?? 0,
       collectionDay: (assoc['collection_day'] as num?)?.toInt(),
+      startsOn: _parseDateOnly(assoc['starts_on']),
+      endsOn: _parseDateOnly(assoc['ends_on']),
       slots: slots,
       members: members,
       payments: payments,
       isOwner: map['is_owner'] == true,
       gom3eyaEndedAt: _parseDateTime(assoc['gom3eya_ended_at']),
     );
+  }
+
+  String? _formatDateOnly(DateTime? date) {
+    if (date == null) return null;
+    final y = date.year.toString().padLeft(4, '0');
+    final m = date.month.toString().padLeft(2, '0');
+    final d = date.day.toString().padLeft(2, '0');
+    return '$y-$m-$d';
+  }
+
+  DateTime? _parseDateOnly(dynamic value) {
+    if (value == null) return null;
+    final s = value.toString();
+    if (s.length < 10) return null;
+    final y = int.tryParse(s.substring(0, 4));
+    final m = int.tryParse(s.substring(5, 7));
+    final d = int.tryParse(s.substring(8, 10));
+    if (y == null || m == null || d == null) return null;
+    if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+    return DateTime(y, m, d);
   }
 
   DateTime? _parseDateTime(dynamic value) {

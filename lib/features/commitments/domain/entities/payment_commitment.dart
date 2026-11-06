@@ -2,6 +2,48 @@ import 'package:equatable/equatable.dart';
 
 enum CommitmentKind { gameya, installment }
 
+/// One payout turn. [partnerName] shares the turn with [name].
+class GameyaSeat extends Equatable {
+  final String name;
+  final String? partnerName;
+  final DateTime? paymentOn;
+  final DateTime? collectionOn;
+  final DateTime? partnerPaymentOn;
+  final DateTime? partnerCollectionOn;
+  final int paidRounds;
+  final int partnerPaidRounds;
+
+  const GameyaSeat({
+    required this.name,
+    this.partnerName,
+    this.paymentOn,
+    this.collectionOn,
+    this.partnerPaymentOn,
+    this.partnerCollectionOn,
+    this.paidRounds = 0,
+    this.partnerPaidRounds = 0,
+  });
+
+  bool get isSplit => (partnerName?.trim().isNotEmpty ?? false);
+
+  String joined(String Function(String first, String second) join) {
+    if (!isSplit) return name;
+    return join(name, partnerName!.trim());
+  }
+
+  @override
+  List<Object?> get props => [
+        name,
+        partnerName,
+        paymentOn,
+        collectionOn,
+        partnerPaymentOn,
+        partnerCollectionOn,
+        paidRounds,
+        partnerPaidRounds,
+      ];
+}
+
 /// Personal tracker for a rotating savings circle (جمعية) or an installment plan (قسط).
 class PaymentCommitment extends Equatable {
   final String id;
@@ -13,8 +55,10 @@ class PaymentCommitment extends Equatable {
   final int dueDay;
   /// 1-based month you receive the gameya pot. Unused for installments.
   final int myTurn;
-  /// Gameya members in payout order. Index 0 receives the pot in month 1.
-  final List<String> members;
+  /// Gameya turns in payout order. Index 0 receives the pot in month 1.
+  final List<GameyaSeat> seats;
+  final DateTime? startsOn;
+  final DateTime? endsOn;
   /// `yyyy-MM` of the last marked payment, or empty.
   final String lastPaidYm;
   final String notes;
@@ -26,6 +70,9 @@ class PaymentCommitment extends Equatable {
   final String receiveInto;
   final String lastExpenseId;
   final String lastIncomeId;
+  /// Last person marked paid. -1 when there is nothing to undo.
+  final int lastMarkIndex;
+  final bool lastMarkPartner;
 
   const PaymentCommitment({
     required this.id,
@@ -36,7 +83,9 @@ class PaymentCommitment extends Equatable {
     this.paidCount = 0,
     this.dueDay = 1,
     this.myTurn = 1,
-    this.members = const [],
+    this.seats = const [],
+    this.startsOn,
+    this.endsOn,
     this.lastPaidYm = '',
     this.notes = '',
     this.payFrom = 'Cash',
@@ -44,12 +93,17 @@ class PaymentCommitment extends Equatable {
     this.receiveInto = 'Cash',
     this.lastExpenseId = '',
     this.lastIncomeId = '',
+    this.lastMarkIndex = -1,
+    this.lastMarkPartner = false,
   });
 
   static String yearMonth(DateTime date) =>
       '${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}';
 
   bool get isGameya => kind == CommitmentKind.gameya;
+
+  /// Primary name of each turn, in payout order.
+  List<String> get members => seats.map((seat) => seat.name).toList();
 
   int get safeTotal => totalCount < 1 ? 1 : totalCount;
 
@@ -67,6 +121,79 @@ class PaymentCommitment extends Equatable {
   double get progress => safePaid / safeTotal;
 
   bool get isFinished => safePaid >= safeTotal;
+
+  bool seatPaidThisRound(int index, {bool partner = false}) {
+    if (index < 0 || index >= seats.length || isFinished) return false;
+    final seat = seats[index];
+    final paid = partner ? seat.partnerPaidRounds : seat.paidRounds;
+    return paid >= openRound;
+  }
+
+  /// Round currently collecting payments. Each person can be marked once.
+  int get openRound => isFinished ? safeTotal : safePaid + 1;
+
+  bool get tracksPeople => isGameya && seats.isNotEmpty;
+
+  PaymentCommitment markPersonPaid(int index, {bool partner = false}) {
+    if (!tracksPeople || isFinished) return this;
+    if (index < 0 || index >= seats.length) return this;
+    final seat = seats[index];
+    if (partner && !seat.isSplit) return this;
+    if (seatPaidThisRound(index, partner: partner)) return this;
+    final round = openRound;
+    final updated = GameyaSeat(
+      name: seat.name,
+      partnerName: seat.partnerName,
+      paymentOn: seat.paymentOn,
+      collectionOn: seat.collectionOn,
+      partnerPaymentOn: seat.partnerPaymentOn,
+      partnerCollectionOn: seat.partnerCollectionOn,
+      paidRounds: partner ? seat.paidRounds : round,
+      partnerPaidRounds: partner ? round : seat.partnerPaidRounds,
+    );
+    final nextSeats = [...seats]..[index] = updated;
+    final roundDone = nextSeats.every((candidate) {
+      final primaryDone = candidate.paidRounds >= round;
+      final partnerDone =
+          !candidate.isSplit || candidate.partnerPaidRounds >= round;
+      return primaryDone && partnerDone;
+    });
+    return copyWith(
+      seats: nextSeats,
+      paidCount: roundDone ? safePaid + 1 : paidCount,
+      lastPaidYm: yearMonth(DateTime.now()),
+      lastMarkIndex: index,
+      lastMarkPartner: partner,
+    );
+  }
+
+  PaymentCommitment undoLastPerson() {
+    if (lastMarkIndex < 0 || lastMarkIndex >= seats.length) return this;
+    final seat = seats[lastMarkIndex];
+    final paid = lastMarkPartner ? seat.partnerPaidRounds : seat.paidRounds;
+    if (paid <= 0) return this;
+    final closedRound = paidCount >= paid;
+    final updated = GameyaSeat(
+      name: seat.name,
+      partnerName: seat.partnerName,
+      paymentOn: seat.paymentOn,
+      collectionOn: seat.collectionOn,
+      partnerPaymentOn: seat.partnerPaymentOn,
+      partnerCollectionOn: seat.partnerCollectionOn,
+      paidRounds: lastMarkPartner ? seat.paidRounds : paid - 1,
+      partnerPaidRounds: lastMarkPartner ? paid - 1 : seat.partnerPaidRounds,
+    );
+    final nextSeats = [...seats]..[lastMarkIndex] = updated;
+    return copyWith(
+      seats: nextSeats,
+      paidCount: closedRound
+          ? (paidCount - 1).clamp(0, safeTotal).toInt()
+          : paidCount,
+      lastPaidYm: '',
+      lastMarkIndex: -1,
+      lastMarkPartner: false,
+    );
+  }
 
   bool paidThisMonth([DateTime? now]) =>
       lastPaidYm.isNotEmpty && lastPaidYm == yearMonth(now ?? DateTime.now());
@@ -93,6 +220,7 @@ class PaymentCommitment extends Equatable {
   int activeTurn([DateTime? now]) {
     if (!isGameya) return 0;
     if (isFinished) return safeTotal;
+    if (tracksPeople) return openRound.clamp(1, safeTotal).toInt();
     if (paidThisMonth(now)) return safePaid.clamp(1, safeTotal).toInt();
     return nextCycle;
   }
@@ -104,8 +232,8 @@ class PaymentCommitment extends Equatable {
 
   String nameForTurn(int turn) {
     final index = turn - 1;
-    if (index < 0 || index >= members.length) return '';
-    return members[index];
+    if (index < 0 || index >= seats.length) return '';
+    return seats[index].joined((first, second) => '$first · $second');
   }
 
   String activeTurnName([DateTime? now]) => nameForTurn(activeTurn(now));
@@ -119,7 +247,9 @@ class PaymentCommitment extends Equatable {
     int? paidCount,
     int? dueDay,
     int? myTurn,
-    List<String>? members,
+    List<GameyaSeat>? seats,
+    DateTime? startsOn,
+    DateTime? endsOn,
     String? lastPaidYm,
     String? notes,
     String? payFrom,
@@ -127,6 +257,8 @@ class PaymentCommitment extends Equatable {
     String? receiveInto,
     String? lastExpenseId,
     String? lastIncomeId,
+    int? lastMarkIndex,
+    bool? lastMarkPartner,
   }) {
     return PaymentCommitment(
       id: id ?? this.id,
@@ -137,7 +269,9 @@ class PaymentCommitment extends Equatable {
       paidCount: paidCount ?? this.paidCount,
       dueDay: dueDay ?? this.dueDay,
       myTurn: myTurn ?? this.myTurn,
-      members: members ?? this.members,
+      seats: seats ?? this.seats,
+      startsOn: startsOn ?? this.startsOn,
+      endsOn: endsOn ?? this.endsOn,
       lastPaidYm: lastPaidYm ?? this.lastPaidYm,
       notes: notes ?? this.notes,
       payFrom: payFrom ?? this.payFrom,
@@ -145,6 +279,8 @@ class PaymentCommitment extends Equatable {
       receiveInto: receiveInto ?? this.receiveInto,
       lastExpenseId: lastExpenseId ?? this.lastExpenseId,
       lastIncomeId: lastIncomeId ?? this.lastIncomeId,
+      lastMarkIndex: lastMarkIndex ?? this.lastMarkIndex,
+      lastMarkPartner: lastMarkPartner ?? this.lastMarkPartner,
     );
   }
 
@@ -188,7 +324,9 @@ class PaymentCommitment extends Equatable {
         paidCount,
         dueDay,
         myTurn,
-        members,
+        seats,
+        startsOn,
+        endsOn,
         lastPaidYm,
         notes,
         payFrom,
@@ -196,5 +334,7 @@ class PaymentCommitment extends Equatable {
         receiveInto,
         lastExpenseId,
         lastIncomeId,
+        lastMarkIndex,
+        lastMarkPartner,
       ];
 }

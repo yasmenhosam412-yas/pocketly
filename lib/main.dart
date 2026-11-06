@@ -64,7 +64,7 @@ Future<void> main() async {
 Future<void> _initializeSupabase() {
   return Supabase.initialize(
     url: 'https://xtilikvogevzshsliwzp.supabase.co',
-    anonKey: 'sb_publishable_hhAelFYJErvvdq9_HAkHgw_bwLBSG1K',
+    publishableKey: 'sb_publishable_hhAelFYJErvvdq9_HAkHgw_bwLBSG1K',
     authOptions: const FlutterAuthClientOptions(detectSessionInUri: true),
   );
 }

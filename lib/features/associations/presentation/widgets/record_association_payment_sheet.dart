@@ -48,43 +48,64 @@ class _RecordAssociationPaymentSheet extends StatefulWidget {
       _RecordAssociationPaymentSheetState();
 }
 
+class _PayerChoice {
+  final String key;
+  final String? slotId;
+  final String payerName;
+  final String label;
+  final bool halfShare;
+  final DateTime? paymentOn;
+
+  const _PayerChoice({
+    required this.key,
+    required this.slotId,
+    required this.payerName,
+    required this.label,
+    required this.halfShare,
+    this.paymentOn,
+  });
+}
+
 class _RecordAssociationPaymentSheetState
     extends State<_RecordAssociationPaymentSheet> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _amountCtrl;
   late final TextEditingController _noteCtrl;
+  late final List<_PayerChoice> _choices;
   late DateTime _paidAt;
   String? _selectedSlotId;
   String? _selectedPayerName;
-  String? _selectedSlotKey;
+  String? _selectedKey;
   TextEditingController? _payerCtrl;
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
 
   @override
   void initState() {
     super.initState();
-    final installment = widget.hub.installmentAmount;
-    _amountCtrl = TextEditingController(
-      text: installment != null && installment > 0
-          ? (installment == installment.roundToDouble()
-              ? installment.toInt().toString()
-              : installment.toString())
-          : '',
-    );
+    _choices = _buildChoices(widget.hub);
     _noteCtrl = TextEditingController();
     _paidAt = DateTime.now();
+
     final current = widget.hub.currentSlot;
-    if (current != null) {
-      _selectedSlotId = current.id;
-      _selectedPayerName = current.holderName;
-      _selectedSlotKey = _slotKey(current);
-    } else if (widget.hub.slots.isNotEmpty) {
-      final first = widget.hub.slots.first;
-      _selectedSlotId = first.id;
-      _selectedPayerName = first.holderName;
-      _selectedSlotKey = _slotKey(first);
+    _PayerChoice? initial;
+    if (_choices.isNotEmpty) {
+      initial = _choices.firstWhere(
+        (choice) =>
+            current != null &&
+            choice.slotId == current.id &&
+            choice.key.endsWith('|me'),
+        orElse: () => _choices.first,
+      );
+      _selectedKey = initial.key;
+      _selectedSlotId = initial.slotId;
+      _selectedPayerName = initial.payerName;
+      if (initial.paymentOn != null) _paidAt = initial.paymentOn!;
     }
-    if (widget.hub.slots.isEmpty) {
+
+    _amountCtrl = TextEditingController(
+      text: _defaultAmount(initial?.halfShare ?? false),
+    );
+    if (_choices.isEmpty) {
       _payerCtrl = TextEditingController(text: _selectedPayerName ?? '');
     }
   }
@@ -97,8 +118,44 @@ class _RecordAssociationPaymentSheetState
     super.dispose();
   }
 
-  String _slotKey(AssociationTurnSlot slot) =>
-      slot.id ?? 'idx_${slot.slotIndex}';
+  List<_PayerChoice> _buildChoices(AssociationHubData hub) {
+    final choices = <_PayerChoice>[];
+    for (final slot in hub.slots) {
+      final slotKey = slot.id ?? 'idx_${slot.slotIndex}';
+      for (final person in slot.people) {
+        choices.add(
+          _PayerChoice(
+            key: '$slotKey|${person.isPartner ? 'co' : 'me'}',
+            slotId: slot.id,
+            payerName: person.name,
+            label: slot.isSplit
+                ? '${person.name} · ${slot.slotIndex + 1}'
+                : person.name,
+            halfShare: slot.isSplit,
+            paymentOn: person.paymentOn,
+          ),
+        );
+      }
+    }
+    return choices;
+  }
+
+  String _defaultAmount(bool halfShare) {
+    final installment = widget.hub.installmentAmount;
+    if (installment == null || installment <= 0) return '';
+    final value = halfShare ? installment / 2 : installment;
+    if (value == value.roundToDouble()) return value.toInt().toString();
+    return value.toString();
+  }
+
+  bool _isAutoAmount(String text) {
+    final current = _parseAmount(text);
+    if (current == null) return true;
+    final installment = widget.hub.installmentAmount;
+    if (installment == null || installment <= 0) return false;
+    final half = installment / 2;
+    return (current - installment).abs() < 0.001 || (current - half).abs() < 0.001;
+  }
 
   double? _parseAmount(String text) {
     final t = text.trim().replaceAll(',', '');
@@ -113,11 +170,17 @@ class _RecordAssociationPaymentSheetState
   }
 
   Future<void> _pickDate() async {
+    final now = DateTime.now();
+    final first = DateTime(2020);
+    final last = DateTime(now.year + 15);
+    var initial = _paidAt;
+    if (initial.isBefore(first)) initial = first;
+    if (initial.isAfter(last)) initial = last;
     final picked = await showDatePicker(
       context: context,
-      initialDate: _paidAt,
-      firstDate: DateTime(2020),
-      lastDate: DateTime.now().add(const Duration(days: 365)),
+      initialDate: initial,
+      firstDate: first,
+      lastDate: last,
     );
     if (picked != null) {
       setState(() => _paidAt = picked);
@@ -161,7 +224,6 @@ class _RecordAssociationPaymentSheetState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final bottom = MediaQuery.viewInsetsOf(context).bottom;
-    final slots = widget.hub.slots;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 12, 20, 20 + bottom),
@@ -192,34 +254,40 @@ class _RecordAssociationPaymentSheetState
                 ),
               ),
               const SizedBox(height: 16),
-              if (slots.isNotEmpty) ...[
+              if (_choices.isNotEmpty) ...[
                 Text(
                   l10n.associationHubPaymentPayer,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 15,
                   ),
                 ),
                 const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
-                  initialValue: _selectedSlotKey,
+                  initialValue: _selectedKey,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: AppColors.card,
                   ),
-                  items: slots.map((slot) {
+                  items: _choices.map((choice) {
                     return DropdownMenuItem(
-                      value: _slotKey(slot),
-                      child: Text(slot.holderName),
+                      value: choice.key,
+                      child: Text(choice.label),
                     );
                   }).toList(),
                   onChanged: (key) {
                     if (key == null) return;
-                    final slot = slots.firstWhere((s) => _slotKey(s) == key);
+                    final choice = _choices.firstWhere((c) => c.key == key);
                     setState(() {
-                      _selectedSlotKey = key;
-                      _selectedSlotId = slot.id;
-                      _selectedPayerName = slot.holderName;
+                      _selectedKey = key;
+                      _selectedSlotId = choice.slotId;
+                      _selectedPayerName = choice.payerName;
+                      if (choice.paymentOn != null) {
+                        _paidAt = choice.paymentOn!;
+                      }
+                      if (_isAutoAmount(_amountCtrl.text)) {
+                        _amountCtrl.text = _defaultAmount(choice.halfShare);
+                      }
                     });
                   },
                   validator: (v) =>

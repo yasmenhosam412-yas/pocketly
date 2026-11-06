@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import 'package:imrpo/core/helpers/association_ledger_access.dart';
-import 'package:imrpo/core/models/parsed_financial_entry.dart';
 import 'package:imrpo/core/services/currency_converter.dart';
 import 'package:imrpo/core/utils/app_colors.dart';
 import 'package:imrpo/features/expenses_tab/data/models/expense_model.dart';
 import 'package:imrpo/features/expenses_tab/presentation/bloc/expenses_tab_bloc.dart';
 import 'package:imrpo/features/expenses_tab/presentation/widgets/daily_budget_card.dart';
-import 'package:imrpo/features/smart_import/presentation/widgets/smart_import_ai_tab.dart';
 import 'package:imrpo/l10n/app_localizations.dart';
 
 /// Spending overview: budget card + period insights + bar chart + daily list.
@@ -102,17 +99,7 @@ class _ManageTabState extends State<ManageTab> {
             padding: const EdgeInsets.only(bottom: 24),
             child: Column(
               children: [
-                DailyBudgetCard(
-                  expenses: state.expenses,
-                  onAddExpense: () async {
-                    if (!AssociationLedgerAccess.canEdit) return;
-
-                    await showMagicAddSheet(
-                      context,
-                      preferredType: FinancialEntryType.expense,
-                    );
-                  },
-                ),
+                DailyBudgetCard(expenses: state.expenses),
                 const SizedBox(height: 8),
                 _RangeSelector(
                   ranges: _ranges,

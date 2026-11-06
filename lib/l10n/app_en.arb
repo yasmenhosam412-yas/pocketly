@@ -353,6 +353,8 @@
     }
   },
   "commitmentsMarkPaid": "Mark this month paid",
+  "commitmentsPersonPaidAction": "Mark paid",
+  "commitmentsPersonPaidDone": "Paid",
   "commitmentsPaidThisMonth": "Paid this month",
   "commitmentsFinished": "Finished",
   "commitmentsUndo": "Undo",
@@ -680,6 +682,47 @@
   "associationHubRoleMember": "Member",
   "associationHubAddSlot": "Add slot",
   "associationHubSlotName": "Name",
+  "associationHubStartDate": "Association start",
+  "associationHubEndDate": "Association end",
+  "associationHubDateNotSet": "Not set",
+  "associationHubClearDate": "Clear date",
+  "associationHubEndBeforeStart": "End date must be on or after the start date.",
+  "associationHubPersonPaymentDate": "Payment date",
+  "associationHubPersonCollectionDate": "Collection date",
+  "associationHubSplitTurn": "Split this turn",
+  "associationHubRemovePartner": "Remove partner",
+  "associationHubPartnerName": "Partner name",
+  "associationHubPartnerRequired": "Enter the partner's name.",
+  "associationHubSplitBadge": "Shared",
+  "associationHubSplitHint": "Both people share this turn. Each has a payment date and a collection date.",
+  "associationHubTurnListHint": "Set each person's payment date and collection date. A turn can be shared by two people.",
+  "associationHubPaysOn": "Pays {date}",
+  "@associationHubPaysOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "associationHubCollectsOn": "Collects {date}",
+  "@associationHubCollectsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "associationHubSharedNames": "{first} & {second}",
+  "@associationHubSharedNames": {
+    "placeholders": {
+      "first": {
+        "type": "String"
+      },
+      "second": {
+        "type": "String"
+      }
+    }
+  },
   "associationHubBannerTitle": "Manage association",
   "associationHubBannerBody": "Turn, payout & installment for {name}.",
   "@associationHubBannerBody": {
